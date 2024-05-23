@@ -23,14 +23,14 @@ class SortComparator(
             printInfo(algorithms)
         }
 
-        val probes = algorithms
+        val counters = algorithms
                 .sortedBy { it.ordinal }
-                .map { Probe(it) }
+                .map { Counter(it) }
 
         runBlocking {
             withContext(Dispatchers.Default) {
                 val timeMark = TimeSource.Monotonic.markNow()
-                val jobs = probes.map { probe ->
+                val jobs = counters.map { probe ->
                     launch {
                         val testArray = TestArray(array.copyOf(), probe)
                         SortFactory.instance(probe.algorithm, probe).sort(testArray)
@@ -38,12 +38,12 @@ class SortComparator(
                 }
 
                 launch {
-                    printProbes(timeMark.elapsedNow(), probes.map { it.snapshot() })
+                    printProbes(timeMark.elapsedNow(), counters.map { it.snapshot() })
                     while (!isCompleted(jobs)) {
                         delay(250)
-                        printProbes(timeMark.elapsedNow(), probes.map { it.snapshot() }, refresh = true)
+                        printProbes(timeMark.elapsedNow(), counters.map { it.snapshot() }, refresh = true)
                     }
-                    printProbes(timeMark.elapsedNow(), probes.map { it.snapshot() }, refresh = true)
+                    printProbes(timeMark.elapsedNow(), counters.map { it.snapshot() }, refresh = true)
                 }
             }
         }
@@ -57,7 +57,7 @@ class SortComparator(
         ArrayPrinter(arrayFile).printArray(array)
     }
 
-    private fun printProbes(elapsedTime: Duration, snaps: List<Probe.Snapshot>, refresh: Boolean = false) {
+    private fun printProbes(elapsedTime: Duration, snaps: List<Counter.Snapshot>, refresh: Boolean = false) {
         val lines = mutableListOf<String>()
         lines.add("elapsed time: ${elapsedTime.inWholeMilliseconds} ms")
         snaps.forEach { snap ->

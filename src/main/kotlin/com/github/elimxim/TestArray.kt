@@ -1,22 +1,22 @@
 package com.github.elimxim
 
-import com.github.elimxim.Probe.Increment.*
+import com.github.elimxim.Counter.Increment.*
 
 class TestArray<T>(private val array: Array<T>,
-                   private val probe: Probe) {
+                   private val counter: Counter) {
 
     operator fun get(index: Int): T {
-        probe.increment(ARRAY_READS)
+        counter.increment(ARRAY_READS)
         return array[index]
     }
 
     operator fun set(index: Int, value: T) {
-        probe.increment(ARRAY_WRITES)
+        counter.increment(ARRAY_WRITES)
         array[index] = value
     }
 
     fun swap(index1: Int, index2: Int): Boolean {
-        probe.increment(ARRAY_SWAPS)
+        counter.increment(ARRAY_SWAPS)
         val tmp = get(index1)
         set(index1, get(index2))
         set(index2, tmp)

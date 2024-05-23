@@ -1,7 +1,7 @@
 package com.github.elimxim.sort
 
 import com.github.elimxim.*
-import com.github.elimxim.Probe.Increment.*
+import com.github.elimxim.Counter.Increment.*
 
 @SortAlgorithm(
         timeComplexity = TimeComplexity(
@@ -14,13 +14,13 @@ import com.github.elimxim.Probe.Increment.*
          
         """
 )
-class BubbleSort(private val probe: Probe) : Sort {
+class BubbleSort(private val counter: Counter) : Sort {
     override fun sort(array: TestArray<Int>) {
         for (i in 0..<array.size()) {
-            probe.increment(ITERATIONS)
+            counter.increment(ITERATIONS)
             var swapped = false
             for (j in 1..<array.size() - i) {
-                probe.increment(ITERATIONS, COMPARISONS)
+                counter.increment(ITERATIONS, COMPARISONS)
                 if (array[j - 1] > array[j]) {
                     swapped = array.swap(j - 1, j)
                 }

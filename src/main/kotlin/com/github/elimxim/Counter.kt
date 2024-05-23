@@ -2,7 +2,7 @@ package com.github.elimxim
 
 import java.util.concurrent.atomic.AtomicLong
 
-class Probe(val algorithm: Algorithm) {
+class Counter(val algorithm: Algorithm) {
     private var iterations = AtomicLong()
     private var comparisons = AtomicLong()
     private var arrayReads = AtomicLong()

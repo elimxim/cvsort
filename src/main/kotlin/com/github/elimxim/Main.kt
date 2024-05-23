@@ -41,7 +41,7 @@ fun main(args: Array<String>) {
 }
 
 private fun processCompareCommand() {
-    val array = TestArrayGenerator.generate(CompareCommand.arraySize.toInt())
+    val generator = TestArrayGenerator()
     val algorithms = CompareCommand.algorithms.map {
         Algorithm.valueOf(it.uppercase())
     }
@@ -52,6 +52,7 @@ private fun processCompareCommand() {
             CompareCommand.infoDisabled.not()
     )
 
+    val array = generator.generate(CompareCommand.arraySize.toInt())
     comparator.compare(algorithms, array)
 }
 

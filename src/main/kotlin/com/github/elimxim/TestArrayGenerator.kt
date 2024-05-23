@@ -2,7 +2,7 @@ package com.github.elimxim
 
 import kotlin.random.Random
 
-object TestArrayGenerator {
+class TestArrayGenerator() {
     fun generate(arraySize: Int): Array<Int> {
         val array = (1..<arraySize).shuffled().toMutableList().toTypedArray()
         array.apply {
