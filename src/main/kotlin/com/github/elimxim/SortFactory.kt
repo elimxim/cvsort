@@ -1,7 +1,7 @@
 package com.github.elimxim
 
-import com.github.elimxim.sorts.BubbleSort
-import com.github.elimxim.sorts.SelectionSort
+import com.github.elimxim.sort.BubbleSort
+import com.github.elimxim.sort.SelectionSort
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 

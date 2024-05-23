@@ -2,8 +2,10 @@ package com.github.elimxim
 
 import com.beust.jcommander.JCommander
 import com.github.elimxim.console.ConsolePrinter
+import com.github.elimxim.console.InputVerifier
 import com.github.elimxim.console.command.CompareCommand
 import com.github.elimxim.console.command.MainCommand
+import com.github.elimxim.console.command.VisualizeCommand
 
 fun main(args: Array<String>) {
     val jc = JCommander.newBuilder()
@@ -24,27 +26,35 @@ fun main(args: Array<String>) {
         return
     }
 
-    if (!MainCommand.disableBanner) {
+    if (!MainCommand.bannerDisabled) {
         ConsolePrinter.printBanner()
         ConsolePrinter.printSpaceLine()
     }
 
     if (jc.parsedCommand == "compare") {
-        compareCommand()
+        InputVerifier.verifyCompareCommand(CompareCommand)
+        processCompareCommand()
+    } else if (jc.parsedCommand == "visualize") {
+        InputVerifier.verifyVisualizeCommand(VisualizeCommand)
+        processVisualizeCommand()
     }
 }
 
-private fun compareCommand() {
-    val array = TestArrayGenerator.generate(CompareCommand.arraySize)
+private fun processCompareCommand() {
+    val array = TestArrayGenerator.generate(CompareCommand.arraySize.toInt())
     val algorithms = CompareCommand.algorithms.map {
         Algorithm.valueOf(it.uppercase())
     }
 
     val comparator = SortComparator(
-            CompareCommand.arrayFile,
+            CompareCommand.arrayFile.toPath(),
             CompareCommand.printArray,
-            CompareCommand.disableInfo.not()
+            CompareCommand.infoDisabled.not()
     )
 
     comparator.compare(algorithms, array)
+}
+
+private fun processVisualizeCommand() {
+
 }

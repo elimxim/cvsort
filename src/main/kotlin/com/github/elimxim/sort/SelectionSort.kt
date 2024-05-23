@@ -1,4 +1,4 @@
-package com.github.elimxim.sorts
+package com.github.elimxim.sort
 
 import com.github.elimxim.Probe
 import com.github.elimxim.Sort

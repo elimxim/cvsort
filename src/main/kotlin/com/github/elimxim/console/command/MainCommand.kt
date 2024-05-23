@@ -7,7 +7,7 @@ import com.beust.jcommander.Parameters
 object MainCommand {
     @Parameter(
             names = ["--listAlgorithms", "--list", "-l"],
-            description = "list sorting algorithms"
+            description = "prints the available sorting algorithms"
     )
     var listAlgorithms: Boolean = false
 
@@ -15,7 +15,7 @@ object MainCommand {
             names = ["--disableBanner", "--noBanner", "-nb"],
             description = "disables banner display"
     )
-    var disableBanner: Boolean = false
+    var bannerDisabled: Boolean = false
 
     @Parameter(
             names = ["--usage", "--help", "-h"],

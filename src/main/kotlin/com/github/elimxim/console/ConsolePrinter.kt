@@ -24,6 +24,10 @@ object ConsolePrinter {
         }
     }
 
+    fun printError(message: String) {
+        println("ERROR: $message")
+    }
+
     fun printSpaceLine() {
         printLines(listOf(""))
     }

@@ -3,15 +3,13 @@ package com.github.elimxim.console.command
 import com.beust.jcommander.Parameter
 import com.beust.jcommander.Parameters
 import com.github.elimxim.console.parameter.*
-import com.github.elimxim.toPath
 import com.github.elimxim.withTimestamp
-import java.nio.file.Path
 
 @Parameters(commandDescription = "compares two or more sorting algorithms")
 object CompareCommand {
     @Parameter(
             description = "case-insensitive sorting algorithm names separated by a space",
-            listConverter = AlgorithmParameterConverter::class,
+            splitter = SpaceParameterSplitter::class,
             variableArity = true,
             required = true
     )
@@ -19,18 +17,16 @@ object CompareCommand {
 
     @Parameter(
             names = ["--arraySize", "-s"],
-            description = "array size: [2, 2^31)",
-            validateWith = [ArraySizeParameterValidator::class]
+            description = "array size: [2, 2^31)"
     )
-    var arraySize: Int = 40
+    var arraySize: String = "40"
 
     @Parameter(
             names = ["--arrayFile", "-f"],
             description = "a file to save the array before sorting",
-            validateWith = [ArrayFileParameterValidator::class],
-            converter = ArrayFileParameterConverter::class
+            converter = PathParameterConverter::class
     )
-    var arrayFile: Path = ("array".withTimestamp() + ".txt").toPath()
+    var arrayFile: String = "array".withTimestamp() + ".txt"
 
     @Parameter(
             names = ["--printArray", "-p"],
@@ -40,8 +36,8 @@ object CompareCommand {
 
     @Parameter(
             names = ["--disableInfo", "--noInfo", "-ni"],
-            description = "disables comparing algorithms info display"
+            description = "switches off the display of information about comparing algorithms"
     )
-    var disableInfo: Boolean = false
+    var infoDisabled: Boolean = false
 }
 
