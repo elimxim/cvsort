@@ -28,7 +28,3 @@ enum class ComplexityClass(val notation: String) {
     BIG_THETA("Θ"),
     BIG_OMEGA("Ω"),
 }
-
-fun complexity(complexity: Complexity, complexityClass: ComplexityClass): String {
-    return "${complexityClass.notation}(${complexity.notation})"
-}

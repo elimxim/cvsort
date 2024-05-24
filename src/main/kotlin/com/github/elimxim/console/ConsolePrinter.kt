@@ -14,13 +14,17 @@ object ConsolePrinter {
         printLines(banner.lines())
     }
 
+    fun printLine(message: String) {
+        println(message)
+    }
+
     fun printLines(lines: List<String>, refresh: Boolean = false) {
         if (refresh) {
             print(cursorUp(lines.size))
         }
 
         lines.forEach {
-            println(it)
+            printLine(it)
         }
     }
 
@@ -28,8 +32,8 @@ object ConsolePrinter {
         println("ERROR: $message")
     }
 
-    fun printSpaceLine() {
-        printLines(listOf(""))
+    fun printEmptyLine() {
+        println()
     }
 
     private fun cursorUp(rows: Int): String {

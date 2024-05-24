@@ -1,5 +1,5 @@
 package com.github.elimxim
 
 interface Sort {
-    fun sort(array: TestArray<Int>)
+    fun sort(array: ArrayWrapper<Int>)
 }

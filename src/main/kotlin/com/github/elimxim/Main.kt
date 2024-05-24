@@ -12,9 +12,15 @@ fun main(args: Array<String>) {
             .programName("cvsort (Sorting Algorithm Comparator & Visualizer)")
             .addObject(MainCommand)
             .addCommand("compare", CompareCommand)
+            .addCommand("visualize", VisualizeCommand)
             .build()
 
     jc.parse(*args)
+
+    if (MainCommand.bannerDisabled.not()) {
+        ConsolePrinter.printBanner()
+        ConsolePrinter.printEmptyLine()
+    }
 
     if (MainCommand.usage) {
         jc.usage()
@@ -26,22 +32,20 @@ fun main(args: Array<String>) {
         return
     }
 
-    if (!MainCommand.bannerDisabled) {
-        ConsolePrinter.printBanner()
-        ConsolePrinter.printSpaceLine()
-    }
-
     if (jc.parsedCommand == "compare") {
-        InputVerifier.verifyCompareCommand(CompareCommand)
-        processCompareCommand()
+        if (InputVerifier.verifyCompareCommand(CompareCommand)) {
+            processCompareCommand()
+        }
     } else if (jc.parsedCommand == "visualize") {
-        InputVerifier.verifyVisualizeCommand(VisualizeCommand)
-        processVisualizeCommand()
+        if (InputVerifier.verifyVisualizeCommand(VisualizeCommand)) {
+            processVisualizeCommand()
+        }
     }
 }
 
 private fun processCompareCommand() {
-    val generator = TestArrayGenerator()
+    val generator = ArrayGenerator()
+    val array = generator.generate(CompareCommand.arraySize.toInt())
     val algorithms = CompareCommand.algorithms.map {
         Algorithm.valueOf(it.uppercase())
     }
@@ -52,10 +56,17 @@ private fun processCompareCommand() {
             CompareCommand.infoDisabled.not()
     )
 
-    val array = generator.generate(CompareCommand.arraySize.toInt())
     comparator.compare(algorithms, array)
 }
 
 private fun processVisualizeCommand() {
+    val algorithm = Algorithm.valueOf(VisualizeCommand.algorithm.uppercase())
 
+    val visualizer = SortVisualizer(
+            VisualizeCommand.visualisationDisabled.not(),
+            VisualizeCommand.pseudoCodeDisabled.not(),
+            VisualizeCommand.infoDisabled.not()
+    )
+
+    visualizer.visualize(algorithm)
 }

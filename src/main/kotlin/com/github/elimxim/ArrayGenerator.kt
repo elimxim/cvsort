@@ -2,9 +2,9 @@ package com.github.elimxim
 
 import kotlin.random.Random
 
-class TestArrayGenerator() {
+class ArrayGenerator() {
     fun generate(arraySize: Int): Array<Int> {
-        val array = (1..<arraySize).shuffled().toMutableList().toTypedArray()
+        val array = (1..arraySize).shuffled().toMutableList().toTypedArray()
         array.apply {
             val rnd = Random(System.currentTimeMillis())
             for (i in array.size downTo 2) {

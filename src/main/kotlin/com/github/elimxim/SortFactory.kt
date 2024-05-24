@@ -11,9 +11,14 @@ object SortFactory {
             Pair(Algorithm.SELECTION, SelectionSort::class)
     )
 
-    fun instance(algorithm: Algorithm, counter: Counter): Sort {
+    fun instance(algorithm: Algorithm, probe: Probe): Sort {
         val kClass = implementations[algorithm]
-        return kClass!!.primaryConstructor!!.call(counter)
+        return kClass!!.primaryConstructor!!.call(probe, SortScriptWriter(probe))
+    }
+
+    fun instance(algorithm: Algorithm, probe: Probe, scriptWriter: SortScriptWriter): Sort {
+        val kClass = implementations[algorithm]
+        return kClass!!.primaryConstructor!!.call(probe, scriptWriter)
     }
 
     fun impl(algorithm: Algorithm): KClass<out Sort> {
