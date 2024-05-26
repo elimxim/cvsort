@@ -16,10 +16,10 @@ object CompareCommand {
     var algorithms: List<String> = arrayListOf()
 
     @Parameter(
-            names = ["--arraySize", "-s"],
-            description = "array size: [2, 2^31)"
+            names = ["--arrayLength", "-l"],
+            description = "array length: [2, 2^31)"
     )
-    var arraySize: String = "40"
+    var arrayLength: String = "40"
 
     @Parameter(
             names = ["--arrayFile", "-f"],

@@ -52,7 +52,7 @@ private fun processCompareCommand() {
             CompareCommand.arrayFile.toPath(),
             CompareCommand.printArray,
             CompareCommand.infoDisabled.not(),
-            CompareCommand.arraySize.toInt()
+            CompareCommand.arrayLength.toInt()
     )
 
     comparator.compare(algorithms)
@@ -62,6 +62,7 @@ private fun processVisualizeCommand() {
     val algorithm = Algorithm.valueOf(VisualizeCommand.algorithm.uppercase())
 
     val visualizer = SortVisualizer(
+            SortSpeed.valueOf(VisualizeCommand.speed.uppercase()),
             VisualizeCommand.visualisationDisabled.not(),
             VisualizeCommand.pseudoCodeDisabled.not(),
             VisualizeCommand.infoDisabled.not()

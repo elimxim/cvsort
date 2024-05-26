@@ -39,6 +39,7 @@ class BubbleSort(
                 scriptWriter.focus(array, j - 1)
                 if (array[j - 1] > array[j]) {
                     swapped = array.swap(j - 1, j)
+                    scriptWriter.replace(array, j - 1, j)
                 }
             }
 

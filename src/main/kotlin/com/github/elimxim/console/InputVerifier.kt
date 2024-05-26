@@ -1,6 +1,7 @@
 package com.github.elimxim.console
 
 import com.github.elimxim.Algorithm
+import com.github.elimxim.SortSpeed
 import com.github.elimxim.console.command.CompareCommand
 import com.github.elimxim.console.command.VisualizeCommand
 import com.github.elimxim.toPath
@@ -10,7 +11,7 @@ import java.nio.file.InvalidPathException
 object InputVerifier {
     fun verifyCompareCommand(cmd: CompareCommand): Boolean {
         return checkAlgorithms(cmd.algorithms)
-                && checkArraySize(cmd.arraySize)
+                && checkArrayLength(cmd.arrayLength)
                 && checkArrayFile(cmd.arrayFile)
     }
 
@@ -34,7 +35,7 @@ object InputVerifier {
         return true
     }
 
-    private fun checkArraySize(size: String): Boolean {
+    private fun checkArrayLength(size: String): Boolean {
         try {
             val number = size.toInt()
             if (number !in 2..Int.MAX_VALUE) {
@@ -70,12 +71,21 @@ object InputVerifier {
 
     fun verifyVisualizeCommand(cmd: VisualizeCommand): Boolean {
         return checkAlgorithm(cmd.algorithm)
+                && checkSpeed(cmd.speed)
                 && checkSwitchers(cmd.visualisationDisabled, cmd.pseudoCodeDisabled, cmd.infoDisabled)
     }
 
     private fun checkAlgorithm(algorithm: String): Boolean {
         if (!Algorithm.contains(algorithm)) {
             ConsolePrinter.printError("unknown algorithm name: $algorithm")
+            return false
+        }
+        return true
+    }
+
+    private fun checkSpeed(speed: String): Boolean {
+        if (!SortSpeed.contains(speed)) {
+            ConsolePrinter.printError("unknown sort speed: $speed")
             return false
         }
         return true

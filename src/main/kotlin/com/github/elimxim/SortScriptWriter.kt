@@ -20,13 +20,17 @@ class ScriptLine(
 // not thread safe
 class SortScriptWriterImpl(private val probe: Probe) : SortScriptWriter {
     private val scriptLines: MutableList<ScriptLine> = ArrayList()
+    var focus: Int = 0
 
     override fun focus(array: ArrayWrapper<Int>, index: Int) {
-        scriptLines.add(ScriptLine(array.array(), index, probe.snapshot()))
+        if (focus != index) {
+            scriptLines.add(ScriptLine(array.array(), index, probe.snapshot()))
+        }
     }
 
     override fun replace(array: ArrayWrapper<Int>, index1: Int, index2: Int) {
         scriptLines.add(ScriptLine(array.array(), index2, probe.snapshot()))
+        focus = index2
     }
 
     override fun scriptLines(): Queue<ScriptLine> {

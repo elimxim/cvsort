@@ -2,6 +2,7 @@ package com.github.elimxim.console.command
 
 import com.beust.jcommander.Parameter
 import com.beust.jcommander.Parameters
+import com.github.elimxim.SortSpeed
 
 @Parameters(commandDescription = "visualizes the selected sorting algorithms")
 object VisualizeCommand {
@@ -10,6 +11,12 @@ object VisualizeCommand {
             required = true
     )
     lateinit var algorithm: String
+
+    @Parameter(
+            names = ["--speed", "-s"],
+            description = "sets the speed for the sorting visualisation: [slow, avg, fast]",
+    )
+    var speed: String = SortSpeed.AVG.name.lowercase()
 
     @Parameter(
             names = ["--disableVisualisation", "--noVisualisation", "-nv"],

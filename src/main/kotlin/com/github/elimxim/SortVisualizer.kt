@@ -4,13 +4,11 @@ import com.github.elimxim.console.AlgorithmView
 import com.github.elimxim.console.ArrayView
 import com.github.elimxim.console.ConsolePrinter
 import com.github.elimxim.console.ProbeView
-import de.vandermeer.asciitable.AT_Context
-import de.vandermeer.asciitable.AsciiTable
-import de.vandermeer.asciithemes.a8.A8_Grids
 import kotlinx.coroutines.*
 import kotlin.reflect.full.findAnnotation
 
 class SortVisualizer(
+        private val speed: SortSpeed,
         private val showVisualization: Boolean,
         private val showPseudoCode: Boolean,
         private val showInfo: Boolean
@@ -56,17 +54,14 @@ class SortVisualizer(
         val array = ArrayGenerator.generate(1, 16)
         val probe = Probe(algorithm)
         val scriptWriter = SortScriptWriterImpl(probe)
-        val arrayWrapper = ArrayScribingWrapper(
-                ArrayProbingWrapper(array, probe),
-                scriptWriter
-        )
-        val sort = SortFactory.instance(algorithm, probe)
+        val arrayWrapper = ArrayWrapper(array, probe)
+        val sort = SortFactory.instance(algorithm, probe, scriptWriter)
         sort.sort(arrayWrapper)
         scriptWriter.focus(arrayWrapper, -1);
         val scriptLines = scriptWriter.scriptLines()
         printScriptLine(scriptLines.poll())
         while (!scriptLines.isEmpty()) {
-            delay(500)
+            delay(speed.millis)
             printScriptLine(scriptLines.poll(), refresh = true)
         }
     }
