@@ -1,6 +1,13 @@
 package com.github.elimxim
 
+import com.github.elimxim.console.AlgorithmView
+import com.github.elimxim.console.ArrayView
 import com.github.elimxim.console.ConsolePrinter
+import com.github.elimxim.console.ProbeView
+import de.vandermeer.asciitable.AT_Context
+import de.vandermeer.asciitable.AsciiTable
+import de.vandermeer.asciithemes.a8.A8_Grids
+import kotlinx.coroutines.*
 import kotlin.reflect.full.findAnnotation
 
 class SortVisualizer(
@@ -10,7 +17,7 @@ class SortVisualizer(
 ) {
     fun visualize(algorithm: Algorithm) {
         if (showInfo) {
-            val table = AlgorithmComplexity()
+            val table = AlgorithmView()
             table.add(algorithm)
             table.print()
         }
@@ -20,23 +27,55 @@ class SortVisualizer(
         }
 
         if (showVisualization) {
-
+            runBlocking {
+                withContext(Dispatchers.Default) {
+                    visualiseAlgorithm(algorithm)
+                }
+            }
         }
     }
 
     private fun printPseudoCode(algorithm: Algorithm) {
-        val impl = SortFactory.impl(algorithm)
+        val impl = SortFactory.kClass(algorithm)
         val anno = impl.findAnnotation<SortAlgorithm>()
 
         if (anno != null) {
             val text = anno.pseudoCode.trimIndent()
             if (text.isNotEmpty()) {
                 ConsolePrinter.printLine(text)
+                ConsolePrinter.printEmptyLine()
             } else {
                 ConsolePrinter.printError("pseudo code is not implemented")
             }
         } else {
             ConsolePrinter.printError("pseudo code is not implemented")
         }
+    }
+
+    private suspend fun visualiseAlgorithm(algorithm: Algorithm) {
+        val array = ArrayGenerator.generate(1, 16)
+        val probe = Probe(algorithm)
+        val scriptWriter = SortScriptWriterImpl(probe)
+        val arrayWrapper = ArrayScribingWrapper(
+                ArrayProbingWrapper(array, probe),
+                scriptWriter
+        )
+        val sort = SortFactory.instance(algorithm, probe)
+        sort.sort(arrayWrapper)
+        scriptWriter.focus(arrayWrapper, -1);
+        val scriptLines = scriptWriter.scriptLines()
+        printScriptLine(scriptLines.poll())
+        while (!scriptLines.isEmpty()) {
+            delay(500)
+            printScriptLine(scriptLines.poll(), refresh = true)
+        }
+    }
+
+    private fun printScriptLine(scriptLine: ScriptLine, refresh: Boolean = false) {
+        val lines = mutableListOf<String>()
+        lines.addAll(ArrayView(scriptLine.array, scriptLine.focus).lines())
+        lines.add("")
+        lines.addAll(ProbeView(scriptLine.probeSnapshot).lines())
+        ConsolePrinter.printLines(lines, refresh)
     }
 }

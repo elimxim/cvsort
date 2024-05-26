@@ -1,6 +1,8 @@
 package com.github.elimxim
 
+import com.github.elimxim.console.AlgorithmView
 import com.github.elimxim.console.ConsolePrinter
+import com.github.elimxim.console.ProbeView
 import kotlinx.coroutines.*
 import java.nio.file.Path
 import kotlin.time.Duration
@@ -9,15 +11,18 @@ import kotlin.time.TimeSource
 class SortComparator(
         private val arrayFile: Path,
         private val printArray: Boolean,
-        private val showInfo: Boolean
+        private val showInfo: Boolean,
+        private val arraySize: Int
 ) {
-    fun compare(algorithms: List<Algorithm>, array: Array<Int>) {
+    fun compare(algorithms: List<Algorithm>) {
+        val array = ArrayGenerator.generate(1, arraySize)
+
         if (printArray) {
             ArrayPrinter(arrayFile).printArray(array)
         }
 
         if (showInfo) {
-            val table = AlgorithmComplexity()
+            val table = AlgorithmView()
             algorithms.forEach(table::add)
             table.print()
         }
@@ -59,10 +64,7 @@ class SortComparator(
         lines.add("elapsed time: ${elapsedTime.inWholeMilliseconds} ms")
         snaps.forEach { snap ->
             lines.add("")
-            lines.add("<${snap.algorithm.canonicalName()}>")
-            lines.add(" iterations   ${snap.iterations}  comparisons  ${snap.comparisons}")
-            lines.add(" array reads/writes  ${snap.arrayReads}/${snap.arrayWrites}  ratio  ${"%.2f".format(snap.arrayRatio)}")
-            lines.add(" array swaps  ${snap.arraySwaps}")
+            lines.addAll(ProbeView(snap).lines())
         }
 
         ConsolePrinter.printLines(lines.toList(), refresh)

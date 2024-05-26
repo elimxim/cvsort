@@ -22,7 +22,7 @@ class ArrayProbingWrapper(
         return true
     }
 
-    override fun copy(): Array<Int> {
+    override fun array(): Array<Int> {
         return array.copyOf()
     }
 

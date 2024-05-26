@@ -13,7 +13,7 @@ object SortFactory {
 
     fun instance(algorithm: Algorithm, probe: Probe): Sort {
         val kClass = implementations[algorithm]
-        return kClass!!.primaryConstructor!!.call(probe, SortScriptWriter(probe))
+        return kClass!!.primaryConstructor!!.call(probe, NoOpSortScriptWriter())
     }
 
     fun instance(algorithm: Algorithm, probe: Probe, scriptWriter: SortScriptWriter): Sort {
@@ -21,7 +21,7 @@ object SortFactory {
         return kClass!!.primaryConstructor!!.call(probe, scriptWriter)
     }
 
-    fun impl(algorithm: Algorithm): KClass<out Sort> {
+    fun kClass(algorithm: Algorithm): KClass<out Sort> {
         return implementations[algorithm]!!
     }
 }

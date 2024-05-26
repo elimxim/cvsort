@@ -1,14 +1,14 @@
-package com.github.elimxim
+package com.github.elimxim.console
 
-import com.github.elimxim.console.ConsolePrinter
+import com.github.elimxim.*
 import de.vandermeer.asciitable.AsciiTable
 import kotlin.reflect.full.findAnnotation
 
-class AlgorithmComplexity {
+class AlgorithmView {
     private val content: MutableList<List<String>> = ArrayList()
 
     fun add(algorithm: Algorithm) {
-        val impl = SortFactory.impl(algorithm)
+        val impl = SortFactory.kClass(algorithm)
         val anno = impl.findAnnotation<SortAlgorithm>()
 
         if (anno != null) {
@@ -27,7 +27,7 @@ class AlgorithmComplexity {
     }
 
     fun print() {
-        if (content.size >= 1) {
+        return if (content.size >= 1) {
             val table = AsciiTable()
 
             table.addRule()

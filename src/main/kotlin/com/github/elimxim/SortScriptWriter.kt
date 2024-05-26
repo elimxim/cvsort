@@ -1,29 +1,47 @@
 package com.github.elimxim
 
 import java.lang.RuntimeException
+import java.lang.UnsupportedOperationException
+import java.util.LinkedList
+import java.util.Queue
 
-// not thread-safe
-class SortScriptWriter(private val probe: Probe) {
-    val script: MutableList<ScriptLine> = ArrayList()
-    private var focus: Int = 0
+interface SortScriptWriter {
+    fun focus(array: ArrayWrapper<Int>, index: Int)
+    fun replace(array: ArrayWrapper<Int>, index1: Int, index2: Int)
+    fun scriptLines(): Queue<ScriptLine>
+}
 
-    fun focus(array: Array<Int>, index: Int) {
-        //script.add(ScriptLine(array.copyOf(), index, probe.snapshot()))
-        focus = index
+class ScriptLine(
+        val array: Array<Int>,
+        val focus: Int,
+        val probeSnapshot: Probe.Snapshot
+)
+
+// not thread safe
+class SortScriptWriterImpl(private val probe: Probe) : SortScriptWriter {
+    private val scriptLines: MutableList<ScriptLine> = ArrayList()
+
+    override fun focus(array: ArrayWrapper<Int>, index: Int) {
+        scriptLines.add(ScriptLine(array.array(), index, probe.snapshot()))
     }
 
-    fun replace(array: Array<Int>, index1: Int, index2: Int) {
-        if (focus != index1) {
-            throw RuntimeException("focus was lost: $focus != $index1")
-        }
-
-        //script.add(ScriptLine(array.copyOf(), index2, probe.snapshot()))
-        focus = index2
+    override fun replace(array: ArrayWrapper<Int>, index1: Int, index2: Int) {
+        scriptLines.add(ScriptLine(array.array(), index2, probe.snapshot()))
     }
 
-    class ScriptLine(
-            val array: Array<Int>,
-            val focus: Int,
-            val probeSnapshot: Probe.Snapshot) {
+    override fun scriptLines(): Queue<ScriptLine> {
+        return LinkedList(scriptLines)
+    }
+}
+
+class NoOpSortScriptWriter : SortScriptWriter {
+    override fun focus(array: ArrayWrapper<Int>, index: Int) {
+    }
+
+    override fun replace(array: ArrayWrapper<Int>, index1: Int, index2: Int) {
+    }
+
+    override fun scriptLines(): Queue<ScriptLine> {
+        throw UnsupportedOperationException("no op")
     }
 }

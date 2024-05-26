@@ -44,8 +44,6 @@ fun main(args: Array<String>) {
 }
 
 private fun processCompareCommand() {
-    val generator = ArrayGenerator()
-    val array = generator.generate(CompareCommand.arraySize.toInt())
     val algorithms = CompareCommand.algorithms.map {
         Algorithm.valueOf(it.uppercase())
     }
@@ -53,10 +51,11 @@ private fun processCompareCommand() {
     val comparator = SortComparator(
             CompareCommand.arrayFile.toPath(),
             CompareCommand.printArray,
-            CompareCommand.infoDisabled.not()
+            CompareCommand.infoDisabled.not(),
+            CompareCommand.arraySize.toInt()
     )
 
-    comparator.compare(algorithms, array)
+    comparator.compare(algorithms)
 }
 
 private fun processVisualizeCommand() {
