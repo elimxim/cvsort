@@ -36,7 +36,7 @@ object ConsolePrinter {
         println()
     }
 
-    private fun cursorUp(rows: Int): String {
-        return 0x1b.toChar() + "[${rows}A\r"
+    private fun cursorUp(lines: Int): String {
+        return 0x1b.toChar() + "[${lines}A\r"
     }
 }

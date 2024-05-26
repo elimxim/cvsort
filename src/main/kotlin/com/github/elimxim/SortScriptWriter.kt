@@ -1,6 +1,5 @@
 package com.github.elimxim
 
-import java.lang.RuntimeException
 import java.lang.UnsupportedOperationException
 import java.util.LinkedList
 import java.util.Queue
