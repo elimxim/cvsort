@@ -38,7 +38,7 @@ class SortComparator(
                 val timeMark = TimeSource.Monotonic.markNow()
                 val jobs = probes.map { probe ->
                     launch {
-                        val arrayWrapper = ArrayWrapper(array.copyOf(), probe)
+                        val arrayWrapper = IntArrayWrapper(array.copyOf(), probe, NoOpSortScript())
                         SortFactory.instance(probe.algorithm, probe).sort(arrayWrapper)
                     }
                 }

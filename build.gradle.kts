@@ -11,6 +11,21 @@ dependencies {
     implementation("de.vandermeer:asciitable:0.3.2")
 }
 
+dependencies {
+    testImplementation(kotlin("test"))
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+        showStandardStreams = true
+        events("started", "passed", "skipped", "failed")
+    }
+}
+
 repositories {
     mavenCentral()
 }

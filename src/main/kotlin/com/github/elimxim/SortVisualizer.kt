@@ -53,12 +53,16 @@ class SortVisualizer(
     private suspend fun visualiseAlgorithm(algorithm: Algorithm) {
         val array = ArrayGenerator.generate(1, 16)
         val probe = Probe(algorithm)
-        val scriptWriter = SortScriptWriterImpl(probe)
-        val arrayWrapper = ArrayWrapper(array, probe)
-        val sort = SortFactory.instance(algorithm, probe, scriptWriter)
+        val script = SortScriptImpl(probe)
+        val arrayWrapper = IntArrayWrapper(array, probe, script)
+
+        val sort = SortFactory.instance(algorithm, probe, script)
         sort.sort(arrayWrapper)
-        scriptWriter.focus(arrayWrapper, -1);
-        val scriptLines = scriptWriter.scriptLines()
+
+        script.focusEvery(arrayWrapper)
+        script.focusAll(arrayWrapper);
+
+        val scriptLines = script.scriptLines()
         printScriptLine(scriptLines.poll())
         while (!scriptLines.isEmpty()) {
             delay(speed.millis)

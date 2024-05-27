@@ -1,6 +1,8 @@
 package com.github.elimxim.console
 
-class ArrayView(private val array: Array<Int>,
+import com.github.elimxim.ScriptLine
+
+class ArrayView(private val array: IntArray,
                 private val focus: Int) {
 
     fun lines(): List<String> {
@@ -10,7 +12,7 @@ class ArrayView(private val array: Array<Int>,
 
         array.forEachIndexed { index, n ->
             val column = matrix[index]
-            val cell = if (index == focus || focus == -1) {
+            val cell = if (index == focus || focus == ScriptLine.FOCUS_ALL) {
                 MEDIUM_SHADE
             } else {
                 LIGHT_SHADE

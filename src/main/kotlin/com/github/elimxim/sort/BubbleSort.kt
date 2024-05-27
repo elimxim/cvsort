@@ -11,9 +11,9 @@ import com.github.elimxim.Probe.Increment.*
         ),
         spaceComplexity = Complexity.CONST,
         pseudoCode = """
-        while i in [0..n) do
+        for i in [0..n) do
             swapped = false
-            while j in [1..n-i) do
+            for j in [1..n-i) do
                 if array[j-1] > array[j] then
                     swap array[j] and array[j+1]
                     swapped = true
@@ -28,18 +28,18 @@ import com.github.elimxim.Probe.Increment.*
 )
 class BubbleSort(
         private val probe: Probe,
-        private val scriptWriter: SortScriptWriter
+        private val script: SortScript
 ) : Sort {
-    override fun sort(array: ArrayWrapper<Int>) {
-        for (i in 0..<array.size()) {
+    override fun sort(array: IntArrayWrapper) {
+        val n = array.size()
+        for (i in 0..<n) {
             probe.increment(ITERATIONS)
             var swapped = false
-            for (j in 1..<array.size() - i) {
+            for (j in 1..<n - i) {
                 probe.increment(ITERATIONS, COMPARISONS)
-                scriptWriter.focus(array, j - 1)
+                script.focus(array, j - 1)
                 if (array[j - 1] > array[j]) {
                     swapped = array.swap(j - 1, j)
-                    scriptWriter.replace(array, j - 1, j)
                 }
             }
 
