@@ -10,7 +10,7 @@ Contains two main commands:
 
 _BubbleSort_ visualisation:
 
-![BubbleSort visualisation](.img/bubble_watermark.gif)
+![BubbleSort visualisation](.img/bubble.gif)
 
 Supported sorting algorithms:
 
