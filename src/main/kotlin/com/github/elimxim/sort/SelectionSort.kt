@@ -18,7 +18,9 @@ import com.github.elimxim.Probe.Increment.*
                     min = j
                 end
             end
-            swap arr[i] and arr[min]
+            if i != min then
+                swap arr[i] and arr[min]
+            end
         end
         """
 )
@@ -31,14 +33,19 @@ class SelectionSort(
         for (i in 0..<n - 1) {
             probe.increment(ITERATIONS)
             var minIdx = i
+            script.focus(array.original(), i)
             for (j in i + 1..<n) {
                 probe.increment(ITERATIONS, COMPARISONS)
-                script.focus(array, j)
+                script.focus(array.original(), j)
                 if (array[j] < array[minIdx]) {
                     minIdx = j
                 }
             }
-            array.swap(i, minIdx)
+
+            if (i != minIdx) {
+                array.swap(i, minIdx)
+                script.swap(array.original(), i, minIdx)
+            }
         }
     }
 }

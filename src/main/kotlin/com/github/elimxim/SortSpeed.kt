@@ -1,6 +1,7 @@
 package com.github.elimxim
 
 enum class SortSpeed(val millis: Long) {
+    NONE(-1),
     SLOW(1000),
     AVG(500),
     FAST(100);

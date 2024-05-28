@@ -14,9 +14,22 @@ object VisualizeCommand {
 
     @Parameter(
             names = ["--speed", "-s"],
-            description = "sets the speed for the sorting visualisation: [slow, avg, fast]",
+            description = "sets the speed for the sorting visualisation: [slow, avg, fast]; " +
+                    "if set overrides the '--speedMillis' parameter",
     )
-    var speed: String = SortSpeed.AVG.name.lowercase()
+    var speed: String = SortSpeed.NONE.name.lowercase()
+
+    @Parameter(
+            names = ["--speedMillis", "--millis", "-m"],
+            description = "sets the speed in milliseconds for the sorting visualisation: [50..1000]"
+    )
+    var speedMillis: String = SortSpeed.AVG.millis.toString()
+
+    @Parameter(
+            names = ["--arrayLength", "-l"],
+            description = "array length: [10, 30]"
+    )
+    var arrayLength: String = "20"
 
     @Parameter(
             names = ["--disableVisualisation", "--noVisualisation", "-nv"],

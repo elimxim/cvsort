@@ -1,10 +1,10 @@
 package com.github.elimxim.console
 
-import com.github.elimxim.ScriptLine
-
-class ArrayView(private val array: IntArray,
-                private val focus: Int) {
-
+class ArrayView(
+        private val array: IntArray,
+        private val focus: Set<Int>,
+        private val swap: Pair<Int, Int>,
+) {
     fun lines(): List<String> {
         val matrix = Array(array.size) {
             Array(array.max()) { SPACE }
@@ -12,7 +12,9 @@ class ArrayView(private val array: IntArray,
 
         array.forEachIndexed { index, n ->
             val column = matrix[index]
-            val cell = if (index == focus || focus == ScriptLine.FOCUS_ALL) {
+            val cell = if (swap.first == index || swap.second == index) {
+                DARK_SHADE
+            } else if (focus.contains(index)) {
                 MEDIUM_SHADE
             } else {
                 LIGHT_SHADE
@@ -49,5 +51,6 @@ class ArrayView(private val array: IntArray,
         const val SPACE = "\u0020\u0020"
         const val LIGHT_SHADE = "\u2591\u2591"
         const val MEDIUM_SHADE = "\u2592\u2592"
+        const val DARK_SHADE = "\u2593\u2593"
     }
 }

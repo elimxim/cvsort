@@ -25,3 +25,9 @@ fun String.toPath(): Path {
         Path.of(System.getProperty("user.dir"), this)
     }
 }
+
+fun IntArray.swap(idx1: Int, idx2: Int) {
+    val tmp = this[idx1]
+    this[idx1] = this[idx2]
+    this[idx2] = tmp
+}

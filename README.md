@@ -68,3 +68,4 @@ end
 Supported sorting algorithms:
 
 - BubbleSort
+- SelectionSort

@@ -15,7 +15,7 @@ class SortComparator(
         private val arrayLength: Int
 ) {
     fun compare(algorithms: List<Algorithm>) {
-        val array = ArrayGenerator.generate(1, arrayLength)
+        val array = ArrayGenerator().generate(1, arrayLength)
 
         if (printArray) {
             ArrayPrinter(arrayFile).printArray(array)
@@ -38,7 +38,7 @@ class SortComparator(
                 val timeMark = TimeSource.Monotonic.markNow()
                 val jobs = probes.map { probe ->
                     launch {
-                        val arrayWrapper = IntArrayWrapper(array.copyOf(), probe, NoOpSortScript())
+                        val arrayWrapper = IntArrayWrapper(array.copyOf(), probe)
                         SortFactory.instance(probe.algorithm, probe).sort(arrayWrapper)
                     }
                 }

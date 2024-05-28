@@ -2,9 +2,10 @@ package com.github.elimxim
 
 import kotlin.random.Random
 
-object ArrayGenerator {
+class ArrayGenerator(private val script: SortScript = NoOpSortScript()) {
     fun generate(from: Int, to: Int, shuffle: Boolean = true): IntArray {
         val array = (from..to).toMutableList().toIntArray()
+        script.noFocus(array.copyOf())
         if (shuffle) {
             shuffle(array)
         }
@@ -14,13 +15,12 @@ object ArrayGenerator {
     private fun shuffle(array: IntArray) {
         array.apply {
             val rnd = Random(System.currentTimeMillis())
-            for (i in array.size downTo 2) {
-                val j = rnd.nextInt(i)
-
-                val tmp = array[i - 1]
-                array[i - 1] = array[j]
-                array[j] = tmp
+            for (i in array.size - 1 downTo 1) {
+                val j = rnd.nextInt(i + 1)
+                array.swap(i, j)
+                script.swap(this.copyOf(), i, j)
             }
+            script.noFocus(this.copyOf())
         }
     }
 }

@@ -8,7 +8,8 @@ import kotlinx.coroutines.*
 import kotlin.reflect.full.findAnnotation
 
 class SortVisualizer(
-        private val speed: SortSpeed,
+        private val speedMillis: Long,
+        private val arrayLength: Int,
         private val showVisualization: Boolean,
         private val showPseudoCode: Boolean,
         private val showInfo: Boolean
@@ -51,30 +52,55 @@ class SortVisualizer(
     }
 
     private suspend fun visualiseAlgorithm(algorithm: Algorithm) {
-        val array = ArrayGenerator.generate(1, 16)
         val probe = Probe(algorithm)
+        val opening = SortScriptImpl(probe)
+
+        val array = ArrayGenerator(opening).generate(1, arrayLength)
+        val openingLines = opening.scriptLines()
+        printScriptLine(openingLines.poll())
+        while (openingLines.isNotEmpty()) {
+            delay(OPENING_DELAY)
+            printScriptLine(openingLines.poll(), refresh = true)
+        }
+
+        delay(AFTER_OPENING_DELAY)
+
         val script = SortScriptImpl(probe)
-        val arrayWrapper = IntArrayWrapper(array, probe, script)
 
         val sort = SortFactory.instance(algorithm, probe, script)
+        val arrayWrapper = IntArrayWrapper(array, probe)
         sort.sort(arrayWrapper)
 
-        script.focusEvery(arrayWrapper)
-        script.focusAll(arrayWrapper);
-
         val scriptLines = script.scriptLines()
-        printScriptLine(scriptLines.poll())
-        while (!scriptLines.isEmpty()) {
-            delay(speed.millis)
+        while (scriptLines.isNotEmpty()) {
+            delay(speedMillis)
             printScriptLine(scriptLines.poll(), refresh = true)
+        }
+
+        val ending = SortScriptImpl(probe)
+        ending.focusLoop(arrayWrapper.original())
+        ending.focusLoopAccumulative(arrayWrapper.original())
+        val endingLines = ending.scriptLines()
+        while (endingLines.isNotEmpty()) {
+            delay(ENDING_DELAY)
+            printScriptLine(endingLines.poll(), refresh = true)
         }
     }
 
     private fun printScriptLine(scriptLine: ScriptLine, refresh: Boolean = false) {
+        val arrayView = ArrayView(scriptLine.array, scriptLine.focus, scriptLine.swap)
+        val proveView = ProbeView(scriptLine.probeSnapshot)
+
         val lines = mutableListOf<String>()
-        lines.addAll(ArrayView(scriptLine.array, scriptLine.focus).lines())
+        lines.addAll(arrayView.lines())
         lines.add("")
-        lines.addAll(ProbeView(scriptLine.probeSnapshot).lines())
+        lines.addAll(proveView.lines())
         ConsolePrinter.printLines(lines, refresh)
+    }
+
+    private companion object {
+        const val OPENING_DELAY: Long = 400
+        const val AFTER_OPENING_DELAY: Long = 1000
+        const val ENDING_DELAY: Long = 50
     }
 }

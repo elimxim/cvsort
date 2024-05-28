@@ -2,7 +2,7 @@ package com.github.elimxim
 
 import com.beust.jcommander.JCommander
 import com.github.elimxim.console.ConsolePrinter
-import com.github.elimxim.console.InputVerifier
+import com.github.elimxim.console.VisualizeCommandVerifier
 import com.github.elimxim.console.command.CompareCommand
 import com.github.elimxim.console.command.MainCommand
 import com.github.elimxim.console.command.VisualizeCommand
@@ -33,11 +33,11 @@ fun main(args: Array<String>) {
     }
 
     if (jc.parsedCommand == "compare") {
-        if (InputVerifier.verifyCompareCommand(CompareCommand)) {
+        if (CompareCommandVerifier.verify(CompareCommand)) {
             processCompareCommand()
         }
     } else if (jc.parsedCommand == "visualize") {
-        if (InputVerifier.verifyVisualizeCommand(VisualizeCommand)) {
+        if (VisualizeCommandVerifier.verify(VisualizeCommand)) {
             processVisualizeCommand()
         }
     }
@@ -60,9 +60,16 @@ private fun processCompareCommand() {
 
 private fun processVisualizeCommand() {
     val algorithm = Algorithm.valueOf(VisualizeCommand.algorithm.uppercase())
+    val sortSpeed = SortSpeed.valueOf(VisualizeCommand.speed.uppercase())
+    val speedMillis = if (sortSpeed == SortSpeed.NONE) {
+        VisualizeCommand.speedMillis.toLong()
+    } else {
+        sortSpeed.millis
+    }
 
     val visualizer = SortVisualizer(
-            SortSpeed.valueOf(VisualizeCommand.speed.uppercase()),
+            speedMillis,
+            VisualizeCommand.arrayLength.toInt(),
             VisualizeCommand.visualisationDisabled.not(),
             VisualizeCommand.pseudoCodeDisabled.not(),
             VisualizeCommand.infoDisabled.not()
