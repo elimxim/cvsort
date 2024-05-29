@@ -19,7 +19,7 @@ import com.github.elimxim.Probe.Increment.*
                 end
             end
             
-            if i != min then
+            if not i = min then
                 swap array[i] and array[min]
             end
         end

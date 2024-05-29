@@ -15,12 +15,11 @@ import com.github.elimxim.Probe.Increment.*
             v = array[i]
             j = i-1
             while j >= 0 && array[j] > v do
-                // right shift of an element by one
                 array[j+1] = array[j]
                 j = j-1
             end
             
-            if i != j+1 then
+            if not i = j+1 then
                 array[j+1] = v
             end
         end
