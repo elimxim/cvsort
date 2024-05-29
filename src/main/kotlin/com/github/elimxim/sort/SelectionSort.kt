@@ -13,13 +13,14 @@ import com.github.elimxim.Probe.Increment.*
         pseudoCode = """
         for i in [0..n-1) do
             min = i
-            for j in (i+1..n) do
-                if (arr[j] < arr[min]) then
+            for j in (i..n) do
+                if (array[j] < array[min]) then
                     min = j
                 end
             end
+            
             if i != min then
-                swap arr[i] and arr[min]
+                swap array[i] and array[min]
             end
         end
         """

@@ -1,8 +1,9 @@
 package com.github.elimxim
 
-enum class Algorithm(val order: Int) {
-    BUBBLE(1),
-    SELECTION(2);
+enum class Algorithm {
+    BUBBLE,
+    SELECTION,
+    INSERTION;
 
     fun canonicalName(): String {
         return name.snakeCase().plus("Sort")
@@ -18,8 +19,8 @@ enum class Algorithm(val order: Int) {
         }
 
         fun names(): Array<String> {
-            return Algorithm.values()
-                    .sortedBy { v -> v.order }
+            return entries
+                    .sortedBy { v -> v.ordinal }
                     .map { v -> v.name.snakeCase() }
                     .toTypedArray()
         }

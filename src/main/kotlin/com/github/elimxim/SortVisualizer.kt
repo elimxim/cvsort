@@ -88,8 +88,12 @@ class SortVisualizer(
     }
 
     private fun printScriptLine(scriptLine: ScriptLine, refresh: Boolean = false) {
-        val arrayView = ArrayView(scriptLine.array, scriptLine.focus, scriptLine.swap)
         val proveView = ProbeView(scriptLine.probeSnapshot)
+        val arrayView = ArrayView(
+                array = scriptLine.array,
+                focus = scriptLine.focus,
+                select = scriptLine.select
+        )
 
         val lines = mutableListOf<String>()
         lines.addAll(arrayView.lines())

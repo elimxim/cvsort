@@ -69,3 +69,4 @@ Supported sorting algorithms:
 
 - BubbleSort
 - SelectionSort
+- InsertionSort

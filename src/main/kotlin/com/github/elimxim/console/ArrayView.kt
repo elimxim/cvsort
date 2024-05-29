@@ -3,7 +3,7 @@ package com.github.elimxim.console
 class ArrayView(
         private val array: IntArray,
         private val focus: Set<Int>,
-        private val swap: Pair<Int, Int>,
+        private val select: Set<Int>,
 ) {
     fun lines(): List<String> {
         val matrix = Array(array.size) {
@@ -12,7 +12,7 @@ class ArrayView(
 
         array.forEachIndexed { index, n ->
             val column = matrix[index]
-            val cell = if (swap.first == index || swap.second == index) {
+            val cell = if (select.contains(index)) {
                 DARK_SHADE
             } else if (focus.contains(index)) {
                 MEDIUM_SHADE
