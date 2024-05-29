@@ -3,7 +3,8 @@ package com.github.elimxim
 enum class Algorithm {
     BUBBLE,
     SELECTION,
-    INSERTION;
+    INSERTION,
+    GNOME;
 
     fun canonicalName(): String {
         return name.snakeCase().plus("Sort")

@@ -1,41 +1,28 @@
 package com.github.elimxim
 
-import com.github.elimxim.sort.BubbleSort
-import com.github.elimxim.sort.InsertionSort
-import com.github.elimxim.sort.SelectionSort
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertContentEquals
+import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.TestFactory
+import kotlin.test.*
 
 class SortTest {
-    private lateinit var probe: Probe
-    private var script: SortScript = NoOpSortScript()
-    private lateinit var actual: IntArrayWrapper
 
-    @BeforeTest
-    fun beforeEach() {
-        probe = Probe(Algorithm.valueOf(Algorithm.names().random().uppercase()))
-        actual = IntArrayWrapper(ArrayGenerator().generate(1, 1000), probe)
+    @TestFactory
+    fun dynamicTests(): List<DynamicTest> {
+        return Algorithm.entries.map { dynamicTest(it) }.toList()
     }
 
-    @Test
-    fun testBubbleSort() {
-        BubbleSort(probe, script).sort(actual)
-        val expected = ArrayGenerator().generate(1, 1000, shuffle = false)
-        assertContentEquals(expected, actual.original())
-    }
+    private fun dynamicTest(algorithm: Algorithm) = DynamicTest.dynamicTest("${algorithm.canonicalName()} test") {
+        val probe = Probe(algorithm)
+        val sort = SortFactory.instance(algorithm, probe)
 
-    @Test
-    fun testSelectionSort() {
-        SelectionSort(probe, script).sort(actual)
-        val expected = ArrayGenerator().generate(1, 1000, shuffle = false)
-        assertContentEquals(expected, actual.original())
-    }
+        val expectedArray = (1..1000).toList().toIntArray()
+        val actualArray = (1..1000).shuffled().toIntArray()
 
-    @Test
-    fun testInsertionSort() {
-        InsertionSort(probe, script).sort(actual)
-        val expected = ArrayGenerator().generate(1, 1000, shuffle = false)
-        assertContentEquals(expected, actual.original())
+        assertFalse { expectedArray.contentEquals(actualArray) }
+
+        val wrapper = IntArrayWrapper(actualArray, probe)
+        sort.sort(wrapper)
+
+        assertContentEquals(expectedArray, wrapper.original())
     }
 }

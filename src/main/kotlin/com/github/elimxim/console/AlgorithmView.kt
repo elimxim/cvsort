@@ -36,7 +36,7 @@ class AlgorithmView {
                     WORST_TIME,
                     AVERAGE_TIME,
                     BEST_TIME,
-                    SPACE
+                    MEMORY_USAGE
             ))
             table.addRule()
             content.forEach { table.addRow(it) }
@@ -54,6 +54,6 @@ class AlgorithmView {
         const val WORST_TIME = "Worst time"
         const val AVERAGE_TIME = "Average time"
         const val BEST_TIME = "Best time"
-        const val SPACE = "Space"
+        const val MEMORY_USAGE = "Memory usage"
     }
 }

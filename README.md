@@ -38,7 +38,7 @@ _________________________________________
 Sorting Algorithm Comparator & Visualizer
 
 ┌───────────────┬───────────────┬───────────────┬───────────────┬──────────────┐
-│Algorithm      │Worst time     │Average time   │Best time      │Space         │
+│Algorithm      │Worst time     │Average time   │Best time      │Memory usage  │
 ├───────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
 │BubbleSort     │O(n^2)         │Θ(n^2)         │Ω(n)           │O(1)          │
 └───────────────┴───────────────┴───────────────┴───────────────┴──────────────┘
@@ -100,7 +100,7 @@ _________________________________________
 Sorting Algorithm Comparator & Visualizer
 
 ┌───────────────┬───────────────┬───────────────┬───────────────┬──────────────┐
-│Algorithm      │Worst time     │Average time   │Best time      │Space         │
+│Algorithm      │Worst time     │Average time   │Best time      │Memory usage  │
 ├───────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
 │SelectionSort  │O(n^2)         │Θ(n^2)         │Ω(n^2)         │O(1)          │
 │InsertionSort  │O(n^2)         │Θ(n^2)         │Ω(n)           │O(1)          │
@@ -127,3 +127,4 @@ elapsed time: 23 ms
 - BubbleSort
 - SelectionSort
 - InsertionSort
+- GnomeSort

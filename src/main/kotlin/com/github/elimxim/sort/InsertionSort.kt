@@ -14,7 +14,7 @@ import com.github.elimxim.Probe.Increment.*
         for i in (0..n) do
             v = array[i]
             j = i-1
-            while j >= 0 && array[j] > v do
+            while j >= 0 and array[j] > v do
                 array[j+1] = array[j]
                 j = j-1
             end
