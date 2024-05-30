@@ -1,7 +1,8 @@
-package com.github.elimxim.console
+package com.github.elimxim.console.verify
 
 import com.github.elimxim.Algorithm
 import com.github.elimxim.SortSpeed
+import com.github.elimxim.console.ConsolePrinter
 import com.github.elimxim.console.command.VisualizeCommand
 
 object VisualizeCommandVerifier {

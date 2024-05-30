@@ -16,7 +16,7 @@ import com.github.elimxim.Probe.Increment.*
             if idx = 0 or array[idx-1] < array[idx] then
                 idx = idx+1
             else 
-                swap array[idx-1 and array[idx]
+                swap array[idx-1] and array[idx]
                 idx = idx-1
             end
         end

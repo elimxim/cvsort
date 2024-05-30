@@ -1,7 +1,9 @@
-package com.github.elimxim
+package com.github.elimxim.console.verify
 
+import com.github.elimxim.Algorithm
 import com.github.elimxim.console.ConsolePrinter
 import com.github.elimxim.console.command.CompareCommand
+import com.github.elimxim.toPath
 import java.nio.file.Files
 import java.nio.file.InvalidPathException
 

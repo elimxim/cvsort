@@ -1,9 +1,6 @@
 package com.github.elimxim
 
-import com.github.elimxim.sort.BubbleSort
-import com.github.elimxim.sort.GnomeSort
-import com.github.elimxim.sort.InsertionSort
-import com.github.elimxim.sort.SelectionSort
+import com.github.elimxim.sort.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -12,7 +9,8 @@ object SortFactory {
             Pair(Algorithm.BUBBLE, BubbleSort::class),
             Pair(Algorithm.SELECTION, SelectionSort::class),
             Pair(Algorithm.INSERTION, InsertionSort::class),
-            Pair(Algorithm.GNOME, GnomeSort::class)
+            Pair(Algorithm.GNOME, GnomeSort::class),
+            Pair(Algorithm.COCKTAIL_SHAKER, CocktailShakerSort::class)
     )
 
     fun instance(algorithm: Algorithm, probe: Probe): Sort {

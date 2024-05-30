@@ -48,6 +48,10 @@ class Probe(val algorithm: Algorithm) {
             val arrayWrites: Long,
             val arraySwaps: Long,
     ) {
-        val arrayRatio: Double = (arrayReads.toDouble() / arrayWrites.toDouble())
+        fun arrayRatio(): Double = if (arrayReads != 0L && arrayWrites != 0L) {
+            arrayReads.toDouble() / arrayWrites.toDouble()
+        } else {
+            0.0
+        }
     }
 }

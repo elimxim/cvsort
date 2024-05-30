@@ -1,8 +1,9 @@
 package com.github.elimxim
 
 import com.beust.jcommander.JCommander
+import com.github.elimxim.console.verify.CompareCommandVerifier
 import com.github.elimxim.console.ConsolePrinter
-import com.github.elimxim.console.VisualizeCommandVerifier
+import com.github.elimxim.console.verify.VisualizeCommandVerifier
 import com.github.elimxim.console.command.CompareCommand
 import com.github.elimxim.console.command.MainCommand
 import com.github.elimxim.console.command.VisualizeCommand
@@ -59,7 +60,7 @@ private fun processCompareCommand() {
 }
 
 private fun processVisualizeCommand() {
-    val algorithm = Algorithm.valueOf(VisualizeCommand.algorithm.uppercase())
+    val algorithm = Algorithm.valueOf(VisualizeCommand.algorithm.camelCaseToSnakeCase().uppercase())
     val sortSpeed = SortSpeed.valueOf(VisualizeCommand.speed.uppercase())
     val speedMillis = if (sortSpeed == SortSpeed.NONE) {
         VisualizeCommand.speedMillis.toLong()

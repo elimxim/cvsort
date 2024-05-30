@@ -124,7 +124,8 @@ elapsed time: 23 ms
 
 ## Supported sorting algorithms
 
-- BubbleSort
-- SelectionSort
-- InsertionSort
-- GnomeSort
+- [BubbleSort](https://en.wikipedia.org/wiki/Bubble_sort)
+- [SelectionSort](https://en.wikipedia.org/wiki/Selection_sort)
+- [InsertionSort](https://en.wikipedia.org/wiki/Insertion_sort)
+- [GnomeSort](https://en.wikipedia.org/wiki/Gnome_sort)
+- [CocktailShakerSort](https://en.wikipedia.org/wiki/Cocktail_shaker_sort)

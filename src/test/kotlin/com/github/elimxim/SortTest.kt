@@ -1,11 +1,12 @@
 package com.github.elimxim
 
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
-import kotlin.test.*
 
 class SortTest {
 
+//    @Disabled
     @TestFactory
     fun dynamicTests(): List<DynamicTest> {
         return Algorithm.entries.map { dynamicTest(it) }.toList()
@@ -18,11 +19,11 @@ class SortTest {
         val expectedArray = (1..1000).toList().toIntArray()
         val actualArray = (1..1000).shuffled().toIntArray()
 
-        assertFalse { expectedArray.contentEquals(actualArray) }
+        assertMonotonicallyIncreasing(expectedArray)
 
         val wrapper = IntArrayWrapper(actualArray, probe)
         sort.sort(wrapper)
 
-        assertContentEquals(expectedArray, wrapper.original())
+        assertArrayEquals(expectedArray, wrapper.original())
     }
 }

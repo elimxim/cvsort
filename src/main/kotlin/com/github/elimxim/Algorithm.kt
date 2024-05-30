@@ -4,25 +4,26 @@ enum class Algorithm {
     BUBBLE,
     SELECTION,
     INSERTION,
-    GNOME;
+    GNOME,
+    COCKTAIL_SHAKER;
 
     fun canonicalName(): String {
-        return name.snakeCase().plus("Sort")
+        return name.lowercase().snakeCaseToCamelCase().plus("Sort")
     }
 
     companion object {
         fun contains(name: String): Boolean {
-            val v = entries.find {
-                it.name.equals(name, ignoreCase = true)
+            val e = entries.find {
+                it.name.snakeCaseToCamelCase().equals(name, ignoreCase = true)
             }
 
-            return v != null
+            return e != null
         }
 
         fun names(): Array<String> {
             return entries
                     .sortedBy { v -> v.ordinal }
-                    .map { v -> v.name.snakeCase() }
+                    .map { v -> v.name.lowercase().snakeCaseToCamelCase() }
                     .toTypedArray()
         }
     }
