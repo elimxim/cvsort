@@ -4,16 +4,16 @@ import com.github.elimxim.*
 import de.vandermeer.asciitable.AsciiTable
 import kotlin.reflect.full.findAnnotation
 
-class AlgorithmView {
+class SortView {
     private val content: MutableList<List<String>> = ArrayList()
 
-    fun add(algorithm: Algorithm) {
-        val impl = SortFactory.kClass(algorithm)
+    fun add(sortName: SortName) {
+        val impl = SortFactory.kClass(sortName)
         val anno = impl.findAnnotation<SortAlgorithm>()
 
         if (anno != null) {
             content.add(listOf(
-                    algorithm.canonicalName(),
+                    sortName.canonical(),
                     complexity(anno.timeComplexity.worst, ComplexityClass.BIG_O),
                     complexity(anno.timeComplexity.average, ComplexityClass.BIG_THETA),
                     complexity(anno.timeComplexity.best, ComplexityClass.BIG_OMEGA),
@@ -45,7 +45,7 @@ class AlgorithmView {
             ConsolePrinter.printLines(table.renderAsCollection().toList())
             ConsolePrinter.printEmptyLine()
         } else {
-            ConsolePrinter.printError("algorithm complexity is not written")
+            ConsolePrinter.printError("algorithm complexity is not available")
         }
     }
 

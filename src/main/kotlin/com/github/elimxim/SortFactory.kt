@@ -5,25 +5,28 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
 object SortFactory {
-    private val implementations = mapOf(
-            Pair(Algorithm.BUBBLE, BubbleSort::class),
-            Pair(Algorithm.SELECTION, SelectionSort::class),
-            Pair(Algorithm.INSERTION, InsertionSort::class),
-            Pair(Algorithm.GNOME, GnomeSort::class),
-            Pair(Algorithm.COCKTAIL_SHAKER, CocktailShakerSort::class)
-    )
-
-    fun instance(algorithm: Algorithm, probe: Probe): Sort {
-        val kClass = implementations[algorithm]
-        return kClass!!.primaryConstructor!!.call(probe, NoOpSortScript())
+    fun instance(sortName: SortName, probe: Probe): Sort {
+        val kClass = getClass(sortName)
+        return kClass.primaryConstructor!!.call(probe, NoOpSortScript())
     }
 
-    fun instance(algorithm: Algorithm, probe: Probe, scriptWriter: SortScript): Sort {
-        val kClass = implementations[algorithm]
-        return kClass!!.primaryConstructor!!.call(probe, scriptWriter)
+    fun instance(sortName: SortName, probe: Probe, scriptWriter: SortScript): Sort {
+        val kClass = getClass(sortName)
+        return kClass.primaryConstructor!!.call(probe, scriptWriter)
     }
 
-    fun kClass(algorithm: Algorithm): KClass<out Sort> {
-        return implementations[algorithm]!!
+    fun kClass(sortName: SortName): KClass<out Sort> {
+        return getClass(sortName)
+    }
+
+    private fun getClass(sortName: SortName): KClass<out Sort> {
+        return when (sortName) {
+            SortName.BUBBLE -> BubbleSort::class
+            SortName.SELECTION -> SelectionSort::class
+            SortName.INSERTION -> InsertionSort::class
+            SortName.GNOME -> GnomeSort::class
+            SortName.COCKTAIL_SHAKER -> CocktailShakerSort::class
+            SortName.ODD_EVEN -> OddEvenSort::class
+        }
     }
 }

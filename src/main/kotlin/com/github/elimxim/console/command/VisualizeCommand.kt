@@ -7,10 +7,10 @@ import com.github.elimxim.SortSpeed
 @Parameters(commandDescription = "visualizes the selected sorting algorithms")
 object VisualizeCommand {
     @Parameter(
-            description = "case-insensitive sorting algorithm name",
+            description = "name of the sorting algorithm in camel case",
             required = true
     )
-    lateinit var algorithm: String
+    lateinit var sortName: String
 
     @Parameter(
             names = ["--speed", "-s"],
@@ -39,13 +39,13 @@ object VisualizeCommand {
 
     @Parameter(
             names = ["--disablePseudoCode", "--noPseudoCode", "-nc"],
-            description = "switches off display of pseudocode of the selected algorithm"
+            description = "switches off display of pseudocode of the selected sorting algorithm"
     )
     var pseudoCodeDisabled: Boolean = false
 
     @Parameter(
             names = ["--disableInfo", "--noInfo", "-ni"],
-            description = "switches off the display of information about the comparison algorithm"
+            description = "switches off the display of information about the sorting algorithm"
     )
     var infoDisabled: Boolean = false
 }

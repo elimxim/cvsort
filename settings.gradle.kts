@@ -1,5 +1,5 @@
-rootProject.name = "sorting-algorithms"
+rootProject.name = "cvsort"
 gradle.rootProject {
     group = "com.github.elimxim"
-    version = "1.3"
+    version = "1.6"
 }

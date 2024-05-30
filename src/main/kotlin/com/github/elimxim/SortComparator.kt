@@ -1,6 +1,6 @@
 package com.github.elimxim
 
-import com.github.elimxim.console.AlgorithmView
+import com.github.elimxim.console.SortView
 import com.github.elimxim.console.ConsolePrinter
 import com.github.elimxim.console.ProbeView
 import kotlinx.coroutines.*
@@ -14,7 +14,7 @@ class SortComparator(
         private val showInfo: Boolean,
         private val arrayLength: Int
 ) {
-    fun compare(algorithms: List<Algorithm>) {
+    fun compare(sortNames: List<SortName>) {
         val array = ArrayGenerator().generate(1, arrayLength)
 
         if (printArray) {
@@ -22,14 +22,14 @@ class SortComparator(
         }
 
         if (showInfo) {
-            val table = AlgorithmView()
-            algorithms.forEach(table::add)
-            table.print()
+            val sortView = SortView()
+            sortNames.forEach(sortView::add)
+            sortView.print()
         }
 
         ConsolePrinter.printLine("array size: ${array.size}")
 
-        val probes = algorithms
+        val probes = sortNames
                 .sortedBy { it.ordinal }
                 .map { Probe(it) }
 
@@ -39,7 +39,7 @@ class SortComparator(
                 val jobs = probes.map { probe ->
                     launch {
                         val arrayWrapper = IntArrayWrapper(array.copyOf(), probe)
-                        SortFactory.instance(probe.algorithm, probe).sort(arrayWrapper)
+                        SortFactory.instance(probe.sortName, probe).sort(arrayWrapper)
                     }
                 }
 

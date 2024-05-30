@@ -2,7 +2,7 @@ package com.github.elimxim
 
 import java.util.concurrent.atomic.AtomicLong
 
-class Probe(val algorithm: Algorithm) {
+class Probe(val sortName: SortName) {
     private var iterations = AtomicLong()
     private var comparisons = AtomicLong()
     private var arrayReads = AtomicLong()
@@ -31,7 +31,7 @@ class Probe(val algorithm: Algorithm) {
 
     fun snapshot(): Snapshot {
         return Snapshot(
-                algorithm = algorithm,
+                sortName = sortName,
                 iterations = iterations.get(),
                 comparisons = comparisons.get(),
                 arrayReads = arrayReads.get(),
@@ -41,7 +41,7 @@ class Probe(val algorithm: Algorithm) {
     }
 
     class Snapshot(
-            val algorithm: Algorithm,
+            val sortName: SortName,
             val iterations: Long,
             val comparisons: Long,
             val arrayReads: Long,

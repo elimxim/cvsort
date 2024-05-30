@@ -8,12 +8,12 @@ import com.github.elimxim.withTimestamp
 @Parameters(commandDescription = "compares two or more sorting algorithms")
 object CompareCommand {
     @Parameter(
-            description = "case-insensitive sorting algorithm names separated by a space",
+            description = "sorting algorithm names in camel case  separated by a space",
             splitter = SpaceParameterSplitter::class,
             variableArity = true,
             required = true
     )
-    var algorithms: List<String> = arrayListOf()
+    var sortNames: List<String> = arrayListOf()
 
     @Parameter(
             names = ["--arrayLength", "-l"],
@@ -36,7 +36,7 @@ object CompareCommand {
 
     @Parameter(
             names = ["--disableInfo", "--noInfo", "-ni"],
-            description = "switches off the display of information about comparing algorithms"
+            description = "switches off the display of sorting algorithm comparison information"
     )
     var infoDisabled: Boolean = false
 }

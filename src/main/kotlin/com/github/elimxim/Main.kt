@@ -1,9 +1,8 @@
 package com.github.elimxim
 
 import com.beust.jcommander.JCommander
-import com.github.elimxim.console.verify.CompareCommandVerifier
 import com.github.elimxim.console.ConsolePrinter
-import com.github.elimxim.console.verify.VisualizeCommandVerifier
+import com.github.elimxim.console.InputVerifier
 import com.github.elimxim.console.command.CompareCommand
 import com.github.elimxim.console.command.MainCommand
 import com.github.elimxim.console.command.VisualizeCommand
@@ -28,25 +27,25 @@ fun main(args: Array<String>) {
         return
     }
 
-    if (MainCommand.listAlgorithms) {
-        Algorithm.names().forEach { println(it) }
+    if (MainCommand.listSortNames) {
+        SortName.names().forEach { println(it) }
         return
     }
 
     if (jc.parsedCommand == "compare") {
-        if (CompareCommandVerifier.verify(CompareCommand)) {
+        if (InputVerifier.verify(CompareCommand)) {
             processCompareCommand()
         }
     } else if (jc.parsedCommand == "visualize") {
-        if (VisualizeCommandVerifier.verify(VisualizeCommand)) {
+        if (InputVerifier.verify(VisualizeCommand)) {
             processVisualizeCommand()
         }
     }
 }
 
 private fun processCompareCommand() {
-    val algorithms = CompareCommand.algorithms.map {
-        Algorithm.valueOf(it.uppercase())
+    val sortNames = CompareCommand.sortNames.map {
+        SortName.valueOf(it.uppercase())
     }
 
     val comparator = SortComparator(
@@ -56,11 +55,11 @@ private fun processCompareCommand() {
             CompareCommand.arrayLength.toInt()
     )
 
-    comparator.compare(algorithms)
+    comparator.compare(sortNames)
 }
 
 private fun processVisualizeCommand() {
-    val algorithm = Algorithm.valueOf(VisualizeCommand.algorithm.camelCaseToSnakeCase().uppercase())
+    val sortName = SortName.valueOf(VisualizeCommand.sortName.camelCaseToSnakeCase().uppercase())
     val sortSpeed = SortSpeed.valueOf(VisualizeCommand.speed.uppercase())
     val speedMillis = if (sortSpeed == SortSpeed.NONE) {
         VisualizeCommand.speedMillis.toLong()
@@ -76,5 +75,5 @@ private fun processVisualizeCommand() {
             VisualizeCommand.infoDisabled.not()
     )
 
-    visualizer.visualize(algorithm)
+    visualizer.visualize(sortName)
 }

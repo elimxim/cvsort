@@ -1,6 +1,6 @@
 package com.github.elimxim
 
-import com.github.elimxim.console.AlgorithmView
+import com.github.elimxim.console.SortView
 import com.github.elimxim.console.ArrayView
 import com.github.elimxim.console.ConsolePrinter
 import com.github.elimxim.console.ProbeView
@@ -14,28 +14,28 @@ class SortVisualizer(
         private val showPseudoCode: Boolean,
         private val showInfo: Boolean
 ) {
-    fun visualize(algorithm: Algorithm) {
+    fun visualize(sortName: SortName) {
         if (showInfo) {
-            val table = AlgorithmView()
-            table.add(algorithm)
-            table.print()
+            val sortView = SortView()
+            sortView.add(sortName)
+            sortView.print()
         }
 
         if (showPseudoCode) {
-            printPseudoCode(algorithm)
+            printPseudoCode(sortName)
         }
 
         if (showVisualization) {
             runBlocking {
                 withContext(Dispatchers.Default) {
-                    visualiseAlgorithm(algorithm)
+                    visualiseSortingAlgorithm(sortName)
                 }
             }
         }
     }
 
-    private fun printPseudoCode(algorithm: Algorithm) {
-        val impl = SortFactory.kClass(algorithm)
+    private fun printPseudoCode(sortName: SortName) {
+        val impl = SortFactory.kClass(sortName)
         val anno = impl.findAnnotation<SortAlgorithm>()
 
         if (anno != null) {
@@ -51,8 +51,8 @@ class SortVisualizer(
         }
     }
 
-    private suspend fun visualiseAlgorithm(algorithm: Algorithm) {
-        val probe = Probe(algorithm)
+    private suspend fun visualiseSortingAlgorithm(name: SortName) {
+        val probe = Probe(name)
         val opening = SortScriptImpl(probe)
 
         val array = ArrayGenerator(opening).generate(1, arrayLength)
@@ -67,7 +67,7 @@ class SortVisualizer(
 
         val script = SortScriptImpl(probe)
 
-        val sort = SortFactory.instance(algorithm, probe, script)
+        val sort = SortFactory.instance(name, probe, script)
         val arrayWrapper = IntArrayWrapper(array, probe)
         sort.sort(arrayWrapper)
 
