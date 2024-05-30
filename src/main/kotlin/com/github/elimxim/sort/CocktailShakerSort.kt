@@ -28,7 +28,7 @@ import com.github.elimxim.Probe.Increment.*
             for j in [m..i) do
                 if array[j] < array[j-1] then
                     swap array[j-1] and array[j]
-                    ij = j-1                                        
+                    ij = j                                       
                 end
             end
             
