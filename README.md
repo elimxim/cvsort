@@ -129,3 +129,4 @@ elapsed time: 23 ms
 - [InsertionSort](https://en.wikipedia.org/wiki/Insertion_sort)
 - [GnomeSort](https://en.wikipedia.org/wiki/Gnome_sort)
 - [CocktailShakerSort](https://en.wikipedia.org/wiki/Cocktail_shaker_sort)
+- [OddEvenSort](https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort)
