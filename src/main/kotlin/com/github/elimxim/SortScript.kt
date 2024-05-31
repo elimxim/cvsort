@@ -15,8 +15,6 @@ interface SortScript {
     fun select(array: IntArray, index1: Int, index2: Int)
     fun select(array: IntArray, bulkSelection: BulkSelection)
     fun bulkSelection(array: IntArray): BulkSelection
-    fun beginShift(array: IntArray): RightShift
-    fun commitShift(shift: RightShift)
     fun scriptLines(): Queue<ScriptLine>
 }
 
@@ -42,26 +40,6 @@ class BulkSelection(val arrayBefore: IntArray) {
 
     fun selections(): List<Selection> {
         return selections.toList()
-    }
-}
-
-class RightShift(
-        val original: IntArray,
-        val number: Int = 1
-) {
-    lateinit var result: IntArray
-    private val indexes: MutableSet<Int> = hashSetOf()
-
-    fun addIndex(index: Int) {
-        indexes.add(index)
-    }
-
-    fun happened(): Boolean {
-        return indexes.isNotEmpty()
-    }
-
-    fun indexes(): Set<Int> {
-        return indexes.toSet()
     }
 }
 
@@ -155,23 +133,6 @@ class SortScriptImpl(private val probe: Probe) : SortScript {
         return BulkSelection(array)
     }
 
-    override fun beginShift(array: IntArray): RightShift {
-        return RightShift(original = array)
-    }
-
-    override fun commitShift(shift: RightShift) {
-        scriptLines.add(ScriptLine(
-                array = shift.original,
-                focused = shift.indexes(),
-                probeSnapshot = probe.snapshot()
-        ))
-        scriptLines.add(ScriptLine(
-                array = shift.result,
-                selected = shift.indexes().map { it + shift.number }.toSet(),
-                probeSnapshot = probe.snapshot()
-        ))
-    }
-
     override fun scriptLines(): Queue<ScriptLine> {
         return LinkedList(scriptLines)
     }
@@ -207,13 +168,6 @@ class NoOpSortScript : SortScript {
 
     override fun bulkSelection(array: IntArray): BulkSelection {
         return BulkSelection(array)
-    }
-
-    override fun beginShift(array: IntArray): RightShift {
-        return RightShift(array)
-    }
-
-    override fun commitShift(shift: RightShift) {
     }
 
     override fun scriptLines(): Queue<ScriptLine> {
