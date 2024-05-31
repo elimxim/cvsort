@@ -6,7 +6,8 @@ enum class SortName {
     INSERTION,
     GNOME,
     COCKTAIL_SHAKER,
-    ODD_EVEN;
+    ODD_EVEN,
+    PANCAKE;
 
     fun canonical(): String {
         return camelCase().plus("Sort")

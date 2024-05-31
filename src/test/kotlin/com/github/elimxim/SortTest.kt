@@ -4,13 +4,10 @@ import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 
 class SortTest {
-
     @TestFactory
-    fun dynamicTests(): List<DynamicTest> {
-        return SortName.entries.map { dynamicTest(it) }.toList()
-    }
+    fun sortTests() = SortName.entries.map { sortTest(it) }.toList()
 
-    private fun dynamicTest(sortName: SortName) = DynamicTest.dynamicTest("${sortName.canonical()} test") {
+    private fun sortTest(sortName: SortName) = DynamicTest.dynamicTest("${sortName.canonical()} test") {
         val probe = Probe(sortName)
         val sort = SortFactory.instance(sortName, probe)
 

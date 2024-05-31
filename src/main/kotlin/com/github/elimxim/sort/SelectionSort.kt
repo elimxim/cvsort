@@ -19,7 +19,7 @@ import com.github.elimxim.Probe.Increment.*
                 end
             end
             
-            if not i = min then
+            if i != min then
                 swap array[i] and array[min]
             end
         end
@@ -45,7 +45,7 @@ class SelectionSort(
 
             if (i != minIdx) {
                 array.swap(i, minIdx)
-                script.swap(array.original(), i, minIdx)
+                script.select(array.original(), i, minIdx)
             }
         }
     }

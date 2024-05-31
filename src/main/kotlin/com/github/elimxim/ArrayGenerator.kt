@@ -18,7 +18,7 @@ class ArrayGenerator(private val script: SortScript = NoOpSortScript()) {
             for (i in array.size - 1 downTo 1) {
                 val j = rnd.nextInt(i + 1)
                 array.swap(i, j)
-                script.swap(this.copyOf(), i, j)
+                script.select(this.copyOf(), i, j)
             }
             script.noFocus(this.copyOf())
         }

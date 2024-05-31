@@ -14,10 +14,10 @@ import com.github.elimxim.Probe.Increment.*
         idx = 0
         while idx < n do
             if idx = 0 or array[idx-1] < array[idx] then
-                idx = idx+1
+                idx++
             else 
                 swap array[idx-1] and array[idx]
-                idx = idx-1
+                idx--
             end
         end
         """
@@ -36,7 +36,7 @@ class GnomeSort(
             } else {
                 probe.increment(ARRAY_SWAPS)
                 array.swap(index - 1, index)
-                script.swap(array.original(), index - 1, index)
+                script.select(array.original(), index - 1, index)
                 index -= 1
             }
         }

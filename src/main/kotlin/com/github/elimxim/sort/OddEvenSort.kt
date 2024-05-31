@@ -44,7 +44,7 @@ class OddEvenSort(
                 script.focus(array.original(), i)
                 if (array[i] > array[i + 1]) {
                     array.swap(i, i + 1)
-                    script.swap(array.original(), i, i + 1)
+                    script.select(array.original(), i, i + 1)
                     swapped = true
                 }
             }
@@ -54,7 +54,7 @@ class OddEvenSort(
                 script.focus(array.original(), i)
                 if (array[i] > array[i + 1]) {
                     array.swap(i, i + 1)
-                    script.swap(array.original(), i, i + 1)
+                    script.select(array.original(), i, i + 1)
                     swapped = true
                 }
             }

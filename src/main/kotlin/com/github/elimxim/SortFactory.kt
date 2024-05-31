@@ -27,6 +27,7 @@ object SortFactory {
             SortName.GNOME -> GnomeSort::class
             SortName.COCKTAIL_SHAKER -> CocktailShakerSort::class
             SortName.ODD_EVEN -> OddEvenSort::class
+            SortName.PANCAKE -> PancakeSort::class
         }
     }
 }

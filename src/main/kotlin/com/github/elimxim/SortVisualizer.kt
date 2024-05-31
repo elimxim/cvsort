@@ -91,8 +91,8 @@ class SortVisualizer(
         val proveView = ProbeView(scriptLine.probeSnapshot)
         val arrayView = ArrayView(
                 array = scriptLine.array,
-                focus = scriptLine.focus,
-                select = scriptLine.select
+                focus = scriptLine.focused,
+                select = scriptLine.selected
         )
 
         val lines = mutableListOf<String>()

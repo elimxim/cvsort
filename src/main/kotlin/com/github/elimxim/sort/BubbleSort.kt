@@ -40,7 +40,7 @@ class BubbleSort(
                 script.focus(array.original(), j - 1)
                 if (array[j - 1] > array[j]) {
                     swapped = array.swap(j - 1, j)
-                    script.swap(array.original(), j - 1, j)
+                    script.select(array.original(), j - 1, j)
                 }
             }
 

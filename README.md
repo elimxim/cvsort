@@ -130,3 +130,4 @@ elapsed time: 23 ms
 - [GnomeSort](https://en.wikipedia.org/wiki/Gnome_sort)
 - [CocktailShakerSort](https://en.wikipedia.org/wiki/Cocktail_shaker_sort)
 - [OddEvenSort](https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort)
+- [PancakeSort](https://en.wikipedia.org/wiki/Pancake_sorting)

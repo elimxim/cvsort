@@ -16,10 +16,10 @@ import com.github.elimxim.Probe.Increment.*
             j = i-1
             while j >= 0 and array[j] > v do
                 array[j+1] = array[j]
-                j = j-1
+                j--
             end
             
-            if not i = j+1 then
+            if i != j+1 then
                 array[j+1] = v
             end
         end
@@ -34,19 +34,18 @@ class InsertionSort(
             script.focus(array.original(), i)
             val value = array[i]
             var j = i - 1
-            val shift = script.beginShift(array.original())
+            val selection = script.bulkSelection(array.original())
             probe.increment(COMPARISONS, ITERATIONS)
             while (j >= 0 && array[j] > value) {
                 probe.increment(ITERATIONS)
                 array[j + 1] = array[j]
-                shift.addIndex(j)
+                selection.add(Selection(array.original(), j, j + 1))
                 j -= 1
             }
 
-            if (shift.happened()) {
+            if (selection.isNotEmpty()) {
                 array[j + 1] = 0
-                shift.result = array.original()
-                script.commitShift(shift)
+                script.select(array.original(), selection)
             }
 
             if (i != j + 1) {

@@ -17,10 +17,6 @@ class IntArrayWrapper(
     }
 
     fun swap(index1: Int, index2: Int): Boolean {
-        if (index1 >= index2) {
-            throw RuntimeException("$index1 >= $index2")
-        }
-
         probe.increment(Probe.Increment.ARRAY_SWAPS)
         val tmp = get(index1)
         set(index1, get(index2))

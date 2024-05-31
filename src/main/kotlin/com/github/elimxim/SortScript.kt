@@ -12,7 +12,9 @@ interface SortScript {
     fun focusAll(array: IntArray)
     fun noFocus(array: IntArray)
     fun select(array: IntArray, index: Int)
-    fun swap(array: IntArray, index1: Int, index2: Int)
+    fun select(array: IntArray, index1: Int, index2: Int)
+    fun select(array: IntArray, bulkSelection: BulkSelection)
+    fun bulkSelection(array: IntArray): BulkSelection
     fun beginShift(array: IntArray): RightShift
     fun commitShift(shift: RightShift)
     fun scriptLines(): Queue<ScriptLine>
@@ -20,10 +22,28 @@ interface SortScript {
 
 class ScriptLine(
         val array: IntArray,
-        val focus: Set<Int> = emptySet(),
-        val select: Set<Int> = emptySet(),
+        val focused: Set<Int> = emptySet(),
+        val selected: Set<Int> = emptySet(),
         val probeSnapshot: Probe.Snapshot
 )
+
+class Selection(val array: IntArray, val focused: Int, val selected: Int)
+
+class BulkSelection(val arrayBefore: IntArray) {
+    private val selections: MutableList<Selection> = ArrayList()
+
+    fun add(selection: Selection) {
+        selections.add(selection)
+    }
+
+    fun isNotEmpty(): Boolean {
+        return selections.isNotEmpty()
+    }
+
+    fun selections(): List<Selection> {
+        return selections.toList()
+    }
+}
 
 class RightShift(
         val original: IntArray,
@@ -52,7 +72,7 @@ class SortScriptImpl(private val probe: Probe) : SortScript {
     override fun focus(array: IntArray, index: Int) {
         scriptLines.add(ScriptLine(
                 array = array,
-                focus = setOf(index),
+                focused = setOf(index),
                 probeSnapshot = probe.snapshot()
         ))
     }
@@ -60,7 +80,7 @@ class SortScriptImpl(private val probe: Probe) : SortScript {
     override fun focus(array: IntArray, indexes: Set<Int>) {
         scriptLines.add(ScriptLine(
                 array = array,
-                focus = indexes,
+                focused = indexes,
                 probeSnapshot = probe.snapshot()
         ))
     }
@@ -77,7 +97,7 @@ class SortScriptImpl(private val probe: Probe) : SortScript {
             indexes.add(i)
             scriptLines.add(ScriptLine(
                     array = array,
-                    focus = indexes.toSet(),
+                    focused = indexes.toSet(),
                     probeSnapshot = probe.snapshot()
             ))
         }
@@ -86,7 +106,7 @@ class SortScriptImpl(private val probe: Probe) : SortScript {
     override fun focusAll(array: IntArray) {
         scriptLines.add(ScriptLine(
                 array = array,
-                focus = (array.indices).toSet(),
+                focused = (array.indices).toSet(),
                 probeSnapshot = probe.snapshot()
         ))
     }
@@ -94,7 +114,7 @@ class SortScriptImpl(private val probe: Probe) : SortScript {
     override fun noFocus(array: IntArray) {
         scriptLines.add(ScriptLine(
                 array = array,
-                focus = emptySet(),
+                focused = emptySet(),
                 probeSnapshot = probe.snapshot()
         ))
     }
@@ -102,17 +122,37 @@ class SortScriptImpl(private val probe: Probe) : SortScript {
     override fun select(array: IntArray, index: Int) {
         scriptLines.add(ScriptLine(
                 array = array,
-                select = setOf(index),
+                selected = setOf(index),
                 probeSnapshot = probe.snapshot()
         ))
     }
 
-    override fun swap(array: IntArray, index1: Int, index2: Int) {
+    override fun select(array: IntArray, index1: Int, index2: Int) {
         scriptLines.add(ScriptLine(
                 array = array,
-                select = setOf(index1, index2),
+                selected = setOf(index1, index2),
                 probeSnapshot = probe.snapshot()
         ))
+    }
+
+    override fun select(array: IntArray, bulkSelection: BulkSelection) {
+        if (bulkSelection.isNotEmpty()) {
+            val selections = bulkSelection.selections()
+            scriptLines.add(ScriptLine(
+                    array = bulkSelection.arrayBefore,
+                    focused = selections.map { it.focused }.toSet(),
+                    probeSnapshot = probe.snapshot()
+            ))
+            scriptLines.add(ScriptLine(
+                    array = array,
+                    selected = selections.map { it.selected }.toSet(),
+                    probeSnapshot = probe.snapshot()
+            ))
+        }
+    }
+
+    override fun bulkSelection(array: IntArray): BulkSelection {
+        return BulkSelection(array)
     }
 
     override fun beginShift(array: IntArray): RightShift {
@@ -122,12 +162,12 @@ class SortScriptImpl(private val probe: Probe) : SortScript {
     override fun commitShift(shift: RightShift) {
         scriptLines.add(ScriptLine(
                 array = shift.original,
-                focus = shift.indexes(),
+                focused = shift.indexes(),
                 probeSnapshot = probe.snapshot()
         ))
         scriptLines.add(ScriptLine(
                 array = shift.result,
-                select = shift.indexes().map { it + shift.number }.toSet(),
+                selected = shift.indexes().map { it + shift.number }.toSet(),
                 probeSnapshot = probe.snapshot()
         ))
     }
@@ -159,7 +199,14 @@ class NoOpSortScript : SortScript {
     override fun select(array: IntArray, index: Int) {
     }
 
-    override fun swap(array: IntArray, index1: Int, index2: Int) {
+    override fun select(array: IntArray, index1: Int, index2: Int) {
+    }
+
+    override fun select(array: IntArray, bulkSelection: BulkSelection) {
+    }
+
+    override fun bulkSelection(array: IntArray): BulkSelection {
+        return BulkSelection(array)
     }
 
     override fun beginShift(array: IntArray): RightShift {
