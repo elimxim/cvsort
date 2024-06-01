@@ -23,7 +23,9 @@ class SortComparator(
         }
 
         if (compareAlgorithms) {
-            val array = ArrayGenerator().generate(1, arrayLength)
+            val array = (1..arrayLength).toIntArray()
+
+            ArrayShuffler().shuffle(array)
 
             if (printArray) {
                 ArrayPrinter(arrayFile).printArray(array)
@@ -36,27 +38,27 @@ class SortComparator(
     private fun doCompare(sortNames: List<SortName>, array: IntArray) {
         ConsolePrinter.printLine("array size: ${array.size}")
 
-        val probes = sortNames
+        val sortProbes = sortNames
                 .sortedBy { it.ordinal }
-                .map { Probe(it) }
+                .map { Pair(it, Probe()) }
 
         runBlocking {
             withContext(Dispatchers.Default) {
                 val timeMark = TimeSource.Monotonic.markNow()
-                val jobs = probes.map { probe ->
+                val jobs = sortProbes.map { sortProbe ->
                     launch {
-                        val arrayWrapper = IntArrayWrapper(array.copyOf(), probe)
-                        SortFactory.instance(probe.sortName, probe).sort(arrayWrapper)
+                        val arrayWrapper = IntArrayWrapper(array.copyOf(), sortProbe.second)
+                        SortFactory.instance(sortProbe.first, sortProbe.second).sort(arrayWrapper)
                     }
                 }
 
                 launch {
-                    printProbes(timeMark.elapsedNow(), probes.map { it.snapshot() })
+                    printProbes(timeMark.elapsedNow(), sortProbes)
                     while (!isCompleted(jobs)) {
                         delay(250)
-                        printProbes(timeMark.elapsedNow(), probes.map { it.snapshot() }, refresh = true)
+                        printProbes(timeMark.elapsedNow(), sortProbes, refresh = true)
                     }
-                    printProbes(timeMark.elapsedNow(), probes.map { it.snapshot() }, refresh = true)
+                    printProbes(timeMark.elapsedNow(), sortProbes, refresh = true)
                 }
             }
         }
@@ -66,12 +68,12 @@ class SortComparator(
         return jobs.all { job -> job.isCompleted }
     }
 
-    private fun printProbes(elapsedTime: Duration, snaps: List<Probe.Snapshot>, refresh: Boolean = false) {
+    private fun printProbes(elapsedTime: Duration, sortProbes: List<Pair<SortName, Probe>>, refresh: Boolean = false) {
         val lines = mutableListOf<String>()
         lines.add("elapsed time: ${elapsedTime.inWholeMilliseconds} ms")
-        snaps.forEach { snap ->
+        sortProbes.forEach {
             lines.add("")
-            lines.addAll(ProbeView(snap).lines())
+            lines.addAll(ProbeView(it.first, it.second.snapshot()).lines())
         }
 
         ConsolePrinter.printLines(lines.toList(), refresh)

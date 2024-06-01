@@ -8,7 +8,7 @@ class SortTest {
     fun sortTests() = SortName.entries.map { sortTest(it) }.toList()
 
     private fun sortTest(sortName: SortName) = DynamicTest.dynamicTest("${sortName.canonical()} test") {
-        val probe = Probe(sortName)
+        val probe = Probe()
         val sort = SortFactory.instance(sortName, probe)
 
         val expectedArray = (1..1000).toList().toIntArray()

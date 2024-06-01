@@ -37,10 +37,10 @@ class BubbleSort(
             var swapped = false
             for (j in 1..<n - i) {
                 probe.increment(ITERATIONS, COMPARISONS)
-                script.focus(array.original(), j - 1)
+                script.focus(j - 1)
                 if (array[j - 1] > array[j]) {
                     swapped = array.swap(j - 1, j)
-                    script.select(array.original(), j - 1, j)
+                    script.select(setOf(j - 1, j))
                 }
             }
 

@@ -50,10 +50,10 @@ class CocktailShakerSort(
             var newEndIndex = beginIndex
             for (i in beginIndex..<endIndex) {
                 probe.increment(ITERATIONS, COMPARISONS)
-                script.focus(array.original(), i)
+                script.focus(i)
                 if (array[i] > array[i + 1]) {
                     array.swap(i, i + 1)
-                    script.select(array.original(), i, i + 1)
+                    script.select(setOf(i, i + 1))
                     newEndIndex = i
                 }
             }
@@ -63,9 +63,9 @@ class CocktailShakerSort(
             var newBeginIndex = endIndex
             for (i in endIndex downTo  beginIndex + 1) {
                 probe.increment(ITERATIONS, COMPARISONS)
-                script.focus(array.original(), i)
+                script.focus(i)
                 if (array[i - 1] > array[i]) {
-                    script.select(array.original(), i - 1, i)
+                    script.select(setOf(i - 1, i))
                     array.swap(i - 1, i)
                     newBeginIndex = i
                 }

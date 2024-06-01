@@ -34,10 +34,10 @@ class SelectionSort(
         for (i in 0..<n - 1) {
             probe.increment(ITERATIONS)
             var minIdx = i
-            script.focus(array.original(), i)
+            script.focus(i)
             for (j in i + 1..<n) {
                 probe.increment(ITERATIONS, COMPARISONS)
-                script.focus(array.original(), j)
+                script.focus(j)
                 if (array[j] < array[minIdx]) {
                     minIdx = j
                 }
@@ -45,7 +45,7 @@ class SelectionSort(
 
             if (i != minIdx) {
                 array.swap(i, minIdx)
-                script.select(array.original(), i, minIdx)
+                script.select(setOf(i, minIdx))
             }
         }
     }

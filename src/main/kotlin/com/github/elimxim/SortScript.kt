@@ -5,15 +5,22 @@ import java.util.LinkedList
 import java.util.Queue
 
 interface SortScript {
-    fun focus(array: IntArray, vararg indexes: Int, variable: Int? = null)
-    fun select(array: IntArray, vararg indexes: Int, variable: Int? = null)
-    fun change(array: IntArray, focused: Int, selected: Int)
-    fun change(array: IntArray, bulkChange: BulkChange)
-    fun bulkChange(array: IntArray): BulkChange
-    fun discard(array: IntArray)
-    fun scriptLines(): Queue<ScriptLine>
+    fun focus(index: Int)
+    fun focus(indexes: Set<Int>, variable: Int? = null)
+    fun select(index: Int)
+    fun select(indexes: Set<Int>, variable: Int? = null)
+    fun finishAction(action: ScriptAction)
+    fun startAction(array: IntArray): ScriptAction
+    fun deselect()
+    fun screenplay(): Screenplay
 }
 
+interface Screenplay : Queue<ScriptLine>
+
+class ScreenplayImpl(lines: List<ScriptLine>)
+    : Screenplay, LinkedList<ScriptLine>(lines)
+
+// not thread safe
 class ScriptLine(
         val array: IntArray,
         val variable: Int? = null,
@@ -22,108 +29,114 @@ class ScriptLine(
         val probeSnapshot: Probe.Snapshot
 )
 
-class Change(val focused: Int, val selected: Int)
+// not thread safe
+class ScriptAction(val original: IntArray) {
+    private val shifts: MutableList<Pair> = ArrayList()
 
-class BulkChange(val arrayBefore: IntArray) {
-    private val changes: MutableList<Change> = ArrayList()
-
-    fun add(change: Change) {
-        changes.add(change)
+    fun add(focused: Int, selected: Int) {
+        shifts.add(Pair(focused, selected))
     }
 
     fun isNotEmpty(): Boolean {
-        return changes.isNotEmpty()
+        return shifts.isNotEmpty()
     }
 
-    fun changes(): List<Change> {
-        return changes.toList()
+    fun actionPairs(): List<Pair> {
+        return shifts.toList()
     }
+
+    class Pair(val focused: Int, val selected: Int)
 }
 
 // not thread safe
-class SortScriptImpl(private val probe: Probe) : SortScript {
+class SortScriptImpl(
+        private val probe: Probe,
+        private val arrayWrapper: IntArrayWrapper
+) : SortScript {
     private val scriptLines: MutableList<ScriptLine> = ArrayList()
 
-    override fun focus(array: IntArray, vararg indexes: Int, variable: Int?) {
+    override fun focus(index: Int) {
+        focus(setOf(index))
+    }
+
+    override fun focus(indexes: Set<Int>, variable: Int?) {
         scriptLines.add(ScriptLine(
-                array = array,
+                array = arrayWrapper.original(),
                 variable = variable,
-                focused = indexes.toSet(),
+                focused = indexes,
                 probeSnapshot = probe.snapshot()
         ))
     }
 
-    override fun select(array: IntArray, vararg indexes: Int, variable: Int?) {
+    override fun select(index: Int) {
+        select(setOf(index), null)
+    }
+
+    override fun select(indexes: Set<Int>, variable: Int?) {
         scriptLines.add(ScriptLine(
-                array = array,
+                array = arrayWrapper.original(),
                 variable = variable,
-                selected = indexes.toSet(),
+                selected = indexes,
                 probeSnapshot = probe.snapshot()
         ))
     }
 
-    override fun change(array: IntArray, focused: Int, selected: Int) {
-        scriptLines.add(ScriptLine(
-                array = array,
-                focused = setOf(focused),
-                selected = setOf(selected),
-                probeSnapshot = probe.snapshot()
-        ))
-    }
-
-    override fun change(array: IntArray, bulkChange: BulkChange) {
-        if (bulkChange.isNotEmpty()) {
-            val selections = bulkChange.changes()
+    override fun finishAction(action: ScriptAction) {
+        if (action.isNotEmpty()) {
+            val shifts = action.actionPairs()
             scriptLines.add(ScriptLine(
-                    array = bulkChange.arrayBefore,
-                    focused = selections.map { it.focused }.toSet(),
+                    array = action.original,
+                    focused = shifts.map { it.focused }.toSet(),
                     probeSnapshot = probe.snapshot()
             ))
             scriptLines.add(ScriptLine(
-                    array = array,
-                    selected = selections.map { it.selected }.toSet(),
+                    array = arrayWrapper.original(),
+                    selected = shifts.map { it.selected }.toSet(),
                     probeSnapshot = probe.snapshot()
             ))
         }
     }
 
-    override fun bulkChange(array: IntArray): BulkChange {
-        return BulkChange(array)
+    override fun startAction(array: IntArray): ScriptAction {
+        return ScriptAction(array)
     }
 
-    override fun discard(array: IntArray) {
+    override fun deselect() {
         scriptLines.add(ScriptLine(
-                array = array,
+                array = arrayWrapper.original(),
                 probeSnapshot = probe.snapshot()
         ))
     }
 
-    override fun scriptLines(): Queue<ScriptLine> {
-        return LinkedList(scriptLines)
+    override fun screenplay(): Screenplay {
+        return ScreenplayImpl(scriptLines)
     }
 }
 
 class NoOpSortScript : SortScript {
-    override fun focus(array: IntArray, vararg indexes: Int, variable: Int?) {
+    override fun focus(index: Int) {
     }
 
-    override fun select(array: IntArray, vararg indexes: Int, variable: Int?) {
+    override fun focus(indexes: Set<Int>, variable: Int?) {
     }
 
-    override fun change(array: IntArray, focused: Int, selected: Int) {
+    override fun select(index: Int) {
     }
 
-    override fun change(array: IntArray, bulkChange: BulkChange) {
+    override fun select(indexes: Set<Int>, variable: Int?) {
     }
 
-    override fun bulkChange(array: IntArray): BulkChange {
-        return BulkChange(array)
+    override fun finishAction(action: ScriptAction) {
     }
 
-    override fun discard(array: IntArray) {
+    override fun startAction(array: IntArray): ScriptAction {
+        return ScriptAction(array)
     }
 
-    override fun scriptLines(): Queue<ScriptLine> {
+    override fun deselect() {
+    }
+
+    override fun screenplay(): Screenplay {
         throw UnsupportedOperationException("no op")
     }
 }

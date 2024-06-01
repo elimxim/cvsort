@@ -57,12 +57,12 @@ class CycleSort(
             probe.increment(ITERATIONS)
             var value = array[i]
             var index = i
-            script.focus(array.original(), index, variable = value)
+            script.focus(setOf(index), value)
             for (j in i + 1..<array.size()) {
                 probe.increment(ITERATIONS, COMPARISONS)
                 if (array[j] < value) {
                     index++
-                    script.focus(array.original(), index, variable = value)
+                    script.focus(setOf(index), value)
                 }
             }
 
@@ -72,34 +72,34 @@ class CycleSort(
 
             while (value == array[index]) {
                 index++
-                script.focus(array.original(), index, variable = value)
+                script.focus(setOf(index), value)
             }
 
             array[index] = value.also {
                 value = array[index]
             }
-            script.select(array.original(), index, variable = value)
+            script.select(setOf(index), value)
 
             while (index != i) {
                 index = i
-                script.focus(array.original(), index, variable = value)
+                script.focus(setOf(index), value)
                 for (j in i + 1..<array.size()) {
                     probe.increment(ITERATIONS, COMPARISONS)
                     if (array[j] < value) {
                         index++
-                        script.focus(array.original(), index, variable = value)
+                        script.focus(setOf(index), value)
                     }
                 }
 
                 while (value == array[index]) {
                     index++
-                    script.focus(array.original(), index, variable = value)
+                    script.focus(setOf(index), value)
                 }
 
                 array[index] = value.also {
                     value = array[index]
                 }
-                script.select(array.original(), index, variable = value)
+                script.select(setOf(index), value)
             }
         }
     }

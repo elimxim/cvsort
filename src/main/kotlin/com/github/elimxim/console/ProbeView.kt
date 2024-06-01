@@ -1,10 +1,14 @@
 package com.github.elimxim.console
 
 import com.github.elimxim.Probe
+import com.github.elimxim.SortName
 
-class ProbeView(private val snap: Probe.Snapshot) {
+class ProbeView(
+        private val sortName: SortName,
+        private val snap: Probe.Snapshot
+) {
     fun lines(): List<String> {
-        return """<${snap.sortName.canonical()}>
+        return """<${sortName.canonical()}>
             | iterations   ${snap.iterations}  comparisons  ${snap.comparisons}
             | array reads/writes  ${snap.arrayReads}/${snap.arrayWrites}  ratio  ${"%.2f".format(snap.arrayRatio())}
             | array swaps  ${snap.arraySwaps}

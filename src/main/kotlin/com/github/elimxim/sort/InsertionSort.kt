@@ -31,26 +31,26 @@ class InsertionSort(
 ) : Sort {
     override fun sort(array: IntArrayWrapper) {
         for (i in 1..<array.size()) {
-            script.focus(array.original(), i)
+            script.focus(i)
             val value = array[i]
             var j = i - 1
-            val selection = script.bulkChange(array.original())
+            val action = script.startAction(array.original())
             probe.increment(COMPARISONS, ITERATIONS)
             while (j >= 0 && array[j] > value) {
                 probe.increment(ITERATIONS)
                 array[j + 1] = array[j]
-                selection.add(Change(j, j + 1))
-                j -= 1
+                action.add(focused = j, selected = j + 1)
+                j--
             }
 
-            if (selection.isNotEmpty()) {
+            if (action.isNotEmpty()) {
                 array[j + 1] = 0
-                script.change(array.original(), selection)
+                script.finishAction(action)
             }
 
             if (i != j + 1) {
                 array[j + 1] = value
-                script.select(array.original(), j + 1)
+                script.select(setOf(j + 1))
             }
         }
     }

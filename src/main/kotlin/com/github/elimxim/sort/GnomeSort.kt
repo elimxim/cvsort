@@ -29,15 +29,15 @@ class GnomeSort(
     override fun sort(array: IntArrayWrapper) {
         var index = 0
         while (index < array.size()) {
-            script.focus(array.original(), index)
+            script.focus(index)
             probe.increment(ITERATIONS, COMPARISONS)
             if (index == 0 || array[index - 1] < array[index]) {
-                index += 1
+                index++
             } else {
                 probe.increment(ARRAY_SWAPS)
                 array.swap(index - 1, index)
-                script.select(array.original(), index - 1, index)
-                index -= 1
+                script.select(setOf(index - 1, index))
+                index--
             }
         }
     }

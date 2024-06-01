@@ -65,3 +65,7 @@ fun IntArray.swap(idx1: Int, idx2: Int) {
     this[idx1] = this[idx2]
     this[idx2] = tmp
 }
+
+fun IntRange.toIntArray(): IntArray {
+    return this.toList().toIntArray()
+}

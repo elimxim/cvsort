@@ -52,57 +52,56 @@ class SortVisualizer(
     }
 
     private suspend fun runVisualize(sortName: SortName) {
-        val probe = Probe(sortName)
+        val probe = Probe()
+        val array = (1..arrayLength).toIntArray()
+        val arrayWrapper = IntArrayWrapper(array, probe)
+        val opening = SortScriptImpl(probe, arrayWrapper)
 
-        val arrayWrapper = printOpening(probe)
+        printOpening(sortName, opening, array)
         delay(AFTER_OPENING_DELAY)
 
-        val script = SortScriptImpl(probe)
+        val script = SortScriptImpl(probe, arrayWrapper)
         val sort = SortFactory.instance(sortName, probe, script)
         sort.sort(arrayWrapper)
 
-        val scriptLines = script.scriptLines()
-        while (scriptLines.isNotEmpty()) {
+        val screenplay = script.screenplay()
+        while (screenplay.isNotEmpty()) {
             delay(speedMillis)
-            printScriptLine(scriptLines.poll(), refresh = true)
+            printScriptLine(sortName, screenplay.poll(), refresh = true)
         }
 
-        printEnding(probe, arrayWrapper)
+        val ending = SortScriptImpl(probe, arrayWrapper)
+        printEnding(sortName, ending, array)
     }
 
-    private suspend fun printOpening(probe: Probe): IntArrayWrapper {
-        val opening = SortScriptImpl(probe)
-        val array = ArrayGenerator(opening).generate(1, arrayLength)
-        val openingLines = opening.scriptLines()
-        printScriptLine(openingLines.poll())
-        while (openingLines.isNotEmpty()) {
+    private suspend fun printOpening(sortName: SortName, opening: SortScript, array: IntArray) {
+        ArrayShuffler(opening).shuffle(array)
+        val screenplay = opening.screenplay()
+        printScriptLine(sortName, screenplay.poll())
+        while (screenplay.isNotEmpty()) {
             delay(OPENING_DELAY)
-            printScriptLine(openingLines.poll(), refresh = true)
+            printScriptLine(sortName, screenplay.poll(), refresh = true)
         }
-
-        return IntArrayWrapper(array, probe)
     }
 
-    private suspend fun printEnding(probe: Probe, arrayWrapper: IntArrayWrapper) {
-        val ending = SortScriptImpl(probe)
-        val array = arrayWrapper.original()
-        for (i in 0..<arrayWrapper.size()) {
-            ending.focus(array, i)
+    private suspend fun printEnding(sortName: SortName, ending: SortScript, array: IntArray) {
+        for (i in array.indices) {
+            ending.focus(i)
         }
         val indexes = mutableSetOf<Int>()
         for (i in array.indices) {
             indexes.add(i)
-            ending.focus(array, *indexes.toIntArray())
+            ending.focus(indexes.toSet())
         }
-        val endingLines = ending.scriptLines()
-        while (endingLines.isNotEmpty()) {
+        val screenplay = ending.screenplay()
+        while (screenplay.isNotEmpty()) {
             delay(ENDING_DELAY)
-            printScriptLine(endingLines.poll(), refresh = true)
+            printScriptLine(sortName, screenplay.poll(), refresh = true)
         }
     }
 
-    private fun printScriptLine(scriptLine: ScriptLine, refresh: Boolean = false) {
-        val proveView = ProbeView(scriptLine.probeSnapshot)
+    private fun printScriptLine(sortName: SortName, scriptLine: ScriptLine, refresh: Boolean = false) {
+        val proveView = ProbeView(sortName, scriptLine.probeSnapshot)
         val arrayView = ArrayView(
                 array = scriptLine.array,
                 variable = scriptLine.variable,
