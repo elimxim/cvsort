@@ -1,5 +1,6 @@
 package com.github.elimxim
 
+import com.github.elimxim.SortName.*
 import com.github.elimxim.sort.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -21,13 +22,14 @@ object SortFactory {
 
     private fun getClass(sortName: SortName): KClass<out Sort> {
         return when (sortName) {
-            SortName.BUBBLE -> BubbleSort::class
-            SortName.SELECTION -> SelectionSort::class
-            SortName.INSERTION -> InsertionSort::class
-            SortName.GNOME -> GnomeSort::class
-            SortName.COCKTAIL_SHAKER -> CocktailShakerSort::class
-            SortName.ODD_EVEN -> OddEvenSort::class
-            SortName.PANCAKE -> PancakeSort::class
+            BUBBLE -> BubbleSort::class
+            SELECTION -> SelectionSort::class
+            INSERTION -> InsertionSort::class
+            GNOME -> GnomeSort::class
+            COCKTAIL_SHAKER -> CocktailShakerSort::class
+            ODD_EVEN -> OddEvenSort::class
+            PANCAKE -> PancakeSort::class
+            CYCLE -> CycleSort::class
         }
     }
 }

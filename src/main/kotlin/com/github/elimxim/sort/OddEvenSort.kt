@@ -14,14 +14,14 @@ import com.github.elimxim.Probe.Increment.*
         do 
             swapped = false
             
-            for i in [1..n-1) do
+            for i in [1..n-1) step 2 do
                 if array[i] > array[i+1] then
                     swap array[i] and array[i+1]
                     swapped = true
                 end
             end
             
-            for i in [0..n-1) do
+            for i in [0..n-1) step 2 do
                 if array[i] > array[i+1] then
                     swap array[i] and array[i+1]
                     swapped = true

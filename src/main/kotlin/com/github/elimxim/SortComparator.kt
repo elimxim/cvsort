@@ -11,22 +11,29 @@ import kotlin.time.TimeSource
 class SortComparator(
         private val arrayFile: Path,
         private val printArray: Boolean,
+        private val compareAlgorithms: Boolean,
         private val showInfo: Boolean,
         private val arrayLength: Int
 ) {
     fun compare(sortNames: List<SortName>) {
-        val array = ArrayGenerator().generate(1, arrayLength)
-
-        if (printArray) {
-            ArrayPrinter(arrayFile).printArray(array)
-        }
-
         if (showInfo) {
             val sortView = SortView()
             sortNames.forEach(sortView::add)
             sortView.print()
         }
 
+        if (compareAlgorithms) {
+            val array = ArrayGenerator().generate(1, arrayLength)
+
+            if (printArray) {
+                ArrayPrinter(arrayFile).printArray(array)
+            }
+
+            doCompare(sortNames, array)
+        }
+    }
+
+    private fun doCompare(sortNames: List<SortName>, array: IntArray) {
         ConsolePrinter.printLine("array size: ${array.size}")
 
         val probes = sortNames

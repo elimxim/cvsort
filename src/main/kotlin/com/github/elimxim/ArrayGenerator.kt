@@ -5,7 +5,7 @@ import kotlin.random.Random
 class ArrayGenerator(private val script: SortScript = NoOpSortScript()) {
     fun generate(from: Int, to: Int, shuffle: Boolean = true): IntArray {
         val array = (from..to).toMutableList().toIntArray()
-        script.noFocus(array.copyOf())
+        script.discard(array.copyOf())
         if (shuffle) {
             shuffle(array)
         }
@@ -20,7 +20,7 @@ class ArrayGenerator(private val script: SortScript = NoOpSortScript()) {
                 array.swap(i, j)
                 script.select(this.copyOf(), i, j)
             }
-            script.noFocus(this.copyOf())
+            script.discard(this.copyOf())
         }
     }
 }

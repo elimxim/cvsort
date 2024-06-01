@@ -6,7 +6,7 @@ Console program for fun with sorting algorithms.
 
 Contains two main commands:
 - **compare:** compares up to 10 sorting algorithms and shows their complexity and statistics
-- **visualise:** shows algorithm complexity, pseudocode and/or visualisation with statistics
+- **visualize:** shows algorithm complexity, pseudocode and/or visualisation with statistics
 
 What the visualisation looks like on the _BubbleSort_ example:
 
@@ -23,7 +23,7 @@ $ cvsort --help
 For example, visualisation of BubbleSort:
 
 ```shell
-$ cvsort visualise bubble
+$ cvsort visualize bubble
 ```
 
 <details>
@@ -131,3 +131,4 @@ elapsed time: 23 ms
 - [CocktailShakerSort](https://en.wikipedia.org/wiki/Cocktail_shaker_sort)
 - [OddEvenSort](https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort)
 - [PancakeSort](https://en.wikipedia.org/wiki/Pancake_sorting)
+- [CycleSort](https://en.wikipedia.org/wiki/Cycle_sort)

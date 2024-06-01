@@ -35,6 +35,12 @@ object CompareCommand {
     var printArray: Boolean = false
 
     @Parameter(
+            names = ["--disableComparison", "--noComparison", "-nc"],
+            description = "switches off comparison of selected sorting algorithms"
+    )
+    var comparisonDisabled: Boolean = false
+
+    @Parameter(
             names = ["--disableInfo", "--noInfo", "-ni"],
             description = "switches off the display of sorting algorithm comparison information"
     )

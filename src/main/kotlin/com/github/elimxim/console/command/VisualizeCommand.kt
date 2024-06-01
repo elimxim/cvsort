@@ -38,7 +38,7 @@ object VisualizeCommand {
     var visualisationDisabled: Boolean = false
 
     @Parameter(
-            names = ["--disablePseudoCode", "--noPseudoCode", "-nc"],
+            names = ["--disablePseudoCode", "--noPseudoCode", "-np"],
             description = "switches off display of pseudocode of the selected sorting algorithm"
     )
     var pseudoCodeDisabled: Boolean = false

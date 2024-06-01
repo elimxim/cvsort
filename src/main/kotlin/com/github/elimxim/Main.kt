@@ -51,6 +51,7 @@ private fun processCompareCommand() {
     val comparator = SortComparator(
             CompareCommand.arrayFile.toPath(),
             CompareCommand.printArray,
+            CompareCommand.comparisonDisabled.not(),
             CompareCommand.infoDisabled.not(),
             CompareCommand.arrayLength.toInt()
     )

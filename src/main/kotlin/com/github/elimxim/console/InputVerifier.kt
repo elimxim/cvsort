@@ -13,6 +13,7 @@ object InputVerifier {
         return checkSortNames(cmd.sortNames)
                 && checkArrayLength(cmd.arrayLength, min = 2, max = Int.MAX_VALUE, maxDisplay = "2^32-1")
                 && checkArrayFile(cmd.arrayFile)
+                && checkSwitchers(cmd)
     }
 
     fun verify(cmd: VisualizeCommand): Boolean {
@@ -20,14 +21,21 @@ object InputVerifier {
                 && checkSpeed(cmd.speed)
                 && checkSpeedMillis(cmd.speedMillis)
                 && checkArrayLength(cmd.arrayLength, min = 2, max = 30)
-                && checkSwitchers(cmd.visualisationDisabled, cmd.pseudoCodeDisabled, cmd.infoDisabled)
+                && checkSwitchers(cmd)
     }
 
     private fun checkSortName(name: String): Boolean {
-        val sortName = SortName.find(name, camelCase = true)
+        val find = fun (name: String, ignoreCase: Boolean): SortName? {
+            val searchName = name.replaceFirstChar { it.titlecase() }
+            return SortName.entries.find { sortName ->
+                sortName.camelCase().equals(searchName, ignoreCase = ignoreCase)
+            }
+        }
+
+        val sortName = find(name, false)
         if (sortName == null) {
             ConsolePrinter.printError("unknown sorting algorithm name: $name")
-            val closeName = SortName.find(name, camelCase = true, ignoreCase = true)
+            val closeName = find(name, true)
             if (closeName != null) {
                 ConsolePrinter.printLine("you might have meant: ${closeName.camelCase()}")
             }
@@ -92,6 +100,14 @@ object InputVerifier {
         }
     }
 
+    private fun checkSwitchers(cmd: CompareCommand): Boolean {
+        if (cmd.comparisonDisabled && cmd.infoDisabled) {
+            ConsolePrinter.printError("everything's off, you have to turn on at least one option")
+            return false
+        }
+        return true
+    }
+
     private fun checkSpeed(speed: String): Boolean {
         if (!SortSpeed.contains(speed)) {
             ConsolePrinter.printError("unknown sort speed: $speed")
@@ -113,12 +129,8 @@ object InputVerifier {
         }
     }
 
-    private fun checkSwitchers(
-            visualisationDisabled: Boolean,
-            pseudoCodeDisabled: Boolean,
-            infoDisabled: Boolean
-    ): Boolean {
-        if (visualisationDisabled && pseudoCodeDisabled && infoDisabled) {
+    private fun checkSwitchers(cmd: VisualizeCommand): Boolean {
+        if (cmd.visualisationDisabled && cmd.pseudoCodeDisabled && cmd.infoDisabled) {
             ConsolePrinter.printError("everything's off, you have to turn on at least one option")
             return false
         }

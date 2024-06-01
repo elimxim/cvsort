@@ -28,7 +28,7 @@ class SortVisualizer(
         if (showVisualization) {
             runBlocking {
                 withContext(Dispatchers.Default) {
-                    visualiseSortingAlgorithm(sortName)
+                    runVisualize(sortName)
                 }
             }
         }
@@ -51,24 +51,14 @@ class SortVisualizer(
         }
     }
 
-    private suspend fun visualiseSortingAlgorithm(name: SortName) {
-        val probe = Probe(name)
-        val opening = SortScriptImpl(probe)
+    private suspend fun runVisualize(sortName: SortName) {
+        val probe = Probe(sortName)
 
-        val array = ArrayGenerator(opening).generate(1, arrayLength)
-        val openingLines = opening.scriptLines()
-        printScriptLine(openingLines.poll())
-        while (openingLines.isNotEmpty()) {
-            delay(OPENING_DELAY)
-            printScriptLine(openingLines.poll(), refresh = true)
-        }
-
+        val arrayWrapper = printOpening(probe)
         delay(AFTER_OPENING_DELAY)
 
         val script = SortScriptImpl(probe)
-
-        val sort = SortFactory.instance(name, probe, script)
-        val arrayWrapper = IntArrayWrapper(array, probe)
+        val sort = SortFactory.instance(sortName, probe, script)
         sort.sort(arrayWrapper)
 
         val scriptLines = script.scriptLines()
@@ -77,9 +67,33 @@ class SortVisualizer(
             printScriptLine(scriptLines.poll(), refresh = true)
         }
 
+        printEnding(probe, arrayWrapper)
+    }
+
+    private suspend fun printOpening(probe: Probe): IntArrayWrapper {
+        val opening = SortScriptImpl(probe)
+        val array = ArrayGenerator(opening).generate(1, arrayLength)
+        val openingLines = opening.scriptLines()
+        printScriptLine(openingLines.poll())
+        while (openingLines.isNotEmpty()) {
+            delay(OPENING_DELAY)
+            printScriptLine(openingLines.poll(), refresh = true)
+        }
+
+        return IntArrayWrapper(array, probe)
+    }
+
+    private suspend fun printEnding(probe: Probe, arrayWrapper: IntArrayWrapper) {
         val ending = SortScriptImpl(probe)
-        ending.focusLoop(arrayWrapper.original())
-        ending.focusLoopAccumulative(arrayWrapper.original())
+        val array = arrayWrapper.original()
+        for (i in 0..<arrayWrapper.size()) {
+            ending.focus(array, i)
+        }
+        val indexes = mutableSetOf<Int>()
+        for (i in array.indices) {
+            indexes.add(i)
+            ending.focus(array, *indexes.toIntArray())
+        }
         val endingLines = ending.scriptLines()
         while (endingLines.isNotEmpty()) {
             delay(ENDING_DELAY)
@@ -91,8 +105,9 @@ class SortVisualizer(
         val proveView = ProbeView(scriptLine.probeSnapshot)
         val arrayView = ArrayView(
                 array = scriptLine.array,
-                focus = scriptLine.focused,
-                select = scriptLine.selected
+                variable = scriptLine.variable,
+                focused = scriptLine.focused,
+                selected = scriptLine.selected
         )
 
         val lines = mutableListOf<String>()

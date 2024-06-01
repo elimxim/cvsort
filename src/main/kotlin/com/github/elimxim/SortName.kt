@@ -7,7 +7,8 @@ enum class SortName {
     GNOME,
     COCKTAIL_SHAKER,
     ODD_EVEN,
-    PANCAKE;
+    PANCAKE,
+    CYCLE;
 
     fun canonical(): String {
         return camelCase().plus("Sort")
@@ -18,16 +19,6 @@ enum class SortName {
     }
 
     companion object {
-        fun find(name: String, camelCase: Boolean = false, ignoreCase: Boolean = false): SortName? {
-            return entries.find {
-                if (camelCase) {
-                    it.camelCase().equals(name, ignoreCase = ignoreCase)
-                } else {
-                    it.name.equals(name, ignoreCase = ignoreCase)
-                }
-            }
-        }
-
         fun names(): Array<String> {
             return entries
                     .sortedBy { v -> v.ordinal }

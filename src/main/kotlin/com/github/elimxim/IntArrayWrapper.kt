@@ -1,7 +1,6 @@
 package com.github.elimxim
 
-import java.lang.RuntimeException
-
+// not thread safe
 class IntArrayWrapper(
         private val array: IntArray,
         private val probe: Probe

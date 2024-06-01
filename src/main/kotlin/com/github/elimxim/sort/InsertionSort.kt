@@ -34,18 +34,18 @@ class InsertionSort(
             script.focus(array.original(), i)
             val value = array[i]
             var j = i - 1
-            val selection = script.bulkSelection(array.original())
+            val selection = script.bulkChange(array.original())
             probe.increment(COMPARISONS, ITERATIONS)
             while (j >= 0 && array[j] > value) {
                 probe.increment(ITERATIONS)
                 array[j + 1] = array[j]
-                selection.add(Selection(array.original(), j, j + 1))
+                selection.add(Change(j, j + 1))
                 j -= 1
             }
 
             if (selection.isNotEmpty()) {
                 array[j + 1] = 0
-                script.select(array.original(), selection)
+                script.change(array.original(), selection)
             }
 
             if (i != j + 1) {
