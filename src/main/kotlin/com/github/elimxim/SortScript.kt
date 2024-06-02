@@ -9,8 +9,8 @@ interface SortScript {
     fun focus(indexes: Set<Int>, variable: Int? = null)
     fun select(index: Int)
     fun select(indexes: Set<Int>, variable: Int? = null)
-    fun finishAction(action: ScriptAction)
-    fun startAction(array: IntArray): ScriptAction
+    fun replace(bulkReplace: BulkReplace, variable: Int? = null)
+    fun bulkReplace(array: IntArray): BulkReplace
     fun deselect()
     fun screenplay(): Screenplay
 }
@@ -30,10 +30,10 @@ class ScriptLine(
 )
 
 // not thread safe
-class ScriptAction(val original: IntArray) {
+class BulkReplace(val original: IntArray) {
     private val shifts: MutableList<Pair> = ArrayList()
 
-    fun add(focused: Int, selected: Int) {
+    fun replace(focused: Int, selected: Int) {
         shifts.add(Pair(focused, selected))
     }
 
@@ -81,24 +81,26 @@ class SortScriptImpl(
         ))
     }
 
-    override fun finishAction(action: ScriptAction) {
-        if (action.isNotEmpty()) {
-            val shifts = action.actionPairs()
+    override fun replace(bulkReplace: BulkReplace, variable: Int?) {
+        if (bulkReplace.isNotEmpty()) {
+            val shifts = bulkReplace.actionPairs()
             scriptLines.add(ScriptLine(
-                    array = action.original,
+                    array = bulkReplace.original,
+                    variable = variable,
                     focused = shifts.map { it.focused }.toSet(),
                     probeSnapshot = probe.snapshot()
             ))
             scriptLines.add(ScriptLine(
                     array = arrayWrapper.original(),
+                    variable = variable,
                     selected = shifts.map { it.selected }.toSet(),
                     probeSnapshot = probe.snapshot()
             ))
         }
     }
 
-    override fun startAction(array: IntArray): ScriptAction {
-        return ScriptAction(array)
+    override fun bulkReplace(array: IntArray): BulkReplace {
+        return BulkReplace(array)
     }
 
     override fun deselect() {
@@ -126,11 +128,11 @@ class NoOpSortScript : SortScript {
     override fun select(indexes: Set<Int>, variable: Int?) {
     }
 
-    override fun finishAction(action: ScriptAction) {
+    override fun replace(bulkReplace: BulkReplace, variable: Int?) {
     }
 
-    override fun startAction(array: IntArray): ScriptAction {
-        return ScriptAction(array)
+    override fun bulkReplace(array: IntArray): BulkReplace {
+        return BulkReplace(array)
     }
 
     override fun deselect() {

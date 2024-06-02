@@ -48,16 +48,19 @@ class PancakeSort(
         val flip = fun (idx: Int) {
             var start = 0
             var end = idx
-            val action = script.startAction(array.original())
+            val replace = script.bulkReplace(array.original())
             while (start <= end) {
                 probe.increment(ITERATIONS)
                 array.swap(start, end)
-                action.add(focused = start, selected = end)
-                action.add(focused = end, selected = start)
+                replace.replace(focused = start, selected = end)
+                replace.replace(focused = end, selected = start)
                 start++
                 end--
             }
-            script.finishAction(action)
+
+            if (replace.isNotEmpty()) {
+                script.replace(replace)
+            }
         }
 
         var lastIdx = array.size()
