@@ -18,8 +18,10 @@ enum class Complexity(val notation: String) {
     LOGARITHMIC("logn"),
     LINEAR("n"),
     LINEARITHMIC("nlogn"),
+    THIRD_QUADRATIC("n^4/3"),
+    HALF_QUADRATIC("n^3/2"),
     QUADRATIC("n^2"),
-    BETWEEN_QUADRATIC_AND_CUBIC("n^log3/log1.5"),
+    ALMOST_CUBIC("n^log3/log1.5"),
     CUBIC("n^3"),
     FACTORIAL("n!")
 }

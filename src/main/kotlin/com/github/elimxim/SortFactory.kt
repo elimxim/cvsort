@@ -31,6 +31,7 @@ object SortFactory {
             PANCAKE -> PancakeSort::class
             CYCLE -> CycleSort::class
             STOOGE -> StoogeSort::class
+            COMB -> CombSort::class
         }
     }
 }

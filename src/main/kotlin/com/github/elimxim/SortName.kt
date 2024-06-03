@@ -9,7 +9,8 @@ enum class SortName {
     ODD_EVEN,
     PANCAKE,
     CYCLE,
-    STOOGE;
+    STOOGE,
+    COMB;
 
     fun canonical(): String {
         return camelCase().plus("Sort")

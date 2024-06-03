@@ -5,19 +5,21 @@ import com.github.elimxim.Probe.Increment.*
 
 @SortAlgorithm(
         timeComplexity = TimeComplexity(
-                worst = Complexity.BETWEEN_QUADRATIC_AND_CUBIC,
-                average = Complexity.BETWEEN_QUADRATIC_AND_CUBIC,
-                best = Complexity.BETWEEN_QUADRATIC_AND_CUBIC
+                worst = Complexity.ALMOST_CUBIC,
+                average = Complexity.ALMOST_CUBIC,
+                best = Complexity.ALMOST_CUBIC
         ),
         spaceComplexity = Complexity.LINEAR,
         pseudoCode = """
-        fun stooge(array, i = 0, j = n-1)
+        invoke stooge(array, 0, n-1)
+        
+        fun stooge(array, i, j)
             if array[i] > array[j] then
                 swap array[i] and array[j]
             end
             
             if j - i + 1 > 2 then
-                t = (j - i + 1) / 3
+                t = floor (j - i + 1) / 3
                 invoke stooge(array, i, j-t)
                 invoke stooge(array, i+t, j)
                 invoke stooge(array, i, j-t)
