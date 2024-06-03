@@ -6,8 +6,10 @@ import com.github.elimxim.SortSpeed
 
 @Parameters(commandDescription = "visualizes the selected sorting algorithms")
 object VisualizeCommand {
+    const val NAME = "visualize"
+
     @Parameter(
-            description = "name of the sorting algorithm in camel case",
+            description = "name of the sorting algorithm",
             required = true
     )
     lateinit var sortName: String
@@ -30,18 +32,6 @@ object VisualizeCommand {
             description = "array length: [10, 30]"
     )
     var arrayLength: String = "20"
-
-    @Parameter(
-            names = ["--disableVisualisation", "--noVisualisation", "-nv"],
-            description = "disables visualisation"
-    )
-    var visualisationDisabled: Boolean = false
-
-    @Parameter(
-            names = ["--disablePseudoCode", "--noPseudoCode", "-np"],
-            description = "switches off display of pseudocode of the selected sorting algorithm"
-    )
-    var pseudoCodeDisabled: Boolean = false
 
     @Parameter(
             names = ["--disableInfo", "--noInfo", "-ni"],

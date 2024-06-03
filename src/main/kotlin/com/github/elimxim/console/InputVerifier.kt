@@ -3,62 +3,84 @@ package com.github.elimxim.console
 import com.github.elimxim.SortName
 import com.github.elimxim.SortSpeed
 import com.github.elimxim.console.command.CompareCommand
+import com.github.elimxim.console.command.InfoCommand
 import com.github.elimxim.console.command.VisualizeCommand
 import com.github.elimxim.toPath
 import java.nio.file.Files
 import java.nio.file.InvalidPathException
 
-object InputVerifier {
+class InputVerifier(private val args: Array<String>) {
     fun verify(cmd: CompareCommand): Boolean {
-        return checkSortNames(cmd.sortNames)
+        return checkSortNames(cmd.sortNames, min = 2, max = 10, allAvailable = false, repetitionAvailable = true)
                 && checkArrayLength(cmd.arrayLength, min = 2, max = Int.MAX_VALUE, maxDisplay = "2^32-1")
                 && checkArrayFile(cmd.arrayFile)
-                && checkSwitchers(cmd)
     }
 
     fun verify(cmd: VisualizeCommand): Boolean {
         return checkSortName(cmd.sortName)
                 && checkSpeed(cmd.speed)
-                && checkSpeedMillis(cmd.speedMillis)
+                && checkSpeedMillis(cmd.speedMillis, min = 50, max = 1000)
                 && checkArrayLength(cmd.arrayLength, min = 2, max = 30)
-                && checkSwitchers(cmd)
+    }
+
+    fun verify(cmd: InfoCommand): Boolean {
+        return checkSortNames(cmd.sortNames, min = 1, max = 20, allAvailable = true, repetitionAvailable = false)
     }
 
     private fun checkSortName(name: String): Boolean {
-        val find = fun (name: String, ignoreCase: Boolean): SortName? {
-            val searchName = name.replaceFirstChar { it.titlecase() }
-            return SortName.entries.find { sortName ->
-                sortName.camelCase().equals(searchName, ignoreCase = ignoreCase)
+        if (SortName.find(name, ignoreCase = true) == null) {
+            if (SortName.find(name, camelCase = true) == null) {
+                printError("unknown sorting algorithm name: $name")
+                val closeName = SortName.find(name, camelCase = true, ignoreCase = true)
+                if (closeName != null) {
+                    ConsolePrinter.printLine("SUGGESTION: you might have meant: ${closeName.camelCase()} or ${closeName.name}")
+                }
+                return false
             }
-        }
-
-        val sortName = find(name, false)
-        if (sortName == null) {
-            ConsolePrinter.printError("unknown sorting algorithm name: $name")
-            val closeName = find(name, true)
-            if (closeName != null) {
-                ConsolePrinter.printLine("you might have meant: ${closeName.camelCase()}")
-            }
-            return false
         }
         return true
     }
 
-    private fun checkSortNames(names: List<String>): Boolean {
+    private fun checkSortNames(
+            names: List<String>, min: Int, max: Int,
+            allAvailable: Boolean, repetitionAvailable: Boolean
+    ): Boolean {
         names.forEach {
             if (!checkSortName(it)) {
                 return false
             }
         }
 
-        if (names.size < 2) {
-            ConsolePrinter.printError("the number of sorting algorithms cannot be less that 2")
+        if (names.size < min) {
+            printError("the number of sorting algorithms cannot be less that $min")
             return false
         }
 
-        if (names.size > 10) {
-            ConsolePrinter.printError("the number of sorting algorithms cannot be more than 10")
+        if (names.size > max) {
+            printError("the number of sorting algorithms cannot be more than $max")
             return false
+        }
+
+        val allOptions = names.filter { it.equals(SortName.ALL.name, ignoreCase = true) }
+        if (allOptions.isNotEmpty()) {
+            if (allAvailable.not()) {
+                printError("'ALL' option is not available")
+                return false
+            }
+            if (names.size > 1) {
+                printWarning("if 'ALL' is selected, all other sorting algorithm names will be ignored")
+            }
+        }
+
+        if (repetitionAvailable.not()) {
+            val duplicates = names.groupingBy { it.lowercase() }
+                    .eachCount()
+                    .filter { it.value > 1 }
+
+            if (duplicates.isNotEmpty()) {
+                printError("duplication of sorting algorithm names is not allowed")
+                return false
+            }
         }
 
         return true
@@ -70,12 +92,12 @@ object InputVerifier {
             if (number !in min..max) {
                 val from = minDisplay.ifEmpty { min.toString() }
                 val to = maxDisplay.ifEmpty { max.toString() }
-                ConsolePrinter.printError("$length value must be in [$from, $to]")
+                printError("$length value must be in [$from, $to]")
                 return false
             }
             return true
         } catch (e: NumberFormatException) {
-            ConsolePrinter.printError("$length value must be an integer number")
+            printError("$length value must be an integer number")
             return false
         }
     }
@@ -84,56 +106,54 @@ object InputVerifier {
         try {
             val path = file.toPath()
             if (Files.exists(path)) {
-                ConsolePrinter.printError("$file already exists")
+                printError("$file already exists")
                 return false
             }
 
             if (!Files.exists(path.parent)) {
-                ConsolePrinter.printError("$file parent directory doesn't exist")
+                printError("$file parent directory doesn't exist")
                 return false
             }
 
             return true
         } catch (e: InvalidPathException) {
-            ConsolePrinter.printError(e.localizedMessage)
+            printError(e.localizedMessage)
             return false
         }
-    }
-
-    private fun checkSwitchers(cmd: CompareCommand): Boolean {
-        if (cmd.comparisonDisabled && cmd.infoDisabled) {
-            ConsolePrinter.printError("everything's off, you have to turn on at least one option")
-            return false
-        }
-        return true
     }
 
     private fun checkSpeed(speed: String): Boolean {
         if (!SortSpeed.contains(speed)) {
-            ConsolePrinter.printError("unknown sort speed: $speed")
+            printError("unknown sort speed: $speed")
             return false
         }
         return true
     }
 
-    private fun checkSpeedMillis(speedMillis: String): Boolean {
+    private fun checkSpeedMillis(speedMillis: String, min: Int, max: Int): Boolean {
         try {
-            if (speedMillis.toLong() !in 50..1000) {
-                ConsolePrinter.printError("speedMillis must be in range [50..1000]")
+            if (speedMillis.toLong() !in min..max) {
+                printError("speedMillis must be in range [$min..$max]")
                 return false
             }
             return true
         } catch (e: NumberFormatException) {
-            ConsolePrinter.printError("$speedMillis value must be an integer number")
+            printError("$speedMillis value must be an integer number")
             return false
         }
     }
 
-    private fun checkSwitchers(cmd: VisualizeCommand): Boolean {
-        if (cmd.visualisationDisabled && cmd.pseudoCodeDisabled && cmd.infoDisabled) {
-            ConsolePrinter.printError("everything's off, you have to turn on at least one option")
-            return false
-        }
-        return true
+    private fun printError(msg: String) {
+        printInput()
+        ConsolePrinter.printError(msg)
+    }
+
+    private fun printWarning(msg: String) {
+        printInput()
+        ConsolePrinter.printWarning(msg)
+    }
+
+    private fun printInput() {
+        ConsolePrinter.printLine("INPUT: " + args.joinToString(separator = " "))
     }
 }

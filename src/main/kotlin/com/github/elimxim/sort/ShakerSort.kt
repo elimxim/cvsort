@@ -36,7 +36,7 @@ import com.github.elimxim.Probe.Increment.*
         end
         """
 )
-class CocktailShakerSort(
+class ShakerSort(
         private val probe: Probe,
         private val script: SortScript
 ) : Sort {

@@ -32,6 +32,10 @@ object ConsolePrinter {
         println("ERROR: $message")
     }
 
+    fun printWarning(message: String) {
+        println("WARNING: $message")
+    }
+
     fun printEmptyLine() {
         println()
     }

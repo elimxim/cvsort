@@ -2,6 +2,7 @@ package com.github.elimxim
 
 import com.github.elimxim.SortName.*
 import com.github.elimxim.sort.*
+import kotlin.RuntimeException
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -26,12 +27,13 @@ object SortFactory {
             SELECTION -> SelectionSort::class
             INSERTION -> InsertionSort::class
             GNOME -> GnomeSort::class
-            COCKTAIL_SHAKER -> CocktailShakerSort::class
+            SHAKER -> ShakerSort::class
             ODD_EVEN -> OddEvenSort::class
             PANCAKE -> PancakeSort::class
             CYCLE -> CycleSort::class
             STOOGE -> StoogeSort::class
             COMB -> CombSort::class
+            else -> throw RuntimeException("unexpected SortName: $sortName")
         }
     }
 }

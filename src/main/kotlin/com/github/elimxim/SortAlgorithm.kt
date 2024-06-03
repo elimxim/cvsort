@@ -15,13 +15,13 @@ annotation class TimeComplexity(
 
 enum class Complexity(val notation: String) {
     CONST("1"),
-    LOGARITHMIC("logn"),
+    LOGARITHMIC("log(n)"),
     LINEAR("n"),
-    LINEARITHMIC("nlogn"),
+    LINEARITHMIC("nlog(n)"),
     THIRD_QUADRATIC("n^4/3"),
     HALF_QUADRATIC("n^3/2"),
     QUADRATIC("n^2"),
-    ALMOST_CUBIC("n^log3/log1.5"),
+    ALMOST_CUBIC("n^log1.5(3)"),
     CUBIC("n^3"),
     FACTORIAL("n!")
 }

@@ -7,8 +7,10 @@ import com.github.elimxim.withTimestamp
 
 @Parameters(commandDescription = "compares two or more sorting algorithms")
 object CompareCommand {
+    const val NAME = "compare"
+
     @Parameter(
-            description = "sorting algorithm names in camel case  separated by a space",
+            description = "sorting algorithm names separated by a space",
             splitter = SpaceParameterSplitter::class,
             variableArity = true,
             required = true
@@ -33,12 +35,6 @@ object CompareCommand {
             description = "prints the array to the specified file before sorting"
     )
     var printArray: Boolean = false
-
-    @Parameter(
-            names = ["--disableComparison", "--noComparison", "-nc"],
-            description = "switches off comparison of selected sorting algorithms"
-    )
-    var comparisonDisabled: Boolean = false
 
     @Parameter(
             names = ["--disableInfo", "--noInfo", "-ni"],

@@ -4,6 +4,7 @@ import com.beust.jcommander.JCommander
 import com.github.elimxim.console.ConsolePrinter
 import com.github.elimxim.console.InputVerifier
 import com.github.elimxim.console.command.CompareCommand
+import com.github.elimxim.console.command.InfoCommand
 import com.github.elimxim.console.command.MainCommand
 import com.github.elimxim.console.command.VisualizeCommand
 
@@ -11,8 +12,9 @@ fun main(args: Array<String>) {
     val jc = JCommander.newBuilder()
             .programName("cvsort (Sorting Algorithm Comparator & Visualizer)")
             .addObject(MainCommand)
-            .addCommand("compare", CompareCommand)
-            .addCommand("visualize", VisualizeCommand)
+            .addCommand(CompareCommand.NAME, CompareCommand)
+            .addCommand(VisualizeCommand.NAME, VisualizeCommand)
+            .addCommand(InfoCommand.NAME, InfoCommand)
             .build()
 
     jc.parse(*args)
@@ -32,35 +34,39 @@ fun main(args: Array<String>) {
         return
     }
 
-    if (jc.parsedCommand == "compare") {
-        if (InputVerifier.verify(CompareCommand)) {
+    val verifier = InputVerifier(args)
+    if (jc.parsedCommand == CompareCommand.NAME) {
+        if (verifier.verify(CompareCommand)) {
             processCompareCommand()
         }
-    } else if (jc.parsedCommand == "visualize") {
-        if (InputVerifier.verify(VisualizeCommand)) {
+    } else if (jc.parsedCommand == VisualizeCommand.NAME) {
+        if (verifier.verify(VisualizeCommand)) {
             processVisualizeCommand()
+        }
+    } else if (jc.parsedCommand == InfoCommand.NAME) {
+        if (verifier.verify(InfoCommand)) {
+            processInfoCommand()
         }
     }
 }
 
 private fun processCompareCommand() {
     val sortNames = CompareCommand.sortNames.map {
-        SortName.valueOf(it.uppercase())
+        SortName.determine(it)
     }
 
     val comparator = SortComparator(
+            CompareCommand.arrayLength.toInt(),
             CompareCommand.arrayFile.toPath(),
             CompareCommand.printArray,
-            CompareCommand.comparisonDisabled.not(),
-            CompareCommand.infoDisabled.not(),
-            CompareCommand.arrayLength.toInt()
+            CompareCommand.infoDisabled.not()
     )
 
     comparator.compare(sortNames)
 }
 
 private fun processVisualizeCommand() {
-    val sortName = SortName.valueOf(VisualizeCommand.sortName.camelCaseToSnakeCase().uppercase())
+    val sortName = SortName.determine(VisualizeCommand.sortName)
     val sortSpeed = SortSpeed.valueOf(VisualizeCommand.speed.uppercase())
     val speedMillis = if (sortSpeed == SortSpeed.NONE) {
         VisualizeCommand.speedMillis.toLong()
@@ -71,10 +77,20 @@ private fun processVisualizeCommand() {
     val visualizer = SortVisualizer(
             speedMillis,
             VisualizeCommand.arrayLength.toInt(),
-            VisualizeCommand.visualisationDisabled.not(),
-            VisualizeCommand.pseudoCodeDisabled.not(),
             VisualizeCommand.infoDisabled.not()
     )
 
     visualizer.visualize(sortName)
+}
+
+private fun processInfoCommand() {
+    var sortNames = InfoCommand.sortNames.map {
+        SortName.determine(it)
+    }
+
+    if (sortNames.contains(SortName.ALL)) {
+       sortNames = SortName.realValues().toList()
+    }
+
+    SortInfoShower().showInfo(sortNames)
 }

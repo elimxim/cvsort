@@ -5,13 +5,10 @@ import com.github.elimxim.console.ArrayView
 import com.github.elimxim.console.ConsolePrinter
 import com.github.elimxim.console.ProbeView
 import kotlinx.coroutines.*
-import kotlin.reflect.full.findAnnotation
 
 class SortVisualizer(
         private val speedMillis: Long,
         private val arrayLength: Int,
-        private val showVisualization: Boolean,
-        private val showPseudoCode: Boolean,
         private val showInfo: Boolean
 ) {
     fun visualize(sortName: SortName) {
@@ -21,33 +18,10 @@ class SortVisualizer(
             sortView.print()
         }
 
-        if (showPseudoCode) {
-            printPseudoCode(sortName)
-        }
-
-        if (showVisualization) {
-            runBlocking {
-                withContext(Dispatchers.Default) {
-                    runVisualize(sortName)
-                }
+        runBlocking {
+            withContext(Dispatchers.Default) {
+                runVisualize(sortName)
             }
-        }
-    }
-
-    private fun printPseudoCode(sortName: SortName) {
-        val impl = SortFactory.kClass(sortName)
-        val anno = impl.findAnnotation<SortAlgorithm>()
-
-        if (anno != null) {
-            val text = anno.pseudoCode.trimIndent()
-            if (text.isNotEmpty()) {
-                ConsolePrinter.printLine(text)
-                ConsolePrinter.printEmptyLine()
-            } else {
-                ConsolePrinter.printError("pseudo code is not implemented")
-            }
-        } else {
-            ConsolePrinter.printError("pseudo code is not implemented")
         }
     }
 

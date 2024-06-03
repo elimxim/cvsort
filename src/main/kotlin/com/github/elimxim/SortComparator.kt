@@ -9,30 +9,26 @@ import kotlin.time.Duration
 import kotlin.time.TimeSource
 
 class SortComparator(
+        private val arrayLength: Int,
         private val arrayFile: Path,
         private val printArray: Boolean,
-        private val compareAlgorithms: Boolean,
-        private val showInfo: Boolean,
-        private val arrayLength: Int
+        private val showInfo: Boolean
 ) {
     fun compare(sortNames: List<SortName>) {
         if (showInfo) {
             val sortView = SortView()
-            sortNames.forEach(sortView::add)
+            sortNames.distinct().forEach(sortView::add)
             sortView.print()
         }
 
-        if (compareAlgorithms) {
-            val array = (1..arrayLength).toIntArray()
+        val array = (1..arrayLength).toIntArray()
+        ArrayShuffler().shuffle(array)
 
-            ArrayShuffler().shuffle(array)
-
-            if (printArray) {
-                ArrayPrinter(arrayFile).printArray(array)
-            }
-
-            doCompare(sortNames, array)
+        if (printArray) {
+            ArrayPrinter(arrayFile).printArray(array)
         }
+
+        doCompare(sortNames, array)
     }
 
     private fun doCompare(sortNames: List<SortName>, array: IntArray) {
