@@ -30,6 +30,7 @@ object SortFactory {
             ODD_EVEN -> OddEvenSort::class
             PANCAKE -> PancakeSort::class
             CYCLE -> CycleSort::class
+            STOOGE -> StoogeSort::class
         }
     }
 }

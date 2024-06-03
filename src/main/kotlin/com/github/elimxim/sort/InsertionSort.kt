@@ -13,7 +13,7 @@ import com.github.elimxim.Probe.Increment.*
         pseudoCode = """
         for i in (0..n) do
             v = array[i]
-            j = i-1
+            j = i - 1
             while j >= 0 and array[j] > v do
                 array[j+1] = array[j]
                 j--

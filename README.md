@@ -132,3 +132,4 @@ elapsed time: 23 ms
 - [OddEvenSort](https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort)
 - [PancakeSort](https://en.wikipedia.org/wiki/Pancake_sorting)
 - [CycleSort](https://en.wikipedia.org/wiki/Cycle_sort)
+- [StoogeSort](https://en.wikipedia.org/wiki/Stooge_sort)
