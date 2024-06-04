@@ -48,18 +48,18 @@ class PancakeSort(
         val flip = fun (idx: Int) {
             var start = 0
             var end = idx
-            val bulkSwap = script.bulkSwap()
+            val bulkMove = script.bulkMove()
             while (start <= end) {
                 probe.increment(ITERATIONS)
                 array.swap(start, end)
-                bulkSwap.add(Pair(start, end))
-                bulkSwap.add(Pair(end, start))
+                bulkMove.add(start, end)
+                bulkMove.add(end, start)
                 start++
                 end--
             }
 
-            if (bulkSwap.isNotEmpty()) {
-                script.swap(bulkSwap)
+            if (bulkMove.isNotEmpty()) {
+                script.line(bulkMove)
             }
         }
 
@@ -70,7 +70,7 @@ class PancakeSort(
             var maxIdx = 0
             for (i in 1..<lastIdx) {
                 probe.increment(ITERATIONS, COMPARISONS)
-                script.focus(i)
+                script.line(Focus(i))
                 if (array[i] > array[maxIdx]) {
                     maxIdx = i
                 }
@@ -80,7 +80,7 @@ class PancakeSort(
 
             if (maxIdx != lastIdx) {
                 if (maxIdx != 0) {
-                    script.select(maxIdx)
+                    script.line(Select(maxIdx))
                     flip(maxIdx)
                 }
                 flip(lastIdx)

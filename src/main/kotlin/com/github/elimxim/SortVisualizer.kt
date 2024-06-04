@@ -60,12 +60,12 @@ class SortVisualizer(
 
     private suspend fun printEnding(sortName: SortName, ending: SortScript, array: IntArray) {
         for (i in array.indices) {
-            ending.focus(i)
+            ending.line(Focus(i))
         }
         val indexes = mutableSetOf<Int>()
         for (i in array.indices) {
             indexes.add(i)
-            ending.focus(indexes.toSet())
+            ending.line(Focus(*indexes.toIntArray()))
         }
         val screenplay = ending.screenplay()
         while (screenplay.isNotEmpty()) {

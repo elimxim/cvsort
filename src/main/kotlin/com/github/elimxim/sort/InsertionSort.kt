@@ -33,24 +33,24 @@ class InsertionSort(
         for (i in 1..<array.size()) {
             val value = array[i]
             var j = i - 1
-            script.focus(i, value)
-            val swap = script.bulkSwap()
+            script.line(Focus(i), Extra(value))
+            val bulkMove = script.bulkMove()
             probe.increment(COMPARISONS, ITERATIONS)
             while (j >= 0 && array[j] > value) {
                 probe.increment(ITERATIONS)
                 array[j + 1] = array[j]
-                swap.add(Pair(j, j + 1))
+                bulkMove.add(j, j + 1)
                 j--
             }
 
-            if (swap.isNotEmpty()) {
+            if (bulkMove.isNotEmpty()) {
                 array[j + 1] = 0
-                script.swap(swap, value)
+                script.line(bulkMove, Extra(value))
             }
 
             if (i != j + 1) {
                 array[j + 1] = value
-                script.select(j + 1, value)
+                script.line(Select(j + 1), Extra(value))
             }
         }
     }

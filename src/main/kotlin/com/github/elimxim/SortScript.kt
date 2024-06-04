@@ -5,18 +5,35 @@ import java.util.LinkedList
 import java.util.Queue
 
 interface SortScript {
-    fun focus(index: Int, variable: Int? = null)
-    fun focus(pair: Pair<Int, Int>)
-    fun focus(indexes: Set<Int>)
-    fun focus(index: Int, override: IntArray)
-    fun select(index: Int, variable: Int? = null)
-    fun select(index: Int, override: IntArray)
-    fun swap(pair: Pair<Int, Int>)
-    fun swap(bulkSwap: BulkSwap, variable: Int? = null)
-    fun bulkSwap(): BulkSwap
-    fun deselect()
+    fun line(focus: Focus)
+    fun line(focus: Focus, extra: Extra)
+    fun line(focus: Focus, override: Override)
+    fun line(select: Select)
+    fun line(select: Select, extra: Extra)
+    fun line(select: Select, override: Override)
+    fun line(swap: Swap)
+    fun line(move: Move)
+    fun line(move: Move, override: Override)
+    fun line(bulkMove: BulkMove)
+    fun line(bulkMove: BulkMove, extra: Extra)
+    fun bulkMove(): BulkMove
+    fun line(nothing: Nothing)
     fun screenplay(): Screenplay
 }
+
+class Focus(vararg val indexes: Int)
+class Select(vararg val indexes: Int)
+class Swap(val index1: Int, val index2: Int)
+class Move(val from: Int, val to: Int, val flash: Boolean = true)
+class Extra(val variable: Int)
+class Override(array: IntArray) {
+    val array: IntArray
+
+    init {
+        this.array = array.copyOf()
+    }
+}
+class Nothing
 
 interface Screenplay : Queue<ScriptLine>
 
@@ -33,23 +50,21 @@ class ScriptLine(
 )
 
 // not thread safe
-class BulkSwap(val original: IntArray) {
-    private val shifts: MutableList<Swap> = ArrayList()
+class BulkMove(val original: IntArray) {
+    private val moves: MutableList<Move> = ArrayList()
 
-    fun add(pair: Pair<Int, Int>) {
-        shifts.add(Swap(pair.first, pair.second))
+    fun add(from: Int, to: Int) {
+        moves.add(Move(from, to))
     }
 
     fun isNotEmpty(): Boolean {
-        return shifts.isNotEmpty()
+        return moves.isNotEmpty()
     }
 
-    fun swaps(): List<Swap> {
-        return shifts.toList()
+    fun moves(): List<Move> {
+        return moves.toList()
     }
 }
-
-class Swap(val focused: Int, val selected: Int, val variable: Int? = null)
 
 // not thread safe
 class SortScriptImpl(
@@ -58,55 +73,55 @@ class SortScriptImpl(
 ) : SortScript {
     private val scriptLines: MutableList<ScriptLine> = ArrayList()
 
-    override fun focus(index: Int, variable: Int?) {
-        focusInternal(arrayWrapper.original(), setOf(index), variable)
+    override fun line(focus: Focus) {
+        doFocus(focus)
     }
 
-    override fun focus(pair: Pair<Int, Int>) {
-        focusInternal(arrayWrapper.original(), setOf(pair.first, pair.second))
+    override fun line(focus: Focus, extra: Extra) {
+        doFocus(focus, extra = extra)
     }
 
-    override fun focus(indexes: Set<Int>) {
-        focusInternal(arrayWrapper.original(), indexes)
+    override fun line(focus: Focus, override: Override) {
+        doFocus(focus, override = override)
     }
 
-    override fun focus(index: Int, override: IntArray) {
-        focusInternal(override, setOf(index))
+    override fun line(select: Select) {
+        doSelect(select)
     }
 
-    override fun select(index: Int, variable: Int?) {
-        selectInternal(arrayWrapper.original(), setOf(index), variable)
+    override fun line(select: Select, extra: Extra) {
+        doSelect(select, extra = extra)
     }
 
-    override fun select(index: Int, override: IntArray) {
-        selectInternal(override, setOf(index))
+    override fun line(select: Select, override: Override) {
+        doSelect(select, override = override)
     }
 
-    override fun swap(pair: Pair<Int, Int>) {
-        scriptLines.add(ScriptLine(
-                array = arrayWrapper.original(),
-                selected = setOf(pair.first, pair.second),
-                probeSnapshot = probe.snapshot()
-        ))
+    override fun line(swap: Swap) {
+        doSelect(Select(swap.index1, swap.index2))
     }
 
-    override fun swap(bulkSwap: BulkSwap, variable: Int?) {
-        if (bulkSwap.isNotEmpty()) {
-            val swaps = bulkSwap.swaps()
-
-            val focused = swaps.map { it.focused }.toSet()
-            focusInternal(bulkSwap.original, focused, variable)
-
-            val selected = swaps.map { it.selected }.toSet()
-            selectInternal(arrayWrapper.original(), selected, variable)
-        }
+    override fun line(move: Move) {
+        doMove(move)
     }
 
-    override fun bulkSwap(): BulkSwap {
-        return BulkSwap(arrayWrapper.original())
+    override fun line(move: Move, override: Override) {
+        doMove(move, override)
     }
 
-    override fun deselect() {
+    override fun line(bulkMove: BulkMove) {
+        doBulkMove(bulkMove)
+    }
+
+    override fun line(bulkMove: BulkMove, extra: Extra) {
+        doBulkMove(bulkMove, extra)
+    }
+
+    override fun bulkMove(): BulkMove {
+        return BulkMove(arrayWrapper.original())
+    }
+
+    override fun line(nothing: Nothing) {
         scriptLines.add(ScriptLine(
                 array = arrayWrapper.original(),
                 probeSnapshot = probe.snapshot()
@@ -117,55 +132,98 @@ class SortScriptImpl(
         return ScreenplayImpl(scriptLines)
     }
 
-    private fun focusInternal(array: IntArray, indexes: Set<Int>, variable: Int? = null) {
+    private fun doFocus(focus: Focus, extra: Extra? = null, override: Override? = null) {
         scriptLines.add(ScriptLine(
-                array = array,
-                variable = variable,
-                focused = indexes,
+                array = override?.array ?: arrayWrapper.original(),
+                variable = extra?.variable,
+                focused = focus.indexes.toSet(),
                 probeSnapshot = probe.snapshot()
         ))
     }
 
-    private fun selectInternal(array: IntArray, indexes: Set<Int>, variable: Int? = null) {
+    private fun doSelect(select: Select, extra: Extra? = null, override: Override? = null) {
         scriptLines.add(ScriptLine(
-                array = array,
-                variable = variable,
-                selected = indexes,
+                array = override?.array ?: arrayWrapper.original(),
+                variable = extra?.variable,
+                selected = select.indexes.toSet(),
                 probeSnapshot = probe.snapshot()
         ))
+    }
+
+    private fun doMove(move: Move, override: Override? = null) {
+        if (move.flash) {
+            doFocus(Focus(move.from), override = override)
+            doSelect(Select(move.to), override = override)
+        } else {
+            scriptLines.add(ScriptLine(
+                    array = override?.array ?: arrayWrapper.original(),
+                    focused = setOf(move.from),
+                    selected = setOf(move.to),
+                    probeSnapshot = probe.snapshot()
+            ))
+        }
+    }
+
+    private fun doBulkMove(bulkMove: BulkMove, extra: Extra? = null) {
+        if (bulkMove.isNotEmpty()) {
+            val moves = bulkMove.moves()
+
+            scriptLines.add(ScriptLine(
+                    array = bulkMove.original,
+                    variable = extra?.variable,
+                    focused = moves.map { it.from }.toSet(),
+                    probeSnapshot = probe.snapshot()
+            ))
+
+            scriptLines.add(ScriptLine(
+                    array = arrayWrapper.original(),
+                    variable = extra?.variable,
+                    selected =  moves.map { it.to }.toSet(),
+                    probeSnapshot = probe.snapshot()
+            ))
+        }
     }
 }
 
 class NoOpSortScript : SortScript {
-    override fun focus(index: Int, variable: Int?) {
+    override fun line(focus: Focus) {
     }
 
-    override fun focus(pair: Pair<Int, Int>) {
+    override fun line(focus: Focus, extra: Extra) {
     }
 
-    override fun focus(indexes: Set<Int>) {
+    override fun line(focus: Focus, override: Override) {
     }
 
-    override fun focus(index: Int, override: IntArray) {
+    override fun line(select: Select) {
     }
 
-    override fun select(index: Int, variable: Int?) {
+    override fun line(select: Select, extra: Extra) {
     }
 
-    override fun select(index: Int, override: IntArray) {
+    override fun line(select: Select, override: Override) {
     }
 
-    override fun swap(pair: Pair<Int, Int>) {
+    override fun line(swap: Swap) {
     }
 
-    override fun swap(bulkSwap: BulkSwap, variable: Int?) {
+    override fun line(move: Move) {
     }
 
-    override fun bulkSwap(): BulkSwap {
-        return BulkSwap(IntArray(0))
+    override fun line(move: Move, override: Override) {
     }
 
-    override fun deselect() {
+    override fun line(bulkMove: BulkMove) {
+    }
+
+    override fun line(bulkMove: BulkMove, extra: Extra) {
+    }
+
+    override fun line(nothing: Nothing) {
+    }
+
+    override fun bulkMove(): BulkMove {
+        return BulkMove(IntArray(0))
     }
 
     override fun screenplay(): Screenplay {

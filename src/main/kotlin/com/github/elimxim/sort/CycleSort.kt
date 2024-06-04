@@ -57,12 +57,12 @@ class CycleSort(
             probe.increment(ITERATIONS)
             var value = array[i]
             var index = i
-            script.focus(index, value)
+            script.line(Focus(index, value))
             for (j in i + 1..<array.size()) {
                 probe.increment(ITERATIONS, COMPARISONS)
                 if (array[j] < value) {
                     index++
-                    script.focus(index, value)
+                    script.line(Focus(index), Extra(value))
                 }
             }
 
@@ -72,34 +72,34 @@ class CycleSort(
 
             while (value == array[index]) {
                 index++
-                script.focus(index, value)
+                script.line(Focus(index), Extra(value))
             }
 
             array[index] = value.also {
                 value = array[index]
             }
-            script.select(index, value)
+            script.line(Select(index), Extra(value))
 
             while (index != i) {
                 index = i
-                script.focus(index, value)
+                script.line(Focus(index), Extra(value))
                 for (j in i + 1..<array.size()) {
                     probe.increment(ITERATIONS, COMPARISONS)
                     if (array[j] < value) {
                         index++
-                        script.focus(index, value)
+                        script.line(Focus(index), Extra(value))
                     }
                 }
 
                 while (value == array[index]) {
                     index++
-                    script.focus(index, value)
+                    script.line(Focus(index), Extra(value))
                 }
 
                 array[index] = value.also {
                     value = array[index]
                 }
-                script.select(index, value)
+                script.line(Select(index), Extra(value))
             }
         }
     }
