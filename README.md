@@ -134,3 +134,4 @@ elapsed time: 23 ms
 - [CycleSort](https://en.wikipedia.org/wiki/Cycle_sort)
 - [StoogeSort](https://en.wikipedia.org/wiki/Stooge_sort)
 - [CombSort](https://en.wikipedia.org/wiki/Comb_sort)
+- [RadixSort](https://en.wikipedia.org/wiki/Radix_sort)

@@ -33,6 +33,7 @@ object SortFactory {
             CYCLE -> CycleSort::class
             STOOGE -> StoogeSort::class
             COMB -> CombSort::class
+            RADIX -> RadixSort::class
             else -> throw RuntimeException("unexpected SortName: $sortName")
         }
     }
