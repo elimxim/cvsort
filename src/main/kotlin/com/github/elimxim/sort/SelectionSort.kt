@@ -45,7 +45,7 @@ class SelectionSort(
 
             if (i != minIdx) {
                 array.swap(i, minIdx)
-                script.select(setOf(i, minIdx))
+                script.swap(Pair(i, minIdx))
             }
         }
     }

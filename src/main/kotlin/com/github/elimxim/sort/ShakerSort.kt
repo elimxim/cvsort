@@ -53,7 +53,7 @@ class ShakerSort(
                 script.focus(i)
                 if (array[i] > array[i + 1]) {
                     array.swap(i, i + 1)
-                    script.select(setOf(i, i + 1))
+                    script.swap(Pair(i, i + 1))
                     newEndIndex = i
                 }
             }
@@ -65,7 +65,7 @@ class ShakerSort(
                 probe.increment(ITERATIONS, COMPARISONS)
                 script.focus(i)
                 if (array[i - 1] > array[i]) {
-                    script.select(setOf(i - 1, i))
+                    script.swap(Pair(i - 1, i))
                     array.swap(i - 1, i)
                     newBeginIndex = i
                 }

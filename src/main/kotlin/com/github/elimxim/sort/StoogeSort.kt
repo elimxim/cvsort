@@ -5,9 +5,9 @@ import com.github.elimxim.Probe.Increment.*
 
 @SortAlgorithm(
         timeComplexity = TimeComplexity(
-                worst = Complexity.ALMOST_CUBIC,
-                average = Complexity.ALMOST_CUBIC,
-                best = Complexity.ALMOST_CUBIC
+                worst = Complexity.TWO_THIRDS_CUBIC,
+                average = Complexity.TWO_THIRDS_CUBIC,
+                best = Complexity.TWO_THIRDS_CUBIC
         ),
         spaceComplexity = Complexity.LINEAR,
         pseudoCode = """
@@ -39,7 +39,7 @@ class StoogeSort (
         probe.increment(COMPARISONS)
         if (array[i] > array[j]) {
             array.swap(i, j)
-            script.select(setOf(i, j))
+            script.swap(Pair(i, j))
         }
 
         if (j - i + 1 > 2) {

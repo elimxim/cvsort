@@ -10,7 +10,7 @@ class ArrayShuffler(private val script: SortScript = NoOpSortScript()) {
             for (i in array.size - 1 downTo 1) {
                 val j = rnd.nextInt(i + 1)
                 array.swap(i, j)
-                script.select(setOf(i, j))
+                script.swap(Pair(i, j))
             }
             script.deselect()
         }

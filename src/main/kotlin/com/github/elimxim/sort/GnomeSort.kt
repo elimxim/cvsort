@@ -36,7 +36,7 @@ class GnomeSort(
             } else {
                 probe.increment(ARRAY_SWAPS)
                 array.swap(index - 1, index)
-                script.select(setOf(index - 1, index))
+                script.swap(Pair(index - 1, index))
                 index--
             }
         }
