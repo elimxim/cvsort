@@ -10,7 +10,7 @@ object CompareCommand {
     const val NAME = "compare"
 
     @Parameter(
-            description = "sorting algorithm names separated by a space",
+            description = "<name-1>, <name-2> [, ..., <name-10>]",
             splitter = SpaceParameterSplitter::class,
             variableArity = true,
             required = true

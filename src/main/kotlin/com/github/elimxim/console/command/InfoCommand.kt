@@ -9,7 +9,7 @@ object InfoCommand {
     const val NAME = "info"
 
     @Parameter(
-            description = "sorting algorithm names separated by a space",
+            description = "<name> [, <name-2>, ..., <name-20>]",
             splitter = SpaceParameterSplitter::class,
             variableArity = true,
             required = true

@@ -1,7 +1,7 @@
 package com.github.elimxim.sort
 
 import com.github.elimxim.*
-import com.github.elimxim.Probe.Increment.*
+import com.github.elimxim.Probe.Counter.*
 
 @SortAlgorithm(
         timeComplexity = TimeComplexity(
@@ -31,13 +31,13 @@ class InsertionSort(
 ) : Sort {
     override fun sort(array: IntArrayWrapper) {
         for (i in 1..<array.size()) {
+            probe.increment(ITERATIONS)
             val value = array[i]
             var j = i - 1
             script.line(Focus(i), Extra(value))
             val bulkMove = script.bulkMove()
-            probe.increment(COMPARISONS, ITERATIONS)
             while (j >= 0 && array[j] > value) {
-                probe.increment(ITERATIONS)
+                probe.increment(ITERATIONS, COMPARISONS)
                 array[j + 1] = array[j]
                 bulkMove.add(j, j + 1)
                 j--

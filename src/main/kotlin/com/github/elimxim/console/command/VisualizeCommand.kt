@@ -9,23 +9,23 @@ object VisualizeCommand {
     const val NAME = "visualize"
 
     @Parameter(
-            description = "name of the sorting algorithm",
+            description = "<name>",
             required = true
     )
     lateinit var sortName: String
 
     @Parameter(
             names = ["--speed", "-s"],
-            description = "sets the speed for the sorting visualisation: [slow, avg, fast]; " +
-                    "if set overrides the '--speedMillis' parameter",
+            description = "sets the speed for the sorting visualisation"
     )
-    var speed: String = SortSpeed.NONE.name.lowercase()
+    var speed: String = SortSpeed.KOALA.name.lowercase()
 
     @Parameter(
             names = ["--speedMillis", "--millis", "-m"],
-            description = "sets the speed in milliseconds for the sorting visualisation: [50..1000]"
+            description = "sets the speed in milliseconds for the sorting visualisation: [50..4000]",
+            hidden = true
     )
-    var speedMillis: String = SortSpeed.AVG.millis.toString()
+    var speedMillis: String = "0"
 
     @Parameter(
             names = ["--arrayLength", "-l"],

@@ -1,7 +1,7 @@
 package com.github.elimxim.sort
 
 import com.github.elimxim.*
-import com.github.elimxim.Probe.Increment.*
+import com.github.elimxim.Probe.Counter.*
 import kotlin.math.floor
 
 @SortAlgorithm(

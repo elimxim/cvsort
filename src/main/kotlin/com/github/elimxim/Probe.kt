@@ -9,7 +9,7 @@ class Probe {
     private var arrayWrites = AtomicLong()
     private var arraySwaps = AtomicLong()
 
-    enum class Increment {
+    enum class Counter {
         ITERATIONS,
         COMPARISONS,
         ARRAY_READS,
@@ -17,15 +17,25 @@ class Probe {
         ARRAY_SWAPS
     }
 
-    fun increment(vararg increments: Increment) {
-        increments.forEach { increment ->
-            when (increment) {
-                Increment.ITERATIONS -> iterations.incrementAndGet()
-                Increment.COMPARISONS -> comparisons.incrementAndGet()
-                Increment.ARRAY_READS -> arrayReads.incrementAndGet()
-                Increment.ARRAY_WRITES -> arrayWrites.incrementAndGet()
-                Increment.ARRAY_SWAPS -> arraySwaps.incrementAndGet()
-            }
+    fun increment(vararg counters: Counter) {
+        counters.forEach { counter ->
+            getCounter(counter).incrementAndGet()
+        }
+    }
+
+    fun decrement(vararg counters: Counter) {
+        counters.forEach { counter ->
+            getCounter(counter).decrementAndGet()
+        }
+    }
+
+    private fun getCounter(counter: Counter): AtomicLong {
+        return when (counter) {
+            Counter.ITERATIONS -> iterations
+            Counter.COMPARISONS -> comparisons
+            Counter.ARRAY_READS -> arrayReads
+            Counter.ARRAY_WRITES -> arrayWrites
+            Counter.ARRAY_SWAPS -> arraySwaps
         }
     }
 

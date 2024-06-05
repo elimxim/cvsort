@@ -10,7 +10,7 @@ import com.github.elimxim.console.command.VisualizeCommand
 
 fun main(args: Array<String>) {
     val jc = JCommander.newBuilder()
-            .programName("cvsort (Sorting Algorithm Comparator & Visualizer)")
+            .programName("cvsort")
             .addObject(MainCommand)
             .addCommand(CompareCommand.NAME, CompareCommand)
             .addCommand(VisualizeCommand.NAME, VisualizeCommand)
@@ -30,7 +30,12 @@ fun main(args: Array<String>) {
     }
 
     if (MainCommand.listSortNames) {
-        SortName.names().forEach { println(it) }
+        printSortNames()
+        return
+    }
+
+    if (MainCommand.listSpeeds) {
+        printSortSpeeds()
         return
     }
 
@@ -68,14 +73,10 @@ private fun processCompareCommand() {
 private fun processVisualizeCommand() {
     val sortName = SortName.determine(VisualizeCommand.sortName)
     val sortSpeed = SortSpeed.valueOf(VisualizeCommand.speed.uppercase())
-    val speedMillis = if (sortSpeed == SortSpeed.NONE) {
-        VisualizeCommand.speedMillis.toLong()
-    } else {
-        sortSpeed.millis
-    }
+    val speedMillis = VisualizeCommand.speedMillis.toLong()
 
     val visualizer = SortVisualizer(
-            speedMillis,
+            if (speedMillis != 0L) speedMillis else sortSpeed.millis,
             VisualizeCommand.arrayLength.toInt(),
             VisualizeCommand.infoDisabled.not()
     )
@@ -89,8 +90,20 @@ private fun processInfoCommand() {
     }
 
     if (sortNames.contains(SortName.ALL)) {
-       sortNames = SortName.realValues().toList()
+        sortNames = SortName.realValues().toList()
     }
 
     SortInfoShower().showInfo(sortNames)
+}
+
+private fun printSortNames() {
+    SortName.names().forEach { ConsolePrinter.printLine("- $it") }
+}
+
+private fun printSortSpeeds() {
+    SortSpeed.entries.sortedBy {
+        it.millis
+    }.forEach {
+        ConsolePrinter.printLine("- ${it.name.lowercase()}: ${it.millis} millis delay")
+    }
 }

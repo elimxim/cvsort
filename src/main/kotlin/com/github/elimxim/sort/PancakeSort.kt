@@ -1,7 +1,7 @@
 package com.github.elimxim.sort
 
 import com.github.elimxim.*
-import com.github.elimxim.Probe.Increment.*
+import com.github.elimxim.Probe.Counter.*
 
 @SortAlgorithm(
         timeComplexity = TimeComplexity(
@@ -58,9 +58,7 @@ class PancakeSort(
                 end--
             }
 
-            if (bulkMove.isNotEmpty()) {
-                script.line(bulkMove)
-            }
+            script.line(bulkMove)
         }
 
         var lastIdx = array.size()

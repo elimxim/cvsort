@@ -19,7 +19,7 @@ class InputVerifier(private val args: Array<String>) {
     fun verify(cmd: VisualizeCommand): Boolean {
         return checkSortName(cmd.sortName)
                 && checkSpeed(cmd.speed)
-                && checkSpeedMillis(cmd.speedMillis, min = 50, max = 1000)
+                && checkSpeedMillis(cmd.speedMillis, min = 0, max = 4000)
                 && checkArrayLength(cmd.arrayLength, min = 2, max = 30)
     }
 

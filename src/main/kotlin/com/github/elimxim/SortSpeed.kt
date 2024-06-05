@@ -1,10 +1,12 @@
 package com.github.elimxim
 
 enum class SortSpeed(val millis: Long) {
-    NONE(-1),
-    SLOW(1000),
-    AVG(500),
-    FAST(100);
+    SNAIL(4000),
+    SLOTH(2000),
+    TORTOISE(1000),
+    KOALA(500),
+    EMU(100),
+    CHEETAH(50);
 
     companion object {
         fun contains(name: String): Boolean {
