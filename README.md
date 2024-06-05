@@ -4,9 +4,10 @@ Console program for fun with sorting algorithms.
 
 ![logo](.img/logo.png)
 
-Contains two main commands:
-- **compare:** compares up to 10 sorting algorithms and shows their complexity and statistics
-- **visualize:** shows algorithm complexity, pseudocode and/or visualisation with statistics
+Commands:
+- **info**: shows information about one or more sorting algorithms such as complexity or pseudocode
+- **compare:** compares two or more sorting algorithms on a real array of size up to 2^32-1
+- **visualize:** visualizes the selected sorting algorithms
 
 What the visualisation looks like on the _BubbleSort_ example:
 
@@ -20,10 +21,73 @@ To see what the program can do, type:
 $ cvsort --help
 ```
 
-For example, visualisation of BubbleSort:
+<details>
+    <summary>Output</summary>
 
 ```shell
-$ cvsort visualize bubble
+      _____   _____  ___  ___ _____
+     / __\ \ / / __|/ _ \| _ \_   _|
+    | (__ \ V /\__ \ (_) |   / | |
+     \___| \_/ |___/\___/|_|_\ |_|
+_________________________________________
+Sorting Algorithm Comparator & Visualizer
+
+Usage: cvsort [options] [command]
+      [command options]
+  Options:
+    --usage, --help, -h
+      shows usage
+    --disableBanner, --noBanner, -nb
+      disables banner display
+      Default: false
+    --listNames, --names, -n
+      prints the available sorting algorithms
+      Default: false
+    --listSpeeds, --speeds, -s
+      prints the available visualisation speeds of sorting algorithms
+      Default: false
+  Commands:
+    compare      compares two or more sorting algorithms
+      Usage: compare [options] <name-1>, <name-2> [, ..., <name-10>]
+        Options:
+          --arrayFile, -f
+            a file to save the array before sorting
+            Default: array_2024-06-05-04-38-26-177.txt
+          --arrayLength, -l
+            array length: [2, 2^31)
+            Default: 40
+          --disableInfo, --noInfo, -ni
+            switches off the display of sorting algorithm comparison
+            information
+            Default: false
+          --printArray, -p
+            prints the array to the specified file before sorting
+            Default: false
+
+    visualize      visualizes the selected sorting algorithms
+      Usage: visualize [options] <name>
+        Options:
+          --arrayLength, -l
+            array length: [10, 30]
+            Default: 20
+          --disableInfo, --noInfo, -ni
+            switches off the display of information about the sorting
+            algorithm
+            Default: false
+          --speed, -s
+            sets the speed for the sorting visualisation
+            Default: koala
+
+    info      shows information about one or more sorting algorithms
+      Usage: info <name> [, <name-2>, ..., <name-20>]
+```
+
+</details>
+
+For example, information about BubbleSort:
+
+```shell
+$ cvsort info bubble
 ```
 
 <details>
@@ -56,6 +120,32 @@ for i in [0..n) do
         break
     end
 end
+```
+
+</details>
+
+Or visualisation of BubbleSort:
+
+```shell
+$ cvsort visualize bubble
+```
+
+<details>
+    <summary>Output</summary>
+
+```shell
+      _____   _____  ___  ___ _____
+     / __\ \ / / __|/ _ \| _ \_   _|
+    | (__ \ V /\__ \ (_) |   / | |
+     \___| \_/ |___/\___/|_|_\ |_|
+_________________________________________
+Sorting Algorithm Comparator & Visualizer
+
+┌───────────────┬───────────────┬───────────────┬───────────────┬──────────────┐
+│Algorithm      │Worst time     │Average time   │Best time      │Memory usage  │
+├───────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
+│BubbleSort     │O(n^2)         │Θ(n^2)         │Ω(n)           │O(1)          │
+└───────────────┴───────────────┴───────────────┴───────────────┴──────────────┘
 
                                 ▒▒
                               ▒▒▒▒
@@ -135,3 +225,4 @@ elapsed time: 23 ms
 - [StoogeSort](https://en.wikipedia.org/wiki/Stooge_sort)
 - [CombSort](https://en.wikipedia.org/wiki/Comb_sort)
 - [RadixSort](https://en.wikipedia.org/wiki/Radix_sort)
+- [ShellSort](https://en.wikipedia.org/wiki/Shellsort)
