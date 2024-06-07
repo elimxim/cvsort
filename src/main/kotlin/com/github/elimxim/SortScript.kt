@@ -17,7 +17,9 @@ interface SortScript {
     fun line(bulkMove: BulkMove)
     fun line(bulkMove: BulkMove, extra: Extra)
     fun bulkMove(): BulkMove
+    fun line(extra: Extra)
     fun line(nothing: Nothing)
+    fun ifEnabled(action: (SortScript) -> Unit)
     fun screenplay(): Screenplay
 }
 
@@ -25,7 +27,22 @@ class Focus(vararg val indexes: Int)
 class Select(vararg val indexes: Int)
 class Swap(val index1: Int, val index2: Int)
 class Move(val from: Int, val to: Int, val flash: Boolean = true)
-class Extra(val variable: Int)
+class Extra {
+    private val list: MutableList<Int> = ArrayList()
+
+    constructor(vararg values: Int) {
+        this.list.addAll(values.toList())
+    }
+
+    constructor(list: List<Int>) {
+        this.list.addAll(list)
+    }
+
+    fun array(): IntArray {
+        return list.toIntArray()
+    }
+}
+
 class Override(array: IntArray) {
     val array: IntArray
 
@@ -33,6 +50,7 @@ class Override(array: IntArray) {
         this.array = array.copyOf()
     }
 }
+
 class Nothing
 
 interface Screenplay : Queue<ScriptLine>
@@ -43,7 +61,7 @@ class ScreenplayImpl(lines: List<ScriptLine>)
 // not thread safe
 class ScriptLine(
         val array: IntArray,
-        val variable: Int? = null,
+        val extraArray: IntArray,
         val focused: Set<Int> = emptySet(),
         val selected: Set<Int> = emptySet(),
         val probeSnapshot: Probe.Snapshot
@@ -117,13 +135,26 @@ class SortScriptImpl(
         doBulkMove(bulkMove, extra)
     }
 
+    override fun line(extra: Extra) {
+        scriptLines.add(ScriptLine(
+                array = arrayWrapper.original(),
+                extraArray = extra.array(),
+                probeSnapshot = probe.snapshot()
+        ))
+    }
+
     override fun bulkMove(): BulkMove {
         return BulkMove(arrayWrapper.original())
+    }
+
+    override fun ifEnabled(action: (SortScript) -> Unit) {
+        action(this)
     }
 
     override fun line(nothing: Nothing) {
         scriptLines.add(ScriptLine(
                 array = arrayWrapper.original(),
+                extraArray = IntArray(0),
                 probeSnapshot = probe.snapshot()
         ))
     }
@@ -135,7 +166,7 @@ class SortScriptImpl(
     private fun doFocus(focus: Focus, extra: Extra? = null, override: Override? = null) {
         scriptLines.add(ScriptLine(
                 array = override?.array ?: arrayWrapper.original(),
-                variable = extra?.variable,
+                extraArray = extra?.array() ?: IntArray(0),
                 focused = focus.indexes.toSet(),
                 probeSnapshot = probe.snapshot()
         ))
@@ -144,7 +175,7 @@ class SortScriptImpl(
     private fun doSelect(select: Select, extra: Extra? = null, override: Override? = null) {
         scriptLines.add(ScriptLine(
                 array = override?.array ?: arrayWrapper.original(),
-                variable = extra?.variable,
+                extraArray = extra?.array() ?: IntArray(0),
                 selected = select.indexes.toSet(),
                 probeSnapshot = probe.snapshot()
         ))
@@ -157,6 +188,7 @@ class SortScriptImpl(
         } else {
             scriptLines.add(ScriptLine(
                     array = override?.array ?: arrayWrapper.original(),
+                    extraArray = IntArray(0),
                     focused = setOf(move.from),
                     selected = setOf(move.to),
                     probeSnapshot = probe.snapshot()
@@ -170,15 +202,15 @@ class SortScriptImpl(
 
             scriptLines.add(ScriptLine(
                     array = bulkMove.original,
-                    variable = extra?.variable,
+                    extraArray = extra?.array() ?: IntArray(0),
                     focused = moves.map { it.from }.toSet(),
                     probeSnapshot = probe.snapshot()
             ))
 
             scriptLines.add(ScriptLine(
                     array = arrayWrapper.original(),
-                    variable = extra?.variable,
-                    selected =  moves.map { it.to }.toSet(),
+                    extraArray = extra?.array() ?: IntArray(0),
+                    selected = moves.map { it.to }.toSet(),
                     probeSnapshot = probe.snapshot()
             ))
         }
@@ -219,11 +251,17 @@ class NoOpSortScript : SortScript {
     override fun line(bulkMove: BulkMove, extra: Extra) {
     }
 
+    override fun line(extra: Extra) {
+    }
+
     override fun line(nothing: Nothing) {
     }
 
     override fun bulkMove(): BulkMove {
         return BulkMove(IntArray(0))
+    }
+
+    override fun ifEnabled(action: (SortScript) -> Unit) {
     }
 
     override fun screenplay(): Screenplay {

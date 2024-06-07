@@ -4,23 +4,26 @@ import kotlin.math.max
 
 class ArrayView(
         private val array: IntArray,
-        private val variable: Int?,
+        private val extra: IntArray = IntArray(0),
         private val focused: Set<Int>,
         private val selected: Set<Int>,
 ) {
     fun lines(): List<String> {
-        val gridWidth = array.size + 3
-        val gridHeight = max(array.max(), variable ?: 0)
+        val gridWidth = array.size + 2 + extra.size
+        val gridHeight = max(
+                array.maxOrNull() ?: 0,
+                extra.maxOrNull() ?: 0
+        )
 
         val grid = Array(gridWidth) {
             Array(gridHeight) { SPACE }
         }
 
-        array.forEachIndexed { index, v ->
-            val column = grid[index]
-            val cell = if (selected.contains(index)) {
+        array.forEachIndexed { i, v ->
+            val column = grid[i]
+            val cell = if (selected.contains(i)) {
                 DARK_SHADE
-            } else if (focused.contains(index)) {
+            } else if (focused.contains(i)) {
                 MEDIUM_SHADE
             } else {
                 LIGHT_SHADE
@@ -29,9 +32,9 @@ class ArrayView(
             (0..<v).forEach { column[it] = cell }
         }
 
-        if (variable != null) {
-            val column = grid.last()
-            (0..<variable).forEach { column[it] = LIGHT_SHADE }
+        extra.forEachIndexed { i, v ->
+            val column = grid[array.size + 2 + i]
+            (0..<v).forEach { column[it] = LIGHT_SHADE }
         }
 
         return transpose(grid).apply {

@@ -35,6 +35,7 @@ object SortFactory {
             COMB -> CombSort::class
             RADIX -> RadixSort::class
             SHELL -> ShellSort::class
+            TREE -> TreeSort::class
             else -> throw RuntimeException("unexpected SortName: $sortName")
         }
     }

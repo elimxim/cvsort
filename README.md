@@ -218,7 +218,7 @@ elapsed time: 23 ms
 - [SelectionSort](https://en.wikipedia.org/wiki/Selection_sort)
 - [InsertionSort](https://en.wikipedia.org/wiki/Insertion_sort)
 - [GnomeSort](https://en.wikipedia.org/wiki/Gnome_sort)
-- [CocktailShakerSort](https://en.wikipedia.org/wiki/Cocktail_shaker_sort)
+- [ShakerSort](https://en.wikipedia.org/wiki/Cocktail_shaker_sort)
 - [OddEvenSort](https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort)
 - [PancakeSort](https://en.wikipedia.org/wiki/Pancake_sorting)
 - [CycleSort](https://en.wikipedia.org/wiki/Cycle_sort)
@@ -226,3 +226,4 @@ elapsed time: 23 ms
 - [CombSort](https://en.wikipedia.org/wiki/Comb_sort)
 - [RadixSort](https://en.wikipedia.org/wiki/Radix_sort)
 - [ShellSort](https://en.wikipedia.org/wiki/Shellsort)
+- [TreeSort](https://en.wikipedia.org/wiki/Tree_sort)

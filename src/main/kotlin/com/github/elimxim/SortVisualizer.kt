@@ -78,7 +78,7 @@ class SortVisualizer(
         val proveView = ProbeView(sortName, scriptLine.probeSnapshot)
         val arrayView = ArrayView(
                 array = scriptLine.array,
-                variable = scriptLine.variable,
+                extra = scriptLine.extraArray,
                 focused = scriptLine.focused,
                 selected = scriptLine.selected
         )

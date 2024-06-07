@@ -43,9 +43,9 @@ import com.github.elimxim.Probe.Counter.*
 class PancakeSort(
         private val probe: Probe,
         private val script: SortScript
-): Sort {
+) : Sort {
     override fun sort(array: IntArrayWrapper) {
-        val flip = fun (idx: Int) {
+        val flip = fun(idx: Int) {
             var start = 0
             var end = idx
             val bulkMove = script.bulkMove()
