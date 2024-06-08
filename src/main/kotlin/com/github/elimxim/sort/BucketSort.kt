@@ -28,30 +28,26 @@ import kotlin.math.sqrt
             add array[i] to buckets[x]
         end
         
-        for i in [0..k) do
-            # insertion sort
-            bucket = buckets[i]
-            m = length of bucket
-            for bi in [0..m) do
-                v = bucket[bi]
-                bj = bi - 1
-                while bj >= 0 and bucket[bj] > v do
-                    bucket[bj+1] = bucket[bj]
-                    bj--
-                end
-            
-                if bi != bj+1 then
-                    bucket[bj+1] = v
-                end
-            end
-        end
-        
         idx = 0
         for i in [0..k) do
             bucket = buckets[i]
             m = length of bucket
             for j in [0..m) do
                 array[idx++] = bucket[j]
+            end
+        end
+        
+        # insertion sort
+        for i in [0..n) do
+            v = array[i]
+            j = i - 1
+            while j >= 0 and array[j] > v do
+                array[j+1] = array[j]
+                j--
+            end
+            
+            if i != j+1 then
+                array[j+1] = v
             end
         end
         """
@@ -91,46 +87,32 @@ class BucketSort(
             }
         }
 
-        var index = 0
-        for (i in buckets.indices) {
-            probe.increment(ITERATIONS)
-            insertionSort(buckets[i], array, index)
-            index += buckets[i].size
-        }
-
         fillArray(array, buckets, true)
+        insertionSort(array)
     }
 
-    private fun insertionSort(list: MutableList<Int>, array: IntArrayWrapper, index: Int) {
-        for (i in 1..<list.size) {
+    private fun insertionSort(array: IntArrayWrapper) {
+        for (i in 1..<array.size()) {
             probe.increment(ITERATIONS)
-            val value = list[i]
+            val value = array[i]
             var j = i - 1
-            script.line(Focus(i + index), Extra(value))
+            script.line(Focus(i), Extra(value))
             val bulkMove = script.bulkMove()
-            while (j >= 0 && list[j] > value) {
+            while (j >= 0 && array[j] > value) {
                 probe.increment(ITERATIONS, COMPARISONS)
-                list[j + 1] = list[j]
-                script.ifEnabled {
-                    array[j + 1 + index] = list[j]
-                    bulkMove.add(j + index, j + 1 + index)
-                }
+                array[j + 1] = array[j]
+                bulkMove.add(j, j + 1)
                 j--
             }
 
-            script.ifEnabled {
-                if (bulkMove.isNotEmpty()) {
-                    array[j + 1 + index] = 0
-                    it.line(bulkMove, Extra(value))
-                }
+            if (bulkMove.isNotEmpty()) {
+                array[j + 1] = 0
+                script.line(bulkMove, Extra(value))
             }
 
             if (i != j + 1) {
-                list[j + 1] = value
-                script.ifEnabled {
-                    array[j + 1 + index] = value
-                    it.line(Select(j + 1 + index), Extra(value))
-                }
+                array[j + 1] = value
+                script.line(Select(j + 1), Extra(value))
             }
         }
         script.line(Extra(0))
