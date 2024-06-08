@@ -1,4 +1,4 @@
-package com.github.elimxim.console
+package com.github.elimxim.console.view
 
 import kotlin.math.max
 

@@ -19,7 +19,7 @@ class InputVerifier(private val args: Array<String>) {
     fun verify(cmd: VisualizeCommand): Boolean {
         return checkSortName(cmd.sortName)
                 && checkSpeed(cmd.speed)
-                && checkSpeedMillis(cmd.speedMillis, min = 0, max = 4000)
+                && checkSpeedMillis(cmd.speedMillis, min = 50, max = 4000)
                 && checkArrayLength(cmd.arrayLength, min = 2, max = 30)
     }
 
@@ -33,7 +33,7 @@ class InputVerifier(private val args: Array<String>) {
                 printError("unknown sorting algorithm name: $name")
                 val closeName = SortName.find(name, camelCase = true, ignoreCase = true)
                 if (closeName != null) {
-                    ConsolePrinter.printLine("SUGGESTION: you might have meant: ${closeName.camelCase()} or ${closeName.name}")
+                    Console.printLine("SUGGESTION: you might have meant: ${closeName.camelCase()} or ${closeName.name}")
                 }
                 return false
             }
@@ -145,15 +145,15 @@ class InputVerifier(private val args: Array<String>) {
 
     private fun printError(msg: String) {
         printInput()
-        ConsolePrinter.printError(msg)
+        Console.printError(msg)
     }
 
     private fun printWarning(msg: String) {
         printInput()
-        ConsolePrinter.printWarning(msg)
+        Console.printWarning(msg)
     }
 
     private fun printInput() {
-        ConsolePrinter.printLine("INPUT: " + args.joinToString(separator = " "))
+        Console.printLine("INPUT: " + args.joinToString(separator = " "))
     }
 }

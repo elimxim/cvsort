@@ -1,4 +1,4 @@
-package com.github.elimxim.console
+package com.github.elimxim.console.view
 
 import com.github.elimxim.Probe
 import com.github.elimxim.SortName

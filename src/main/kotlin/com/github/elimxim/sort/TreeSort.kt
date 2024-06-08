@@ -69,23 +69,23 @@ class TreeSort(
             script.ifEnabled {
                 traverseTree(tree.root, array, 0, false)
                 val remaining = original.drop(i + 1).toIntArray() + IntArray(1)
-                script.line(Extra(*remaining))
+                it.line(Extra(*remaining))
             }
         }
 
         traverseTree(tree.root, array, 0, true)
     }
 
-    private fun traverseTree(node: Tree.Node?, array: IntArrayWrapper, index: Int, countIterations: Boolean): Int {
-        if (countIterations) {
+    private fun traverseTree(node: Tree.Node?, array: IntArrayWrapper, index: Int, probeEnabled: Boolean): Int {
+        if (probeEnabled) {
             probe.increment(ITERATIONS)
         }
 
         var newIndex = index
         if (node != null) {
-            newIndex = traverseTree(node.left, array, newIndex, countIterations)
+            newIndex = traverseTree(node.left, array, newIndex, probeEnabled)
             array[newIndex++] = node.value
-            newIndex = traverseTree(node.right, array, newIndex, countIterations)
+            newIndex = traverseTree(node.right, array, newIndex, probeEnabled)
         }
         return newIndex
     }

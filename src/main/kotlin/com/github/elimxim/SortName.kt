@@ -14,7 +14,8 @@ enum class SortName {
     COMB,
     RADIX,
     SHELL,
-    TREE;
+    TREE,
+    BUCKET;
 
     fun canonical(): String {
         return camelCase().plus("Sort")

@@ -1,7 +1,7 @@
 package com.github.elimxim
 
 import com.beust.jcommander.JCommander
-import com.github.elimxim.console.ConsolePrinter
+import com.github.elimxim.console.Console
 import com.github.elimxim.console.InputVerifier
 import com.github.elimxim.console.command.CompareCommand
 import com.github.elimxim.console.command.InfoCommand
@@ -20,8 +20,8 @@ fun main(args: Array<String>) {
     jc.parse(*args)
 
     if (MainCommand.bannerDisabled.not()) {
-        ConsolePrinter.printBanner()
-        ConsolePrinter.printEmptyLine()
+        Console.printBanner()
+        Console.printEmptyLine()
     }
 
     if (MainCommand.usage) {
@@ -97,13 +97,13 @@ private fun processInfoCommand() {
 }
 
 private fun printSortNames() {
-    SortName.names().forEach { ConsolePrinter.printLine("- $it") }
+    SortName.names().forEach { Console.printLine("- $it") }
 }
 
 private fun printSortSpeeds() {
     SortSpeed.entries.sortedBy {
         it.millis
     }.forEach {
-        ConsolePrinter.printLine("- ${it.name.lowercase()}: ${it.millis} millis delay")
+        Console.printLine("- ${it.name.lowercase()}: ${it.millis} millis delay")
     }
 }

@@ -1,9 +1,9 @@
 package com.github.elimxim
 
-import com.github.elimxim.console.SortView
-import com.github.elimxim.console.ArrayView
-import com.github.elimxim.console.ConsolePrinter
-import com.github.elimxim.console.ProbeView
+import com.github.elimxim.console.view.SortView
+import com.github.elimxim.console.view.ArrayView
+import com.github.elimxim.console.Console
+import com.github.elimxim.console.view.ProbeView
 import kotlinx.coroutines.*
 
 class SortVisualizer(
@@ -87,7 +87,7 @@ class SortVisualizer(
         lines.addAll(arrayView.lines())
         lines.add("")
         lines.addAll(proveView.lines())
-        ConsolePrinter.printLines(lines, refresh)
+        Console.printLines(lines, refresh)
     }
 
     private companion object {

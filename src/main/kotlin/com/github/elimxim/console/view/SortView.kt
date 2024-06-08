@@ -1,6 +1,7 @@
-package com.github.elimxim.console
+package com.github.elimxim.console.view
 
 import com.github.elimxim.*
+import com.github.elimxim.console.Console
 import de.vandermeer.asciitable.AsciiTable
 import kotlin.reflect.full.findAnnotation
 
@@ -42,10 +43,10 @@ class SortView {
             content.forEach { table.addRow(it) }
             table.addRule()
 
-            ConsolePrinter.printLines(table.renderAsCollection().toList())
-            ConsolePrinter.printEmptyLine()
+            Console.printLines(table.renderAsCollection().toList())
+            Console.printEmptyLine()
         } else {
-            ConsolePrinter.printError("algorithm complexity is not available")
+            Console.printError("algorithm complexity is not available")
         }
     }
 

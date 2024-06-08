@@ -1,8 +1,8 @@
 package com.github.elimxim
 
-import com.github.elimxim.console.SortView
-import com.github.elimxim.console.ConsolePrinter
-import com.github.elimxim.console.ProbeView
+import com.github.elimxim.console.view.SortView
+import com.github.elimxim.console.Console
+import com.github.elimxim.console.view.ProbeView
 import kotlinx.coroutines.*
 import java.nio.file.Path
 import kotlin.time.Duration
@@ -32,7 +32,7 @@ class SortComparator(
     }
 
     private fun doCompare(sortNames: List<SortName>, array: IntArray) {
-        ConsolePrinter.printLine("array size: ${array.size}")
+        Console.printLine("array size: ${array.size}")
 
         val sortProbes = sortNames
                 .sortedBy { it.ordinal }
@@ -72,6 +72,6 @@ class SortComparator(
             lines.addAll(ProbeView(it.first, it.second.snapshot()).lines())
         }
 
-        ConsolePrinter.printLines(lines.toList(), refresh)
+        Console.printLines(lines.toList(), refresh)
     }
 }

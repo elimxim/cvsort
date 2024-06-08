@@ -1,7 +1,7 @@
 package com.github.elimxim
 
-import com.github.elimxim.console.ConsolePrinter
-import com.github.elimxim.console.SortView
+import com.github.elimxim.console.Console
+import com.github.elimxim.console.view.SortView
 import kotlin.reflect.full.findAnnotation
 
 class SortInfoShower {
@@ -22,13 +22,13 @@ class SortInfoShower {
         if (anno != null) {
             val text = anno.pseudoCode.trimIndent()
             if (text.isNotEmpty()) {
-                ConsolePrinter.printLine(text)
-                ConsolePrinter.printEmptyLine()
+                Console.printLine(text)
+                Console.printEmptyLine()
             } else {
-                ConsolePrinter.printError("pseudo code is not implemented")
+                Console.printError("pseudo code is not implemented")
             }
         } else {
-            ConsolePrinter.printError("pseudo code is not implemented")
+            Console.printError("pseudo code is not implemented")
         }
     }
 }

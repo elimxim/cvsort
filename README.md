@@ -227,3 +227,4 @@ elapsed time: 23 ms
 - [RadixSort](https://en.wikipedia.org/wiki/Radix_sort)
 - [ShellSort](https://en.wikipedia.org/wiki/Shellsort)
 - [TreeSort](https://en.wikipedia.org/wiki/Tree_sort)
+- [BucketSort](https://en.wikipedia.org/wiki/Bucket_sort)

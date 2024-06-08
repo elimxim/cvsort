@@ -1,6 +1,6 @@
 package com.github.elimxim.console
 
-object ConsolePrinter {
+object Console {
     private val banner = """
           _____   _____  ___  ___ _____ 
          / __\ \ / / __|/ _ \| _ \_   _|
