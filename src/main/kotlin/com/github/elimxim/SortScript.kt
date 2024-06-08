@@ -20,27 +20,26 @@ interface SortScript {
     fun line(extra: Extra)
     fun line(nothing: Nothing)
     fun ifEnabled(action: (SortScript) -> Unit)
-    fun screenplay(): Screenplay
+    fun scene(): Scene
 }
 
-class Focus(vararg val indexes: Int)
-class Select(vararg val indexes: Int)
+class Focus(val indexes: Set<Int> = emptySet()) {
+    constructor(vararg indexes: Int) : this(indexes.toSet())
+}
+
+class Select(val indexes: Set<Int> = emptySet()) {
+    constructor(vararg indexes: Int) : this(indexes.toSet())
+}
+
 class Swap(val index1: Int, val index2: Int)
 class Move(val from: Int, val to: Int, val flash: Boolean = true)
-class Extra {
-    private val list: MutableList<Int> = ArrayList()
-
-    constructor(vararg values: Int) {
-        this.list.addAll(values.toList())
-    }
-
-    constructor(list: List<Int>) {
-        this.list.addAll(list)
-    }
-
-    fun array(): IntArray {
-        return list.toIntArray()
-    }
+class Extra(
+        val array: IntArray,
+        val focus: Focus = Focus(),
+        val select: Select = Select()
+) {
+    constructor(vararg values: Int) : this(values.toList().toIntArray())
+    constructor(list: List<Int>) : this(list.toIntArray())
 }
 
 class Override(array: IntArray) {
@@ -53,18 +52,19 @@ class Override(array: IntArray) {
 
 class Nothing
 
-interface Screenplay : Queue<ScriptLine>
-
-class ScreenplayImpl(lines: List<ScriptLine>)
-    : Screenplay, LinkedList<ScriptLine>(lines)
+interface Scene : Queue<Frame>
+class SceneImpl(lines: List<Frame>) : Scene, LinkedList<Frame>(lines)
 
 // not thread safe
-class ScriptLine(
-        val array: IntArray,
-        val extraArray: IntArray,
-        val focused: Set<Int> = emptySet(),
-        val selected: Set<Int> = emptySet(),
-        val probeSnapshot: Probe.Snapshot
+class Frame(val main: Data,
+            val extra: Data,
+            val probe: Probe.Snapshot
+)
+
+// not thread safe
+class Data(val array: IntArray,
+           val focused: Set<Int> = emptySet(),
+           val selected: Set<Int> = emptySet()
 )
 
 // not thread safe
@@ -89,57 +89,60 @@ class SortScriptImpl(
         private val probe: Probe,
         private val arrayWrapper: IntArrayWrapper
 ) : SortScript {
-    private val scriptLines: MutableList<ScriptLine> = ArrayList()
+    private val frames: MutableList<Frame> = ArrayList()
 
     override fun line(focus: Focus) {
-        doFocus(focus)
+        addFrame(focus = focus)
     }
 
     override fun line(focus: Focus, extra: Extra) {
-        doFocus(focus, extra = extra)
+        addFrame(focus = focus, extra = extra)
     }
 
     override fun line(focus: Focus, override: Override) {
-        doFocus(focus, override = override)
+        addFrame(focus = focus, override = override)
     }
 
     override fun line(select: Select) {
-        doSelect(select)
+        addFrame(select = select)
     }
 
     override fun line(select: Select, extra: Extra) {
-        doSelect(select, extra = extra)
+        addFrame(select = select, extra = extra)
     }
 
     override fun line(select: Select, override: Override) {
-        doSelect(select, override = override)
+        addFrame(select = select, override = override)
     }
 
     override fun line(swap: Swap) {
-        doSelect(Select(swap.index1, swap.index2))
+        addFrame(select = Select(swap.index1, swap.index2))
     }
 
     override fun line(move: Move) {
-        doMove(move)
+        addFrame(move)
     }
 
     override fun line(move: Move, override: Override) {
-        doMove(move, override)
+        addFrame(move, override)
     }
 
     override fun line(bulkMove: BulkMove) {
-        doBulkMove(bulkMove)
+        addFrame(bulkMove)
     }
 
     override fun line(bulkMove: BulkMove, extra: Extra) {
-        doBulkMove(bulkMove, extra)
+        addFrame(bulkMove, extra)
     }
 
     override fun line(extra: Extra) {
-        scriptLines.add(ScriptLine(
+        frames.add(Frame(main = Data(
                 array = arrayWrapper.original(),
-                extraArray = extra.array(),
-                probeSnapshot = probe.snapshot()
+        ), extra = Data(
+                array = extra.array,
+                focused = extra.focus.indexes,
+                selected = extra.select.indexes
+        ), probe = probe.snapshot()
         ))
     }
 
@@ -152,66 +155,69 @@ class SortScriptImpl(
     }
 
     override fun line(nothing: Nothing) {
-        scriptLines.add(ScriptLine(
-                array = arrayWrapper.original(),
-                extraArray = IntArray(0),
-                probeSnapshot = probe.snapshot()
+        frames.add(Frame(
+                main = Data(arrayWrapper.original()),
+                extra = Data(IntArray(0)),
+                probe = probe.snapshot()
         ))
     }
 
-    override fun screenplay(): Screenplay {
-        return ScreenplayImpl(scriptLines)
+    override fun scene(): Scene {
+        return SceneImpl(frames)
     }
 
-    private fun doFocus(focus: Focus, extra: Extra? = null, override: Override? = null) {
-        scriptLines.add(ScriptLine(
+    private fun addFrame(focus: Focus? = null, select: Select? = null,
+                         extra: Extra? = null, override: Override? = null) {
+        frames.add(Frame(main = Data(
                 array = override?.array ?: arrayWrapper.original(),
-                extraArray = extra?.array() ?: IntArray(0),
-                focused = focus.indexes.toSet(),
-                probeSnapshot = probe.snapshot()
+                focused = focus?.indexes ?: emptySet(),
+                selected = select?.indexes ?: emptySet()
+        ), extra = Data(
+                array = extra?.array ?: IntArray(0),
+                focused = extra?.focus?.indexes ?: emptySet(),
+                selected = extra?.select?.indexes ?: emptySet()
+        ), probe = probe.snapshot()
         ))
     }
 
-    private fun doSelect(select: Select, extra: Extra? = null, override: Override? = null) {
-        scriptLines.add(ScriptLine(
-                array = override?.array ?: arrayWrapper.original(),
-                extraArray = extra?.array() ?: IntArray(0),
-                selected = select.indexes.toSet(),
-                probeSnapshot = probe.snapshot()
-        ))
-    }
-
-    private fun doMove(move: Move, override: Override? = null) {
+    private fun addFrame(move: Move, override: Override? = null) {
         if (move.flash) {
-            doFocus(Focus(move.from), override = override)
-            doSelect(Select(move.to), override = override)
+            addFrame(focus = Focus(move.from), override = override)
+            addFrame(select = Select(move.to), override = override)
         } else {
-            scriptLines.add(ScriptLine(
+            frames.add(Frame(main = Data(
                     array = override?.array ?: arrayWrapper.original(),
-                    extraArray = IntArray(0),
                     focused = setOf(move.from),
-                    selected = setOf(move.to),
-                    probeSnapshot = probe.snapshot()
+                    selected = setOf(move.to)
+            ), extra = Data(
+                    array = IntArray(0)
+            ), probe = probe.snapshot()
             ))
         }
     }
 
-    private fun doBulkMove(bulkMove: BulkMove, extra: Extra? = null) {
+    private fun addFrame(bulkMove: BulkMove, extra: Extra? = null) {
         if (bulkMove.isNotEmpty()) {
             val moves = bulkMove.moves()
 
-            scriptLines.add(ScriptLine(
+            frames.add(Frame(main = Data(
                     array = bulkMove.original,
-                    extraArray = extra?.array() ?: IntArray(0),
                     focused = moves.map { it.from }.toSet(),
-                    probeSnapshot = probe.snapshot()
+            ), extra = Data(
+                    array = extra?.array ?: IntArray(0),
+                    focused = extra?.focus?.indexes ?: emptySet(),
+                    selected = extra?.select?.indexes ?: emptySet()
+            ), probe = probe.snapshot()
             ))
 
-            scriptLines.add(ScriptLine(
+            frames.add(Frame(main = Data(
                     array = arrayWrapper.original(),
-                    extraArray = extra?.array() ?: IntArray(0),
                     selected = moves.map { it.to }.toSet(),
-                    probeSnapshot = probe.snapshot()
+            ), extra = Data(
+                    array = extra?.array ?: IntArray(0),
+                    focused = extra?.focus?.indexes ?: emptySet(),
+                    selected = extra?.select?.indexes ?: emptySet()
+            ), probe = probe.snapshot()
             ))
         }
     }
@@ -264,7 +270,7 @@ class NoOpSortScript : SortScript {
     override fun ifEnabled(action: (SortScript) -> Unit) {
     }
 
-    override fun screenplay(): Screenplay {
+    override fun scene(): Scene {
         throw UnsupportedOperationException("no op")
     }
 }

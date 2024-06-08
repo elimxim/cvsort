@@ -54,38 +54,29 @@ class TreeSort(
         private val script: SortScript
 ) : Sort {
     override fun sort(array: IntArrayWrapper) {
-        val original = array.original()
-        script.ifEnabled {
-            for (i in 0..<array.size()) {
-                it.line(Focus(i), Extra(original.take(i + 1)))
-                array[i] = 0
-            }
-        }
-
         val tree = Tree(probe)
-        for (i in original.indices) {
+        for (i in 0..<array.size()) {
             probe.increment(ITERATIONS)
-            tree.add(original[i])
+            tree.add(array[i])
             script.ifEnabled {
-                traverseTree(tree.root, array, 0, false)
-                val remaining = original.drop(i + 1).toIntArray() + IntArray(1)
-                it.line(Extra(*remaining))
+                ScriptAction(it, i).doAction(tree)
             }
         }
 
-        traverseTree(tree.root, array, 0, true)
+        traverseTree(tree.root, array, 0)
     }
 
-    private fun traverseTree(node: Tree.Node?, array: IntArrayWrapper, index: Int, probeEnabled: Boolean): Int {
-        if (probeEnabled) {
-            probe.increment(ITERATIONS)
-        }
-
+    private fun traverseTree(node: Tree.Node?, array: IntArrayWrapper, index: Int): Int {
+        probe.increment(ITERATIONS)
         var newIndex = index
         if (node != null) {
-            newIndex = traverseTree(node.left, array, newIndex, probeEnabled)
-            array[newIndex++] = node.value
-            newIndex = traverseTree(node.right, array, newIndex, probeEnabled)
+            newIndex = traverseTree(node.left, array, newIndex)
+
+            array[newIndex] = node.value
+            script.line(Focus(newIndex))
+            newIndex++
+
+            newIndex = traverseTree(node.right, array, newIndex)
         }
         return newIndex
     }
@@ -118,7 +109,48 @@ class TreeSort(
 
         class Node(val value: Int,
                    var left: Node? = null,
-                   var right: Node? = null
-        )
+                   var right: Node? = null) {
+            fun isLeaf(): Boolean {
+                return left == null && right == null
+            }
+        }
+    }
+
+    private class ScriptAction(
+            private val script: SortScript,
+            private val index: Int
+    ) {
+        val array: IntArray = IntArray(index + 1)
+        val focused: MutableSet<Int> = HashSet()
+        val selected: MutableSet<Int> = HashSet()
+
+        fun doAction(tree: Tree) {
+            val rootValue = tree.root!!.value
+
+            traverseTree(tree.root, array, rootValue, 0)
+            script.line(Focus(index), Extra(
+                    array = array,
+                    focus = Focus(focused),
+                    select = Select(selected)
+            ))
+        }
+
+        private fun traverseTree(node: Tree.Node?, array: IntArray, rootValue: Int, index: Int): Int {
+            var newIndex = index
+            if (node != null) {
+                newIndex = traverseTree(node.left, array, rootValue, newIndex)
+
+                array[newIndex] = node.value
+                if (node.value == rootValue) {
+                    selected.add(newIndex)
+                } else if (node.isLeaf().not()) {
+                    focused.add(newIndex)
+                }
+                newIndex++
+
+                newIndex = traverseTree(node.right, array, rootValue, newIndex)
+            }
+            return newIndex
+        }
     }
 }

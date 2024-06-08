@@ -4,12 +4,14 @@ import kotlin.math.max
 
 class ArrayView(
         private val array: IntArray,
-        private val extra: IntArray = IntArray(0),
         private val focused: Set<Int>,
         private val selected: Set<Int>,
+        private val extra: IntArray,
+        private val extraFocused: Set<Int>,
+        private val extraSelected: Set<Int>
 ) {
     fun lines(): List<String> {
-        val gridWidth = array.size + 2 + extra.size
+        val gridWidth = array.size + GAP + extra.size
         val gridHeight = max(
                 array.maxOrNull() ?: 0,
                 extra.maxOrNull() ?: 0
@@ -21,27 +23,33 @@ class ArrayView(
 
         array.forEachIndexed { i, v ->
             val column = grid[i]
-            val cell = if (selected.contains(i)) {
-                DARK_SHADE
-            } else if (focused.contains(i)) {
-                MEDIUM_SHADE
-            } else {
-                LIGHT_SHADE
+            val j = column.size - 1
+            (j downTo j - v + 1).forEach {
+                column[it] = cell(i, selected, focused)
             }
-
-            (0..<v).forEach { column[it] = cell }
         }
 
         extra.forEachIndexed { i, v ->
-            val column = grid[array.size + 2 + i]
-            (0..<v).forEach { column[it] = LIGHT_SHADE }
+            val column = grid[array.size + GAP + i]
+            val j = column.size - 1
+            (j downTo j - v + 1).forEach {
+                column[it] = cell(i, extraSelected, extraFocused)
+            }
         }
 
-        return transpose(grid).apply {
-            reverse()
-        }.map {
+        return transpose(grid).map {
             it.joinToString(prefix = "  ", separator = "")
         }.toList()
+    }
+
+    private fun cell(index: Int, selected: Set<Int>, focused: Set<Int>): String {
+        return if (selected.contains(index)) {
+            DARK_SHADE
+        } else if (focused.contains(index)) {
+            MEDIUM_SHADE
+        } else {
+            LIGHT_SHADE
+        }
     }
 
     private fun transpose(grid: Array<Array<String>>): Array<Array<String>> {
@@ -66,5 +74,6 @@ class ArrayView(
         const val LIGHT_SHADE = "\u2591\u2591"
         const val MEDIUM_SHADE = "\u2592\u2592"
         const val DARK_SHADE = "\u2593\u2593"
+        const val GAP = 2
     }
 }

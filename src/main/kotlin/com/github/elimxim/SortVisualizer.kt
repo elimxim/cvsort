@@ -38,27 +38,34 @@ class SortVisualizer(
         val sort = SortFactory.instance(sortName, probe, script)
         sort.sort(arrayWrapper)
 
-        val screenplay = script.screenplay()
-        while (screenplay.isNotEmpty()) {
+        var maxExtraSize = 0
+        val scene = script.scene()
+        while (scene.isNotEmpty()) {
             delay(speedMillis)
-            printScriptLine(sortName, screenplay.poll(), refresh = true)
+            val frame = scene.poll()
+            if (frame.extra.array.size > maxExtraSize) {
+                maxExtraSize = frame.extra.array.size
+            }
+            printFrame(sortName, frame, refresh = true)
         }
 
         val ending = SortScriptImpl(probe, arrayWrapper)
-        printEnding(sortName, ending, array)
+        printEnding(sortName, ending, array, maxExtraSize)
     }
 
     private suspend fun printOpening(sortName: SortName, opening: SortScript, array: IntArray) {
         ArrayShuffler(opening).shuffle(array)
-        val screenplay = opening.screenplay()
-        printScriptLine(sortName, screenplay.poll())
-        while (screenplay.isNotEmpty()) {
+        val scene = opening.scene()
+        printFrame(sortName, scene.poll())
+        while (scene.isNotEmpty()) {
             delay(OPENING_DELAY)
-            printScriptLine(sortName, screenplay.poll(), refresh = true)
+            printFrame(sortName, scene.poll(), refresh = true)
         }
     }
 
-    private suspend fun printEnding(sortName: SortName, ending: SortScript, array: IntArray) {
+    private suspend fun printEnding(sortName: SortName, ending: SortScript, array: IntArray, maxExtraSize: Int) {
+        ending.line(Extra(array = IntArray(maxExtraSize)))
+
         for (i in array.indices) {
             ending.line(Focus(i))
         }
@@ -67,20 +74,22 @@ class SortVisualizer(
             indexes.add(i)
             ending.line(Focus(*indexes.toIntArray()))
         }
-        val screenplay = ending.screenplay()
-        while (screenplay.isNotEmpty()) {
+        val scene = ending.scene()
+        while (scene.isNotEmpty()) {
             delay(ENDING_DELAY)
-            printScriptLine(sortName, screenplay.poll(), refresh = true)
+            printFrame(sortName, scene.poll(), refresh = true)
         }
     }
 
-    private fun printScriptLine(sortName: SortName, scriptLine: ScriptLine, refresh: Boolean = false) {
-        val proveView = ProbeView(sortName, scriptLine.probeSnapshot)
+    private fun printFrame(sortName: SortName, frame: Frame, refresh: Boolean = false) {
+        val proveView = ProbeView(sortName, frame.probe)
         val arrayView = ArrayView(
-                array = scriptLine.array,
-                extra = scriptLine.extraArray,
-                focused = scriptLine.focused,
-                selected = scriptLine.selected
+                array = frame.main.array,
+                focused = frame.main.focused,
+                selected = frame.main.selected,
+                extra = frame.extra.array,
+                extraFocused = frame.extra.focused,
+                extraSelected = frame.extra.selected
         )
 
         val lines = mutableListOf<String>()
