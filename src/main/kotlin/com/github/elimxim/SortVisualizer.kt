@@ -82,20 +82,21 @@ class SortVisualizer(
     }
 
     private fun printFrame(sortName: SortName, frame: Frame, refresh: Boolean = false) {
-        val proveView = ProbeView(sortName, frame.probe)
+        val probeView = ProbeView(sortName, frame.probe)
         val arrayView = ArrayView(
                 array = frame.main.array,
                 focused = frame.main.focused,
                 selected = frame.main.selected,
                 extra = frame.extra.array,
                 extraFocused = frame.extra.focused,
-                extraSelected = frame.extra.selected
+                extraSelected = frame.extra.selected,
+                height = arrayLength
         )
 
         val lines = mutableListOf<String>()
         lines.addAll(arrayView.lines())
         lines.add("")
-        lines.addAll(proveView.lines())
+        lines.addAll(probeView.lines())
         Console.printLines(lines, refresh)
     }
 

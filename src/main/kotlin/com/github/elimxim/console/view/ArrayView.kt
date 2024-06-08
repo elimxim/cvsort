@@ -1,24 +1,19 @@
 package com.github.elimxim.console.view
 
-import kotlin.math.max
-
 class ArrayView(
         private val array: IntArray,
         private val focused: Set<Int>,
         private val selected: Set<Int>,
         private val extra: IntArray,
         private val extraFocused: Set<Int>,
-        private val extraSelected: Set<Int>
+        private val extraSelected: Set<Int>,
+        private val height: Int,
 ) {
     fun lines(): List<String> {
         val gridWidth = array.size + GAP + extra.size
-        val gridHeight = max(
-                array.maxOrNull() ?: 0,
-                extra.maxOrNull() ?: 0
-        )
 
         val grid = Array(gridWidth) {
-            Array(gridHeight) { SPACE }
+            Array(height) { SPACE }
         }
 
         array.forEachIndexed { i, v ->
@@ -38,7 +33,7 @@ class ArrayView(
         }
 
         return transpose(grid).map {
-            it.joinToString(prefix = "  ", separator = "")
+            it.joinToString(prefix = SPACE, separator = "")
         }.toList()
     }
 
