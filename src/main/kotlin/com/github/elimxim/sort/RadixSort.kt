@@ -52,27 +52,25 @@ class RadixSort(
 ) : Sort {
     override fun sort(array: IntArrayWrapper) {
         var max = array[0]
-        script.line(Focus(0), Extra(max))
         for (i in 1..<array.size()) {
             probe.increment(ITERATIONS, COMPARISONS)
             if (array[i] > max) {
                 max = array[i]
             }
-            script.line(Focus(i), Extra(max))
         }
 
         var exp = 1
         while ((max / exp) > 0) {
             probe.increment(ITERATIONS)
-            val output = array.original()
+            val output = IntArray(array.size())
             val buckets = IntArray(10)
-            val bucket = fun(i: Int): Int {
+            val x = fun(i: Int): Int {
                 return (array[i] / exp) % 10
             }
 
             for (i in 0..<array.size()) {
                 probe.increment(ITERATIONS)
-                buckets[bucket(i)]++
+                buckets[x(i)]++
             }
 
             for (i in 1..<buckets.size) {
@@ -82,16 +80,19 @@ class RadixSort(
 
             for (i in array.size() - 1 downTo 0) {
                 probe.increment(ITERATIONS)
-                script.line(Focus(i), Override(output))
-                val index = buckets[bucket(i)] - 1
+                val index = buckets[x(i)] - 1
                 output[index] = array[i]
-                script.line(Move(i, index, flash = false), Override(output))
-                buckets[bucket(i)]--
+                script.line(Focus(i), Extra(output, select = Select(index)))
+                buckets[x(i)]--
             }
 
-            for (i in 0..<array.size()) {
+            for (i in array.size() - 1 downTo 0) {
                 probe.increment(ITERATIONS)
                 array[i] = output[i]
+                script.ifEnabled {
+                    it.line(Select(i), Extra(output, Focus(i)))
+                    output[i] = 0
+                }
             }
 
             exp *= 10

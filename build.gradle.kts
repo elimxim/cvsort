@@ -22,7 +22,7 @@ tasks.test {
         showCauses = true
         showStackTraces = true
         showStandardStreams = true
-        events("started", "passed", "skipped", "failed")
+        events("failed")
     }
 }
 

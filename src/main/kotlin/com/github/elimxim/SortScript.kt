@@ -33,11 +33,17 @@ class Select(val indexes: Set<Int> = emptySet()) {
 
 class Swap(val index1: Int, val index2: Int)
 class Move(val from: Int, val to: Int, val flash: Boolean = true)
-class Extra(
-        val array: IntArray,
-        val focus: Focus = Focus(),
-        val select: Select = Select()
-) {
+class Extra(array: IntArray, focus: Focus = Focus(), select: Select = Select()) {
+    val array: IntArray
+    val focus: Focus
+    val select: Select
+
+    init {
+        this.array = array.copyOf()
+        this.focus = focus
+        this.select = select
+    }
+
     constructor(vararg values: Int) : this(values.toList().toIntArray())
 }
 
