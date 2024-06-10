@@ -9,9 +9,9 @@ Commands:
 - **compare:** compares two or more sorting algorithms on a real array of size up to 2^32-1
 - **visualize:** visualizes the selected sorting algorithms
 
-What the visualisation looks like on the _BubbleSort_ example:
+What the visualisation looks like on the _BubbleSort_ example (MINGW64):
 
-![BubbleSort visualisation](.img/bubble.gif)
+![BubbleSort visualisation](.img/bubble_sort.gif)
 
 ## CLI 
 
