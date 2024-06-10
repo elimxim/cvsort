@@ -1,8 +1,8 @@
 package com.github.elimxim
 
-import com.github.elimxim.console.view.SortView
+import com.github.elimxim.view.SortView
 import com.github.elimxim.console.Console
-import com.github.elimxim.console.view.ProbeView
+import com.github.elimxim.view.ProbeView
 import kotlinx.coroutines.*
 import java.nio.file.Path
 import kotlin.time.Duration
@@ -18,7 +18,8 @@ class SortComparator(
         if (showInfo) {
             val sortView = SortView()
             sortNames.distinct().forEach(sortView::add)
-            sortView.print()
+            Console.printLines(sortView.lines())
+            Console.printEmptyLine()
         }
 
         val array = (1..arrayLength).toIntArray()

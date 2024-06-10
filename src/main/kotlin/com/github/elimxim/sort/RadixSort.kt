@@ -82,15 +82,15 @@ class RadixSort(
                 probe.increment(ITERATIONS)
                 val index = buckets[x(i)] - 1
                 output[index] = array[i]
-                script.line(Focus(i), Extra(output, select = Select(index)))
+                script.action(Focus(i), Extra(output, Select(index)))
                 buckets[x(i)]--
             }
 
             for (i in array.size() - 1 downTo 0) {
                 probe.increment(ITERATIONS)
                 array[i] = output[i]
-                script.ifEnabled {
-                    it.line(Select(i), Extra(output, Focus(i)))
+                script.record {
+                    it.action(Select(i), Extra(output, Focus(i)))
                     output[i] = 0
                 }
             }

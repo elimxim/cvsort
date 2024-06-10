@@ -34,8 +34,8 @@ class InsertionSort(
             probe.increment(ITERATIONS)
             val value = array[i]
             var j = i - 1
-            script.line(Focus(i), Extra(value))
-            val bulkMove = script.bulkMove()
+            script.action(Focus(i), Extra(value))
+            val bulkMove = BulkMove(array)
             while (j >= 0 && array[j] > value) {
                 probe.increment(ITERATIONS, COMPARISONS)
                 array[j + 1] = array[j]
@@ -45,12 +45,12 @@ class InsertionSort(
 
             if (bulkMove.isNotEmpty()) {
                 array[j + 1] = 0
-                script.line(bulkMove, Extra(value))
+                script.action(bulkMove, Extra(value))
             }
 
             if (i != j + 1) {
                 array[j + 1] = value
-                script.line(Select(j + 1), Extra(value))
+                script.action(Select(j + 1), Extra(value))
             }
         }
     }

@@ -1,80 +1,42 @@
 package com.github.elimxim
 
+import java.lang.RuntimeException
 import java.lang.UnsupportedOperationException
 import java.util.LinkedList
 import java.util.Queue
 
 interface SortScript {
-    fun line(focus: Focus)
-    fun line(focus: Focus, extra: Extra)
-    fun line(focus: Focus, override: Override)
-    fun line(select: Select)
-    fun line(select: Select, extra: Extra)
-    fun line(select: Select, override: Override)
-    fun line(swap: Swap)
-    fun line(move: Move)
-    fun line(move: Move, override: Override)
-    fun line(bulkMove: BulkMove)
-    fun line(bulkMove: BulkMove, extra: Extra)
-    fun bulkMove(): BulkMove
-    fun line(extra: Extra)
-    fun line(nothing: Nothing)
-    fun ifEnabled(action: (SortScript) -> Unit)
-    fun scene(): Scene
+    fun action(vararg actions: Action)
+    fun record(scene: (SortScript) -> Unit)
+    fun record(): Record
 }
 
-class Focus(val indexes: Set<Int> = emptySet()) {
+interface Action
+interface CoAction : Action
+interface SingleAction : Action
+interface ExtraAction : Action {
+    fun array(): IntArray
+    fun actions(): List<CoAction>
+}
+
+class Focus(val indexes: Set<Int> = emptySet()) : CoAction {
     constructor(vararg indexes: Int) : this(indexes.toSet())
 }
 
-class Select(val indexes: Set<Int> = emptySet()) {
+class Select(val indexes: Set<Int> = emptySet()) : CoAction {
     constructor(vararg indexes: Int) : this(indexes.toSet())
 }
 
-class Swap(val index1: Int, val index2: Int)
-class Move(val from: Int, val to: Int, val flash: Boolean = true)
-class Extra(array: IntArray, focus: Focus = Focus(), select: Select = Select()) {
-    val array: IntArray
-    val focus: Focus
-    val select: Select
+class Swap(val index1: Int, val index2: Int) : SingleAction
+class Move(val from: Int, val to: Int, val split: Boolean = true) : SingleAction
 
-    init {
-        this.array = array.copyOf()
-        this.focus = focus
-        this.select = select
-    }
-
-    constructor(vararg values: Int) : this(values.toList().toIntArray())
-}
-
-class Override(array: IntArray) {
-    val array: IntArray
-
-    init {
-        this.array = array.copyOf()
-    }
-}
-
-object Nothing
-
-interface Scene : Queue<Frame>
-class SceneImpl(lines: List<Frame>) : Scene, LinkedList<Frame>(lines)
-
-// not thread safe
-class Frame(val mainData: Data,
-            val extraData: Data,
-            val probeSnapshot: Probe.Snapshot
-)
-
-// not thread safe
-class Data(val array: IntArray,
-           val focused: Set<Int> = emptySet(),
-           val selected: Set<Int> = emptySet()
-)
-
-// not thread safe
-class BulkMove(val original: IntArray) {
+class BulkMove(array: IntArrayWrapper) : SingleAction {
     private val moves: MutableList<Move> = ArrayList()
+    val arraySnap: IntArray
+
+    init {
+        arraySnap = array.snapshot()
+    }
 
     fun add(from: Int, to: Int) {
         moves.add(Move(from, to))
@@ -89,193 +51,191 @@ class BulkMove(val original: IntArray) {
     }
 }
 
-// not thread safe
+class Extra(array: IntArray, vararg actions: CoAction) : ExtraAction {
+    private val actions: List<CoAction>
+    private val arraySnap: IntArray
+
+    init {
+        this.actions = actions.toList()
+        this.arraySnap = array.copyOf()
+    }
+
+    constructor(vararg values: Int) : this(values.toList().toIntArray())
+
+    override fun array(): IntArray {
+        return arraySnap
+    }
+
+    override fun actions(): List<CoAction> {
+        return actions
+    }
+}
+
+object Nothing : SingleAction
+
+interface Record : Queue<Shot>
+
+class RecordImpl(lines: List<Shot>) : Record, LinkedList<Shot>(lines)
+
+class Shot(val mainScreen: Screen,
+           val extraScreen: Screen,
+           val probeSnapshot: Probe.Snapshot
+)
+
+class Screen(val array: IntArray,
+             val focused: Set<Int> = emptySet(),
+             val selected: Set<Int> = emptySet()
+)
+
 class SortScriptImpl(
         private val probe: Probe,
         private val arrayWrapper: IntArrayWrapper
 ) : SortScript {
-    private val frames: MutableList<Frame> = ArrayList()
+    private val shots: MutableList<Shot> = ArrayList()
 
-    override fun line(focus: Focus) {
-        addFrame(focus = focus)
+    override fun action(vararg actions: Action) {
+        ActionVerifier.verify(actions.toList())
+        shots.addAll(processActions(actions.toList()))
     }
 
-    override fun line(focus: Focus, extra: Extra) {
-        addFrame(focus = focus, extra = extra)
+    override fun record(scene: (SortScript) -> Unit) {
+        scene(this)
     }
 
-    override fun line(focus: Focus, override: Override) {
-        addFrame(focus = focus, override = override)
+    override fun record(): Record {
+        return RecordImpl(shots)
     }
 
-    override fun line(select: Select) {
-        addFrame(select = select)
-    }
+    private fun processActions(actions: List<Action>): List<Shot> {
+        val mainScreens = mutableListOf<Screen>()
+        if (actions.any { it is SingleAction }) {
+            mainScreens.addAll(processSingleAction(actions.find { it is SingleAction } as SingleAction))
+        } else if (actions.any { it is CoAction }) {
+            mainScreens.add(processCoActions(actions.filterIsInstance<CoAction>()))
+        }
 
-    override fun line(select: Select, extra: Extra) {
-        addFrame(select = select, extra = extra)
-    }
-
-    override fun line(select: Select, override: Override) {
-        addFrame(select = select, override = override)
-    }
-
-    override fun line(swap: Swap) {
-        addFrame(select = Select(swap.index1, swap.index2))
-    }
-
-    override fun line(move: Move) {
-        addFrame(move)
-    }
-
-    override fun line(move: Move, override: Override) {
-        addFrame(move, override)
-    }
-
-    override fun line(bulkMove: BulkMove) {
-        addFrame(bulkMove)
-    }
-
-    override fun line(bulkMove: BulkMove, extra: Extra) {
-        addFrame(bulkMove, extra)
-    }
-
-    override fun line(extra: Extra) {
-        frames.add(Frame(mainData = Data(
-                array = arrayWrapper.original(),
-        ), extraData = Data(
-                array = extra.array,
-                focused = extra.focus.indexes,
-                selected = extra.select.indexes
-        ), probeSnapshot = probe.snapshot()
-        ))
-    }
-
-    override fun bulkMove(): BulkMove {
-        return BulkMove(arrayWrapper.original())
-    }
-
-    override fun ifEnabled(action: (SortScript) -> Unit) {
-        action(this)
-    }
-
-    override fun line(nothing: Nothing) {
-        frames.add(Frame(
-                mainData = Data(arrayWrapper.original()),
-                extraData = Data(emptyArray<Int>().toIntArray()),
-                probeSnapshot = probe.snapshot()
-        ))
-    }
-
-    override fun scene(): Scene {
-        return SceneImpl(frames)
-    }
-
-    private fun addFrame(focus: Focus? = null, select: Select? = null,
-                         extra: Extra? = null, override: Override? = null) {
-        frames.add(Frame(mainData = Data(
-                array = override?.array ?: arrayWrapper.original(),
-                focused = focus?.indexes ?: emptySet(),
-                selected = select?.indexes ?: emptySet()
-        ), extraData = Data(
-                array = extra?.array ?: emptyArray<Int>().toIntArray(),
-                focused = extra?.focus?.indexes ?: emptySet(),
-                selected = extra?.select?.indexes ?: emptySet()
-        ), probeSnapshot = probe.snapshot()
-        ))
-    }
-
-    private fun addFrame(move: Move, override: Override? = null) {
-        if (move.flash) {
-            addFrame(focus = Focus(move.from), override = override)
-            addFrame(select = Select(move.to), override = override)
+        val extraScreen = if (actions.any { it is ExtraAction }) {
+            if (mainScreens.isEmpty()) {
+                mainScreens.add(Screen(arrayWrapper.snapshot()))
+            }
+            processExtraAction(actions.find { it is ExtraAction } as ExtraAction)
         } else {
-            frames.add(Frame(mainData = Data(
-                    array = override?.array ?: arrayWrapper.original(),
-                    focused = setOf(move.from),
-                    selected = setOf(move.to)
-            ), extraData = Data(
-                    array = emptyArray<Int>().toIntArray()
-            ), probeSnapshot = probe.snapshot()
-            ))
+            Screen(emptyArray<Int>().toIntArray())
+        }
+
+        val probeSnapshot = probe.snapshot()
+
+        return mainScreens.map {
+            Shot(mainScreen = it, extraScreen = extraScreen, probeSnapshot)
         }
     }
 
-    private fun addFrame(bulkMove: BulkMove, extra: Extra? = null) {
-        if (bulkMove.isNotEmpty()) {
-            val moves = bulkMove.moves()
+    private fun processCoActions(actions: List<CoAction>): Screen {
+        val focused = mutableSetOf<Int>()
+        val selected = mutableSetOf<Int>()
 
-            frames.add(Frame(mainData = Data(
-                    array = bulkMove.original,
-                    focused = moves.map { it.from }.toSet(),
-            ), extraData = Data(
-                    array = extra?.array ?: emptyArray<Int>().toIntArray(),
-                    focused = extra?.focus?.indexes ?: emptySet(),
-                    selected = extra?.select?.indexes ?: emptySet()
-            ), probeSnapshot = probe.snapshot()
-            ))
-
-            frames.add(Frame(mainData = Data(
-                    array = arrayWrapper.original(),
-                    selected = moves.map { it.to }.toSet(),
-            ), extraData = Data(
-                    array = extra?.array ?: emptyArray<Int>().toIntArray(),
-                    focused = extra?.focus?.indexes ?: emptySet(),
-                    selected = extra?.select?.indexes ?: emptySet()
-            ), probeSnapshot = probe.snapshot()
-            ))
+        actions.forEach {
+            when (it) {
+                is Focus -> focused.addAll(it.indexes.toSet())
+                is Select -> selected.addAll(it.indexes.toSet())
+            }
         }
+
+        return Screen(
+                arrayWrapper.snapshot(),
+                focused = focused.toSet(),
+                selected = selected.toSet()
+        )
+    }
+
+    private fun processSingleAction(action: SingleAction): List<Screen> {
+        val arraySnap = arrayWrapper.snapshot()
+        val screens = mutableListOf<Screen>()
+        when (action) {
+            is Swap -> {
+                screens.add(Screen(arraySnap, selected = setOf(action.index1, action.index2)))
+            }
+            is Move -> {
+                if (action.split) {
+                    screens.add(Screen(arraySnap,
+                            focused = setOf(action.from)))
+                    screens.add(Screen(arraySnap,
+                            selected = setOf(action.to)))
+                } else {
+                    screens.add(Screen(arraySnap,
+                            focused = setOf(action.from),
+                            selected = setOf(action.to)))
+                }
+            }
+            is BulkMove -> {
+                val moves = action.moves()
+                screens.add(Screen(action.arraySnap,
+                        focused = moves.map { it.from }.toSet()))
+                screens.add(Screen(arraySnap,
+                        selected = moves.map { it.to }.toSet()))
+            }
+            is Nothing -> {
+                screens.add(Screen(arraySnap))
+            }
+        }
+        return screens
+    }
+
+    private fun processExtraAction(action: ExtraAction): Screen {
+        val focused = mutableSetOf<Int>()
+        val selected = mutableSetOf<Int>()
+
+        action.actions().forEach {
+            when (it) {
+                is Focus -> focused.addAll(it.indexes.toSet())
+                is Select -> selected.addAll(it.indexes.toSet())
+            }
+        }
+
+        return Screen(
+                action.array(),
+                focused = focused.toSet(),
+                selected = selected.toSet()
+        )
+    }
+}
+
+class InvalidActionException(message: String) : RuntimeException(message)
+
+object ActionVerifier {
+    private val onlyOneSingleAction: (List<Action>) -> Unit = { actions ->
+        if (actions.count { it is SingleAction } > 1) {
+            throw InvalidActionException("found multiple single actions")
+        }
+    }
+
+    private val noBothCoAndSingleActions: (List<Action>) -> Unit = { actions ->
+        if (actions.any { it is CoAction } && actions.any { it is SingleAction }) {
+            throw InvalidActionException("found both single action and co action")
+        }
+    }
+
+    private val onlyOneExtraAction: (List<Action>) -> Unit = { actions ->
+        if (actions.count { it is ExtraAction } > 1) {
+            throw InvalidActionException("found multiple extra actions")
+        }
+    }
+
+    fun verify(actions: List<Action>) {
+        onlyOneSingleAction(actions)
+        noBothCoAndSingleActions(actions)
+        onlyOneExtraAction(actions)
     }
 }
 
 class NoOpSortScript : SortScript {
-    override fun line(focus: Focus) {
+    override fun action(vararg actions: Action) {
     }
 
-    override fun line(focus: Focus, extra: Extra) {
+    override fun record(scene: (SortScript) -> Unit) {
     }
 
-    override fun line(focus: Focus, override: Override) {
-    }
-
-    override fun line(select: Select) {
-    }
-
-    override fun line(select: Select, extra: Extra) {
-    }
-
-    override fun line(select: Select, override: Override) {
-    }
-
-    override fun line(swap: Swap) {
-    }
-
-    override fun line(move: Move) {
-    }
-
-    override fun line(move: Move, override: Override) {
-    }
-
-    override fun line(bulkMove: BulkMove) {
-    }
-
-    override fun line(bulkMove: BulkMove, extra: Extra) {
-    }
-
-    override fun line(extra: Extra) {
-    }
-
-    override fun line(nothing: Nothing) {
-    }
-
-    override fun bulkMove(): BulkMove {
-        return BulkMove(emptyArray<Int>().toIntArray())
-    }
-
-    override fun ifEnabled(action: (SortScript) -> Unit) {
-    }
-
-    override fun scene(): Scene {
+    override fun record(): Record {
         throw UnsupportedOperationException("no op")
     }
 }

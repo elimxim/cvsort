@@ -29,14 +29,14 @@ class GnomeSort(
     override fun sort(array: IntArrayWrapper) {
         var index = 0
         while (index < array.size()) {
-            script.line(Focus(index))
+            script.action(Focus(index))
             probe.increment(ITERATIONS, COMPARISONS)
             if (index == 0 || array[index - 1] < array[index]) {
                 index++
             } else {
                 probe.increment(ARRAY_SWAPS)
                 array.swap(index - 1, index)
-                script.line(Swap(index - 1, index))
+                script.action(Swap(index - 1, index))
                 index--
             }
         }

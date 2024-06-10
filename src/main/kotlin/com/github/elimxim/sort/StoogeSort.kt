@@ -39,7 +39,7 @@ class StoogeSort (
         probe.increment(COMPARISONS)
         if (array[i] > array[j]) {
             array.swap(i, j)
-            script.line(Swap(i, j))
+            script.action(Swap(i, j))
         }
 
         if (j - i + 1 > 2) {

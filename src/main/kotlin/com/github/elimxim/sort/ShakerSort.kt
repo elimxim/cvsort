@@ -50,10 +50,10 @@ class ShakerSort(
             var newEndIndex = beginIndex
             for (i in beginIndex..<endIndex) {
                 probe.increment(ITERATIONS, COMPARISONS)
-                script.line(Focus(i))
+                script.action(Focus(i))
                 if (array[i] > array[i + 1]) {
                     array.swap(i, i + 1)
-                    script.line(Swap(i, i + 1))
+                    script.action(Swap(i, i + 1))
                     newEndIndex = i
                 }
             }
@@ -63,9 +63,9 @@ class ShakerSort(
             var newBeginIndex = endIndex
             for (i in endIndex downTo  beginIndex + 1) {
                 probe.increment(ITERATIONS, COMPARISONS)
-                script.line(Focus(i))
+                script.action(Focus(i))
                 if (array[i - 1] > array[i]) {
-                    script.line(Swap(i - 1, i))
+                    script.action(Swap(i - 1, i))
                     array.swap(i - 1, i)
                     newBeginIndex = i
                 }

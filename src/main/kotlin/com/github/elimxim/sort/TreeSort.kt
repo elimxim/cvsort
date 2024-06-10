@@ -58,7 +58,7 @@ class TreeSort(
         for (i in 0..<array.size()) {
             probe.increment(ITERATIONS)
             tree.add(array[i])
-            script.ifEnabled {
+            script.record {
                 ScriptAction(it).doAction(tree, i)
             }
         }
@@ -73,7 +73,7 @@ class TreeSort(
             newIndex = traverseTree(node.left, array, newIndex)
 
             array[newIndex] = node.value
-            script.line(Focus(newIndex))
+            script.action(Focus(newIndex))
             newIndex++
 
             newIndex = traverseTree(node.right, array, newIndex)
@@ -124,11 +124,7 @@ class TreeSort(
             val array = IntArray(index + 1)
             val rootValue = tree.root!!.value
             traverseTree(tree.root, array, rootValue, 0)
-            script.line(Focus(index), Extra(
-                    array = array,
-                    focus = Focus(focused),
-                    select = Select(selected)
-            ))
+            script.action(Focus(index), Extra(array, Focus(focused), Select(selected)))
         }
 
         private fun traverseTree(node: Tree.Node?, array: IntArray, rootValue: Int, index: Int): Int {

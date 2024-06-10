@@ -1,12 +1,11 @@
 package com.github.elimxim
 
-import com.github.elimxim.console.view.SortView
-import com.github.elimxim.console.view.ArrayView
+import com.github.elimxim.view.SortView
+import com.github.elimxim.view.ArrayView
 import com.github.elimxim.console.Console
-import com.github.elimxim.console.view.ProbeView
+import com.github.elimxim.view.ProbeView
 import kotlinx.coroutines.*
 
-// not thread safe
 class SortVisualizer(
         private val speedMillis: Long,
         private val arrayLength: Int,
@@ -16,7 +15,8 @@ class SortVisualizer(
         if (showInfo) {
             val sortView = SortView()
             sortView.add(sortName)
-            sortView.print()
+            Console.printLines(sortView.lines())
+            Console.printEmptyLine()
         }
 
         runBlocking {
@@ -33,11 +33,11 @@ class SortVisualizer(
 
         ScriptPrinter(
                 FramePrinter(sortName, arrayLength),
-                openingFrameDelay = 400,
+                openingBeat = 400,
                 beforeSceneDelay = 1000,
-                sceneFrameDelay = speedMillis,
+                sceneBeast = speedMillis,
                 afterSceneDelay = 100,
-                endingFrameDelay = 50
+                endingBeat = 50
         ).print(
                 opening = {
                     val script = SortScriptImpl(probe, arrayWrapper)
@@ -52,14 +52,14 @@ class SortVisualizer(
                 },
                 ending = {
                     val script = SortScriptImpl(probe, arrayWrapper)
-                    script.line(Nothing)
+                    script.action(Nothing)
                     for (i in 0..<arrayWrapper.size()) {
-                        script.line(Focus(i))
+                        script.action(Focus(i))
                     }
                     val indexes = mutableSetOf<Int>()
                     for (i in 0..<arrayWrapper.size()) {
                         indexes.add(i)
-                        script.line(Focus(*indexes.toIntArray()))
+                        script.action(Focus(*indexes.toIntArray()))
                     }
                     script
                 }
@@ -67,14 +67,13 @@ class SortVisualizer(
     }
 }
 
-// not thread safe
 class ScriptPrinter(
         private val framePrinter: FramePrinter,
-        private val openingFrameDelay: Long,
+        private val openingBeat: Long,
         private val beforeSceneDelay: Long,
-        private val sceneFrameDelay: Long,
+        private val sceneBeast: Long,
         private val afterSceneDelay: Long,
-        private val endingFrameDelay: Long
+        private val endingBeat: Long
 ) {
     private var maxExtraSize: Int = 0
 
@@ -83,72 +82,71 @@ class ScriptPrinter(
             script: () -> SortScript,
             ending: () -> SortScript
     ) {
-        val openingScene = opening().scene()
-        printFrame(openingScene.poll(), refresh = false)
-        while (openingScene.isNotEmpty()) {
-            delay(openingFrameDelay)
-            printFrame(openingScene.poll(), refresh = true)
+        val openingRecord = opening().record()
+        printFrame(openingRecord.poll(), refresh = false)
+        while (openingRecord.isNotEmpty()) {
+            delay(openingBeat)
+            printFrame(openingRecord.poll(), refresh = true)
         }
 
         delay(beforeSceneDelay)
 
-        val scriptScene = script().scene()
-        while (scriptScene.isNotEmpty()) {
-            delay(sceneFrameDelay)
-            val frame = scriptScene.poll()
+        val record = script().record()
+        while (record.isNotEmpty()) {
+            delay(sceneBeast)
+            val frame = record.poll()
             printFrame(frame, refresh = true)
         }
 
         delay(afterSceneDelay)
 
-        val endingScene = ending().scene()
-        while (endingScene.isNotEmpty()) {
-            delay(endingFrameDelay)
-            printFrame(endingScene.poll(), refresh = true)
+        val endingRecord = ending().record()
+        while (endingRecord.isNotEmpty()) {
+            delay(endingBeat)
+            printFrame(endingRecord.poll(), refresh = true)
         }
     }
 
-    private fun printFrame(frame: Frame, refresh: Boolean) {
-        val extraSize = frame.extraData.array.size
+    private fun printFrame(shot: Shot, refresh: Boolean) {
+        val extraSize = shot.extraScreen.array.size
         if (extraSize >= maxExtraSize) {
             maxExtraSize = extraSize
-            framePrinter.print(frame, refresh)
+            framePrinter.print(shot, refresh)
         } else {
-            framePrinter.print(adjustFrame(frame, maxExtraSize), refresh)
+            framePrinter.print(adjustFrame(shot, maxExtraSize), refresh)
             maxExtraSize = extraSize
         }
     }
 
-    private fun adjustFrame(frame: Frame, extraSize: Int): Frame {
+    private fun adjustFrame(shot: Shot, extraSize: Int): Shot {
         val extraArray = IntArray(extraSize)
-        frame.extraData.array.copyInto(extraArray)
+        shot.extraScreen.array.copyInto(extraArray)
 
-        return Frame(
-                mainData = frame.mainData,
-                extraData = Data(
+        return Shot(
+                mainScreen = shot.mainScreen,
+                extraScreen = Screen(
                         array = extraArray,
-                        focused = frame.extraData.focused,
-                        selected = frame.extraData.selected
+                        focused = shot.extraScreen.focused,
+                        selected = shot.extraScreen.selected
                 ),
-                probeSnapshot = frame.probeSnapshot
+                probeSnapshot = shot.probeSnapshot
         )
     }
 }
 
-// not thread safe
 class FramePrinter(
         private val sortName: SortName,
         private val screenHeight: Int
 ) {
-    fun print(frame: Frame, refresh: Boolean = false) {
-        val probeView = ProbeView(sortName, frame.probeSnapshot)
+    fun print(shot: Shot, refresh: Boolean = false) {
+        val probeView = ProbeView(sortName, shot.probeSnapshot)
         val arrayView = ArrayView(
-                array = frame.mainData.array,
-                focused = frame.mainData.focused,
-                selected = frame.mainData.selected,
-                extra = frame.extraData.array,
-                extraFocused = frame.extraData.focused,
-                extraSelected = frame.extraData.selected,
+                array = shot.mainScreen.array,
+                focused = shot.mainScreen.focused,
+                selected = shot.mainScreen.selected,
+                extra = shot.extraScreen.array,
+                extraFocused = shot.extraScreen.focused,
+                extraSelected = shot.extraScreen.selected,
                 height = screenHeight
         )
 

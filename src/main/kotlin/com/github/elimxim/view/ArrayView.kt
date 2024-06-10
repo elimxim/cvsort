@@ -1,4 +1,4 @@
-package com.github.elimxim.console.view
+package com.github.elimxim.view
 
 class ArrayView(
         private val array: IntArray,
@@ -8,8 +8,8 @@ class ArrayView(
         private val extraFocused: Set<Int>,
         private val extraSelected: Set<Int>,
         private val height: Int,
-) {
-    fun lines(): List<String> {
+) : View {
+    override fun lines(): List<String> {
         val gridWidth = array.size + GAP + extra.size
 
         val grid = Array(gridWidth) {

@@ -19,6 +19,6 @@ class SortTest {
         val wrapper = IntArrayWrapper(actualArray, probe)
         sort.sort(wrapper)
 
-        assertArrayEquals(expectedArray, wrapper.original())
+        assertArrayEquals(expectedArray, wrapper.snapshot())
     }
 }

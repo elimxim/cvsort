@@ -1,6 +1,5 @@
 package com.github.elimxim
 
-// not thread safe
 class IntArrayWrapper(
         private val array: IntArray,
         private val probe: Probe
@@ -23,7 +22,7 @@ class IntArrayWrapper(
         return true
     }
 
-    fun original(): IntArray {
+    fun snapshot(): IntArray {
         return array.copyOf()
     }
 

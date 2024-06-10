@@ -45,8 +45,8 @@ class ShellSort(
                 probe.increment(ITERATIONS)
                 val value = array[i]
                 var j = i
-                script.line(Focus(i), Extra(value))
-                val bulkMove = script.bulkMove()
+                script.action(Focus(i), Extra(value))
+                val bulkMove = BulkMove(array)
                 while (j >= gap && array[j - gap] > value) {
                     probe.increment(ITERATIONS, COMPARISONS)
                     array[j] = array[j - gap]
@@ -56,12 +56,12 @@ class ShellSort(
 
                 if (bulkMove.isNotEmpty()) {
                     array[j] = 0
-                    script.line(bulkMove, Extra(value))
+                    script.action(bulkMove, Extra(value))
                 }
 
                 if (j != i) {
                     array[j] = value
-                    script.line(Select(j), Extra(value))
+                    script.action(Select(j), Extra(value))
                 }
             }
 

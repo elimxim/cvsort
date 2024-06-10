@@ -72,7 +72,7 @@ class BucketSort(
             probe.increment(ITERATIONS)
             val x = floor(bucketsSize * (array[i] / (max + 1.0))).toInt()
             buckets[x].add(array[i])
-            script.ifEnabled {
+            script.record {
                 val extraSize = buckets.sumOf { b -> b.size } + buckets.size - 1
                 val extra = IntArray(extraSize)
                 var ei = 0
@@ -89,7 +89,7 @@ class BucketSort(
                 }
                 efIndex -= 2
 
-                it.line(Focus(i), Extra(extra, select = Select(efIndex)))
+                it.action(Focus(i), Extra(extra, Select(efIndex)))
             }
         }
 
@@ -97,7 +97,7 @@ class BucketSort(
         for (i in buckets.indices) {
             probe.increment(ITERATIONS)
             val bucket = buckets[i]
-            script.ifEnabled {
+            script.record {
                 val extraSize = buckets.sumOf { b -> b.size } + buckets.size - 1
                 val extra = IntArray(extraSize)
                 var ei = 0
@@ -114,13 +114,13 @@ class BucketSort(
                 }
 
                 val efFocusIndexes = (efStartIndex..<efStartIndex + bucket.size)
-                it.line(Extra(extra, Focus(efFocusIndexes.toSet())))
+                it.action(Extra(extra, Focus(efFocusIndexes.toSet())))
             }
             for (j in bucket.indices) {
                 probe.increment(ITERATIONS)
                 array[index++] = bucket[j]
             }
-            script.ifEnabled {
+            script.record {
                 bucket.clear()
                 val extraSize = buckets.sumOf { b -> b.size } + buckets.size - 1
                 val extra = IntArray(extraSize)
@@ -132,7 +132,7 @@ class BucketSort(
                     ei++
                 }
                 val selectIndexes = (index - bucket.size..<index).toSet()
-                it.line(Select(selectIndexes), Extra(extra))
+                it.action(Select(selectIndexes), Extra(extra))
             }
         }
 
@@ -144,8 +144,8 @@ class BucketSort(
             probe.increment(ITERATIONS)
             val value = array[i]
             var j = i - 1
-            script.line(Focus(i), Extra(value))
-            val bulkMove = script.bulkMove()
+            script.action(Focus(i), Extra(value))
+            val bulkMove = BulkMove(array)
             while (j >= 0 && array[j] > value) {
                 probe.increment(ITERATIONS, COMPARISONS)
                 array[j + 1] = array[j]
@@ -155,12 +155,12 @@ class BucketSort(
 
             if (bulkMove.isNotEmpty()) {
                 array[j + 1] = 0
-                script.line(bulkMove, Extra(value))
+                script.action(bulkMove, Extra(value))
             }
 
             if (i != j + 1) {
                 array[j + 1] = value
-                script.line(Select(j + 1), Extra(value))
+                script.action(Select(j + 1), Extra(value))
             }
         }
     }

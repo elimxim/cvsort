@@ -49,10 +49,10 @@ class CombSort (
 
             for (i in 0..<array.size() - gap) {
                 probe.increment(ITERATIONS, COMPARISONS)
-                script.line(Focus(i, i + gap))
+                script.action(Focus(i, i + gap))
                 if (array[i] > array[i + gap]) {
                     array.swap(i, i + gap)
-                    script.line(Swap(i, i + gap))
+                    script.action(Swap(i, i + gap))
                     swapped = true
                 }
             }

@@ -1,11 +1,11 @@
-package com.github.elimxim.console.view
+package com.github.elimxim.view
 
 import com.github.elimxim.*
 import com.github.elimxim.console.Console
 import de.vandermeer.asciitable.AsciiTable
 import kotlin.reflect.full.findAnnotation
 
-class SortView {
+class SortView : View {
     private val content: MutableList<List<String>> = ArrayList()
 
     fun add(sortName: SortName) {
@@ -27,7 +27,7 @@ class SortView {
         return "${complexityClass.notation}(${complexity.notation})"
     }
 
-    fun print() {
+    override fun lines(): List<String> {
         return if (content.size >= 1) {
             val table = AsciiTable()
 
@@ -43,10 +43,9 @@ class SortView {
             content.forEach { table.addRow(it) }
             table.addRule()
 
-            Console.printLines(table.renderAsCollection().toList())
-            Console.printEmptyLine()
+            table.renderAsCollection().toList()
         } else {
-            Console.printError("algorithm complexity is not available")
+            emptyList()
         }
     }
 

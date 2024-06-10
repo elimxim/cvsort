@@ -1,14 +1,15 @@
 package com.github.elimxim
 
 import com.github.elimxim.console.Console
-import com.github.elimxim.console.view.SortView
+import com.github.elimxim.view.SortView
 import kotlin.reflect.full.findAnnotation
 
 class SortInfoShower {
     fun showInfo(sortNames: List<SortName>) {
         val view = SortView()
         sortNames.distinct().forEach(view::add)
-        view.print()
+        Console.printLines(view.lines())
+        Console.printEmptyLine()
 
         if (sortNames.size == 1) {
             printPseudoCode(sortNames.first())

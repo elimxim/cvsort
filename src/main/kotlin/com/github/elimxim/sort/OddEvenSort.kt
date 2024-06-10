@@ -41,20 +41,20 @@ class OddEvenSort(
 
             for (i in 1..<array.size() - 1 step 2) {
                 probe.increment(ITERATIONS, COMPARISONS)
-                script.line(Focus(i))
+                script.action(Focus(i))
                 if (array[i] > array[i + 1]) {
                     array.swap(i, i + 1)
-                    script.line(Swap(i, i + 1))
+                    script.action(Swap(i, i + 1))
                     swapped = true
                 }
             }
 
             for (i in 0..<array.size() - 1 step 2) {
                 probe.increment(ITERATIONS, COMPARISONS)
-                script.line(Focus(i))
+                script.action(Focus(i))
                 if (array[i] > array[i + 1]) {
                     array.swap(i, i + 1)
-                    script.line(Swap(i, i + 1))
+                    script.action(Swap(i, i + 1))
                     swapped = true
                 }
             }
