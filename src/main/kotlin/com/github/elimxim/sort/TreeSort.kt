@@ -58,7 +58,7 @@ class TreeSort(
         for (i in 0..<array.size()) {
             probe.increment(ITERATIONS)
             tree.add(array[i])
-            script.record {
+            script.scene {
                 ScriptAction(it).doAction(tree, i)
             }
         }

@@ -72,7 +72,7 @@ class BucketSort(
             probe.increment(ITERATIONS)
             val x = floor(bucketsSize * (array[i] / (max + 1.0))).toInt()
             buckets[x].add(array[i])
-            script.record {
+            script.scene {
                 val extraSize = buckets.sumOf { b -> b.size } + buckets.size - 1
                 val extra = IntArray(extraSize)
                 var ei = 0
@@ -97,7 +97,7 @@ class BucketSort(
         for (i in buckets.indices) {
             probe.increment(ITERATIONS)
             val bucket = buckets[i]
-            script.record {
+            script.scene {
                 val extraSize = buckets.sumOf { b -> b.size } + buckets.size - 1
                 val extra = IntArray(extraSize)
                 var ei = 0
@@ -120,7 +120,7 @@ class BucketSort(
                 probe.increment(ITERATIONS)
                 array[index++] = bucket[j]
             }
-            script.record {
+            script.scene {
                 bucket.clear()
                 val extraSize = buckets.sumOf { b -> b.size } + buckets.size - 1
                 val extra = IntArray(extraSize)

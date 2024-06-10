@@ -89,7 +89,7 @@ class RadixSort(
             for (i in array.size() - 1 downTo 0) {
                 probe.increment(ITERATIONS)
                 array[i] = output[i]
-                script.record {
+                script.scene {
                     it.action(Select(i), Extra(output, Focus(i)))
                     output[i] = 0
                 }

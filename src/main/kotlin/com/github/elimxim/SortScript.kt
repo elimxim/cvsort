@@ -7,7 +7,7 @@ import java.util.Queue
 
 interface SortScript {
     fun action(vararg actions: Action)
-    fun record(scene: (SortScript) -> Unit)
+    fun scene(scene: (SortScript) -> Unit)
     fun record(): Record
 }
 
@@ -98,7 +98,7 @@ class SortScriptImpl(
         shots.addAll(processActions(actions.toList()))
     }
 
-    override fun record(scene: (SortScript) -> Unit) {
+    override fun scene(scene: (SortScript) -> Unit) {
         scene(this)
     }
 
@@ -232,7 +232,7 @@ class NoOpSortScript : SortScript {
     override fun action(vararg actions: Action) {
     }
 
-    override fun record(scene: (SortScript) -> Unit) {
+    override fun scene(scene: (SortScript) -> Unit) {
     }
 
     override fun record(): Record {
