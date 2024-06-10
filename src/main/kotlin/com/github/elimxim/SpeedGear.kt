@@ -1,16 +1,16 @@
 package com.github.elimxim
 
-enum class SortSpeed(val millis: Long) {
-    SNAIL(4000),
-    SLOTH(2000),
-    TORTOISE(1000),
-    KOALA(500),
-    EMU(100),
-    CHEETAH(50);
+enum class SpeedGear(val frameDelayMillis: Long) {
+    G1(4000),
+    G2(2000),
+    G3(1000),
+    G4(500),
+    G5(100),
+    G6(50);
 
     companion object {
         fun contains(name: String): Boolean {
-            val v = SortSpeed.entries.find {
+            val v = SpeedGear.entries.find {
                 it.name.equals(name, ignoreCase = true)
             }
 

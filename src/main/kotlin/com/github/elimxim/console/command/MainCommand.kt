@@ -12,10 +12,10 @@ object MainCommand {
     var listSortNames: Boolean = false
 
     @Parameter(
-            names = ["--listSpeeds", "--speeds", "-s"],
+            names = ["--listSpeedGears", "--speeds", "-s"],
             description = "prints the available visualisation speeds of sorting algorithms"
     )
-    var listSpeeds: Boolean = false
+    var listSpeedGears: Boolean = false
 
     @Parameter(
             names = ["--disableBanner", "--noBanner", "-nb"],

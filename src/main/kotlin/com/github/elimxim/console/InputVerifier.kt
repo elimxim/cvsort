@@ -1,7 +1,7 @@
 package com.github.elimxim.console
 
 import com.github.elimxim.SortName
-import com.github.elimxim.SortSpeed
+import com.github.elimxim.SpeedGear
 import com.github.elimxim.console.command.CompareCommand
 import com.github.elimxim.console.command.InfoCommand
 import com.github.elimxim.console.command.VisualizeCommand
@@ -18,8 +18,8 @@ class InputVerifier(private val args: Array<String>) {
 
     fun verify(cmd: VisualizeCommand): Boolean {
         return checkSortName(cmd.sortName)
-                && checkSpeed(cmd.speed)
-                && checkSpeedMillis(cmd.speedMillis, min = 50, max = 4000)
+                && checkSpeedGear(cmd.speedGear)
+                && checkFrameDelayMillis(cmd.frameDelayMillis, min = 50, max = 4000)
                 && checkArrayLength(cmd.arrayLength, min = 2, max = 30)
     }
 
@@ -122,23 +122,25 @@ class InputVerifier(private val args: Array<String>) {
         }
     }
 
-    private fun checkSpeed(speed: String): Boolean {
-        if (!SortSpeed.contains(speed)) {
-            printError("unknown sort speed: $speed")
+    private fun checkSpeedGear(speedGear: String): Boolean {
+        if (!SpeedGear.contains(speedGear)) {
+            printError("unknown sort speed: $speedGear")
             return false
         }
         return true
     }
 
-    private fun checkSpeedMillis(speedMillis: String, min: Int, max: Int): Boolean {
+    private fun checkFrameDelayMillis(millis: String?, min: Int, max: Int): Boolean {
         try {
-            if (speedMillis.toLong() !in min..max) {
-                printError("speedMillis must be in range [$min..$max]")
-                return false
+            if (millis != null) {
+                if (millis.toLong() !in min..max) {
+                    printError("speedMillis must be in range [$min..$max]")
+                    return false
+                }
             }
             return true
         } catch (e: NumberFormatException) {
-            printError("$speedMillis value must be an integer number")
+            printError("$millis value must be an integer number")
             return false
         }
     }

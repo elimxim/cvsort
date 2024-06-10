@@ -69,3 +69,7 @@ fun IntArray.swap(idx1: Int, idx2: Int) {
 fun IntRange.toIntArray(): IntArray {
     return this.toList().toIntArray()
 }
+
+fun Boolean.xnor(other: Boolean): Boolean {
+    return this.xor(other).not()
+}

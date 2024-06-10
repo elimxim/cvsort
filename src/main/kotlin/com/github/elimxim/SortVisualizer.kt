@@ -7,8 +7,9 @@ import com.github.elimxim.view.ProbeView
 import kotlinx.coroutines.*
 
 class SortVisualizer(
-        private val speedMillis: Long,
+        private val frameDelayMillis: Long,
         private val arrayLength: Int,
+        private val showShuffle: Boolean,
         private val showInfo: Boolean
 ) {
     fun visualize(sortName: SortName) {
@@ -35,9 +36,10 @@ class SortVisualizer(
                 FramePrinter(sortName, arrayLength),
                 openingBeat = 400,
                 beforeSceneDelay = 1000,
-                sceneBeast = speedMillis,
+                sceneBeast = frameDelayMillis,
                 afterSceneDelay = 100,
-                endingBeat = 50
+                endingBeat = 50,
+                showShuffle
         ).print(
                 opening = {
                     val script = SortScriptImpl(probe, arrayWrapper)
@@ -73,7 +75,8 @@ class ScriptPrinter(
         private val beforeSceneDelay: Long,
         private val sceneBeast: Long,
         private val afterSceneDelay: Long,
-        private val endingBeat: Long
+        private val endingBeat: Long,
+        private val showOpening: Boolean
 ) {
     private var maxExtraSize: Int = 0
 
@@ -82,20 +85,23 @@ class ScriptPrinter(
             script: () -> SortScript,
             ending: () -> SortScript
     ) {
+        val switch = Switch(false)
         val openingRecord = opening().record()
-        printFrame(openingRecord.poll(), refresh = false)
-        while (openingRecord.isNotEmpty()) {
-            delay(openingBeat)
-            printFrame(openingRecord.poll(), refresh = true)
-        }
+        if (showOpening) {
+            printFrame(openingRecord.poll(), switch.value())
+            while (openingRecord.isNotEmpty()) {
+                delay(openingBeat)
+                printFrame(openingRecord.poll(), switch.value())
+            }
 
-        delay(beforeSceneDelay)
+            delay(beforeSceneDelay)
+        }
 
         val record = script().record()
         while (record.isNotEmpty()) {
             delay(sceneBeast)
             val frame = record.poll()
-            printFrame(frame, refresh = true)
+            printFrame(frame, switch.value())
         }
 
         delay(afterSceneDelay)
@@ -103,7 +109,7 @@ class ScriptPrinter(
         val endingRecord = ending().record()
         while (endingRecord.isNotEmpty()) {
             delay(endingBeat)
-            printFrame(endingRecord.poll(), refresh = true)
+            printFrame(endingRecord.poll(), switch.value())
         }
     }
 
@@ -155,5 +161,17 @@ class FramePrinter(
         lines.add("")
         lines.addAll(probeView.lines())
         Console.printLines(lines, refresh)
+    }
+}
+
+class Switch(private val initial: Boolean) {
+    private var value: Boolean = initial
+
+    fun value(): Boolean {
+        if (value.xnor(initial)) {
+            value = initial.not()
+            return initial
+        }
+        return value
     }
 }

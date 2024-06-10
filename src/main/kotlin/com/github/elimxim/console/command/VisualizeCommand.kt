@@ -2,7 +2,7 @@ package com.github.elimxim.console.command
 
 import com.beust.jcommander.Parameter
 import com.beust.jcommander.Parameters
-import com.github.elimxim.SortSpeed
+import com.github.elimxim.SpeedGear
 
 @Parameters(commandDescription = "visualizes the selected sorting algorithms")
 object VisualizeCommand {
@@ -15,23 +15,29 @@ object VisualizeCommand {
     lateinit var sortName: String
 
     @Parameter(
-            names = ["--speed", "-s"],
+            names = ["--speedGear", "--speed", "--gear", "-s"],
             description = "sets the speed for the sorting visualisation"
     )
-    var speed: String = SortSpeed.KOALA.name.lowercase()
+    var speedGear: String = SpeedGear.G4.name
 
     @Parameter(
-            names = ["--speedMillis", "--millis", "-m"],
+            names = ["--frameDelayMillis", "--millis", "-m"],
             description = "sets the speed in milliseconds for the sorting visualisation: [50..4000]",
             hidden = true
     )
-    var speedMillis: String = "0"
+    var frameDelayMillis: String? = null
 
     @Parameter(
             names = ["--arrayLength", "-l"],
             description = "array length: [10, 30]"
     )
     var arrayLength: String = "20"
+
+    @Parameter(
+            names = ["--skipShuffle", "--noShuffle", "-ns"],
+            description = "switches off visualisation of array shuffling"
+    )
+    var shuffleSkipped: Boolean = false
 
     @Parameter(
             names = ["--disableInfo", "--noInfo", "-ni"],

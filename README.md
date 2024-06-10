@@ -32,8 +32,7 @@ $ cvsort --help
 _________________________________________
 Sorting Algorithm Comparator & Visualizer
 
-Usage: cvsort [options] [command]
-      [command options]
+Usage: cvsort [options] [command] [command options]
   Options:
     --usage, --help, -h
       shows usage
@@ -43,16 +42,19 @@ Usage: cvsort [options] [command]
     --listNames, --names, -n
       prints the available sorting algorithms
       Default: false
-    --listSpeeds, --speeds, -s
+    --listSpeedGears, --speeds, -s
       prints the available visualisation speeds of sorting algorithms
       Default: false
   Commands:
+    info      shows information about one or more sorting algorithms
+      Usage: info <name> [, <name-2>, ..., <name-20>]
+
     compare      compares two or more sorting algorithms
       Usage: compare [options] <name-1>, <name-2> [, ..., <name-10>]
         Options:
           --arrayFile, -f
             a file to save the array before sorting
-            Default: array_2024-06-05-04-38-26-177.txt
+            Default: array_2024-06-10-22-49-10-006.txt
           --arrayLength, -l
             array length: [2, 2^31)
             Default: 40
@@ -74,12 +76,12 @@ Usage: cvsort [options] [command]
             switches off the display of information about the sorting
             algorithm
             Default: false
-          --speed, -s
+          --skipShuffle, --noShuffle, -ns
+            switches off visualisation of array shuffling
+            Default: false
+          --speedGear, --speed, --gear, -s
             sets the speed for the sorting visualisation
-            Default: koala
-
-    info      shows information about one or more sorting algorithms
-      Usage: info <name> [, <name-2>, ..., <name-20>]
+            Default: G4
 ```
 
 </details>

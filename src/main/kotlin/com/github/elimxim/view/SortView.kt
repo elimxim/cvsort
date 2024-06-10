@@ -32,7 +32,7 @@ class SortView : View {
             val table = AsciiTable()
 
             table.addRule()
-            table.addRow(mutableListOf(
+            table.addRow(listOf(
                     ALGORITHM,
                     WORST_TIME,
                     AVERAGE_TIME,

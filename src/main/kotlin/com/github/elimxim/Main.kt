@@ -7,14 +7,15 @@ import com.github.elimxim.console.command.CompareCommand
 import com.github.elimxim.console.command.InfoCommand
 import com.github.elimxim.console.command.MainCommand
 import com.github.elimxim.console.command.VisualizeCommand
+import com.github.elimxim.view.SpeedGearView
 
 fun main(args: Array<String>) {
     val jc = JCommander.newBuilder()
             .programName("cvsort")
             .addObject(MainCommand)
+            .addCommand(InfoCommand.NAME, InfoCommand)
             .addCommand(CompareCommand.NAME, CompareCommand)
             .addCommand(VisualizeCommand.NAME, VisualizeCommand)
-            .addCommand(InfoCommand.NAME, InfoCommand)
             .build()
 
     jc.parse(*args)
@@ -30,12 +31,12 @@ fun main(args: Array<String>) {
     }
 
     if (MainCommand.listSortNames) {
-        printSortNames()
+        SortName.names().forEach { Console.printLine("- $it") }
         return
     }
 
-    if (MainCommand.listSpeeds) {
-        printSortSpeeds()
+    if (MainCommand.listSpeedGears) {
+        Console.printLines(SpeedGearView().lines())
         return
     }
 
@@ -72,12 +73,12 @@ private fun processCompareCommand() {
 
 private fun processVisualizeCommand() {
     val sortName = SortName.determine(VisualizeCommand.sortName)
-    val sortSpeed = SortSpeed.valueOf(VisualizeCommand.speed.uppercase())
-    val speedMillis = VisualizeCommand.speedMillis.toLong()
+    val speedGear = SpeedGear.valueOf(VisualizeCommand.speedGear.uppercase())
 
     val visualizer = SortVisualizer(
-            if (speedMillis != 0L) speedMillis else sortSpeed.millis,
+            VisualizeCommand.frameDelayMillis?.toLong() ?: speedGear.frameDelayMillis,
             VisualizeCommand.arrayLength.toInt(),
+            VisualizeCommand.shuffleSkipped.not(),
             VisualizeCommand.infoDisabled.not()
     )
 
@@ -94,16 +95,4 @@ private fun processInfoCommand() {
     }
 
     SortInfoShower().showInfo(sortNames)
-}
-
-private fun printSortNames() {
-    SortName.names().forEach { Console.printLine("- $it") }
-}
-
-private fun printSortSpeeds() {
-    SortSpeed.entries.sortedBy {
-        it.millis
-    }.forEach {
-        Console.printLine("- ${it.name.lowercase()}: ${it.millis} millis delay")
-    }
 }
