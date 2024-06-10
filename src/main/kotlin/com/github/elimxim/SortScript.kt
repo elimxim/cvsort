@@ -39,7 +39,6 @@ class Extra(
         val select: Select = Select()
 ) {
     constructor(vararg values: Int) : this(values.toList().toIntArray())
-    constructor(list: List<Int>) : this(list.toIntArray())
 }
 
 class Override(array: IntArray) {
@@ -50,15 +49,15 @@ class Override(array: IntArray) {
     }
 }
 
-class Nothing
+object Nothing
 
 interface Scene : Queue<Frame>
 class SceneImpl(lines: List<Frame>) : Scene, LinkedList<Frame>(lines)
 
 // not thread safe
-class Frame(val main: Data,
-            val extra: Data,
-            val probe: Probe.Snapshot
+class Frame(val mainData: Data,
+            val extraData: Data,
+            val probeSnapshot: Probe.Snapshot
 )
 
 // not thread safe
@@ -136,13 +135,13 @@ class SortScriptImpl(
     }
 
     override fun line(extra: Extra) {
-        frames.add(Frame(main = Data(
+        frames.add(Frame(mainData = Data(
                 array = arrayWrapper.original(),
-        ), extra = Data(
+        ), extraData = Data(
                 array = extra.array,
                 focused = extra.focus.indexes,
                 selected = extra.select.indexes
-        ), probe = probe.snapshot()
+        ), probeSnapshot = probe.snapshot()
         ))
     }
 
@@ -156,9 +155,9 @@ class SortScriptImpl(
 
     override fun line(nothing: Nothing) {
         frames.add(Frame(
-                main = Data(arrayWrapper.original()),
-                extra = Data(IntArray(0)),
-                probe = probe.snapshot()
+                mainData = Data(arrayWrapper.original()),
+                extraData = Data(emptyArray<Int>().toIntArray()),
+                probeSnapshot = probe.snapshot()
         ))
     }
 
@@ -168,15 +167,15 @@ class SortScriptImpl(
 
     private fun addFrame(focus: Focus? = null, select: Select? = null,
                          extra: Extra? = null, override: Override? = null) {
-        frames.add(Frame(main = Data(
+        frames.add(Frame(mainData = Data(
                 array = override?.array ?: arrayWrapper.original(),
                 focused = focus?.indexes ?: emptySet(),
                 selected = select?.indexes ?: emptySet()
-        ), extra = Data(
-                array = extra?.array ?: IntArray(0),
+        ), extraData = Data(
+                array = extra?.array ?: emptyArray<Int>().toIntArray(),
                 focused = extra?.focus?.indexes ?: emptySet(),
                 selected = extra?.select?.indexes ?: emptySet()
-        ), probe = probe.snapshot()
+        ), probeSnapshot = probe.snapshot()
         ))
     }
 
@@ -185,13 +184,13 @@ class SortScriptImpl(
             addFrame(focus = Focus(move.from), override = override)
             addFrame(select = Select(move.to), override = override)
         } else {
-            frames.add(Frame(main = Data(
+            frames.add(Frame(mainData = Data(
                     array = override?.array ?: arrayWrapper.original(),
                     focused = setOf(move.from),
                     selected = setOf(move.to)
-            ), extra = Data(
-                    array = IntArray(0)
-            ), probe = probe.snapshot()
+            ), extraData = Data(
+                    array = emptyArray<Int>().toIntArray()
+            ), probeSnapshot = probe.snapshot()
             ))
         }
     }
@@ -200,24 +199,24 @@ class SortScriptImpl(
         if (bulkMove.isNotEmpty()) {
             val moves = bulkMove.moves()
 
-            frames.add(Frame(main = Data(
+            frames.add(Frame(mainData = Data(
                     array = bulkMove.original,
                     focused = moves.map { it.from }.toSet(),
-            ), extra = Data(
-                    array = extra?.array ?: IntArray(0),
+            ), extraData = Data(
+                    array = extra?.array ?: emptyArray<Int>().toIntArray(),
                     focused = extra?.focus?.indexes ?: emptySet(),
                     selected = extra?.select?.indexes ?: emptySet()
-            ), probe = probe.snapshot()
+            ), probeSnapshot = probe.snapshot()
             ))
 
-            frames.add(Frame(main = Data(
+            frames.add(Frame(mainData = Data(
                     array = arrayWrapper.original(),
                     selected = moves.map { it.to }.toSet(),
-            ), extra = Data(
-                    array = extra?.array ?: IntArray(0),
+            ), extraData = Data(
+                    array = extra?.array ?: emptyArray<Int>().toIntArray(),
                     focused = extra?.focus?.indexes ?: emptySet(),
                     selected = extra?.select?.indexes ?: emptySet()
-            ), probe = probe.snapshot()
+            ), probeSnapshot = probe.snapshot()
             ))
         }
     }
@@ -264,7 +263,7 @@ class NoOpSortScript : SortScript {
     }
 
     override fun bulkMove(): BulkMove {
-        return BulkMove(IntArray(0))
+        return BulkMove(emptyArray<Int>().toIntArray())
     }
 
     override fun ifEnabled(action: (SortScript) -> Unit) {

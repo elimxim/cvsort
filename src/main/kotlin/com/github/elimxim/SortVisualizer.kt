@@ -6,6 +6,7 @@ import com.github.elimxim.console.Console
 import com.github.elimxim.console.view.ProbeView
 import kotlinx.coroutines.*
 
+// not thread safe
 class SortVisualizer(
         private val speedMillis: Long,
         private val arrayLength: Int,
@@ -29,68 +30,126 @@ class SortVisualizer(
         val probe = Probe()
         val array = (1..arrayLength).toIntArray()
         val arrayWrapper = IntArrayWrapper(array, probe)
-        val opening = SortScriptImpl(probe, arrayWrapper)
 
-        printOpening(sortName, opening, array)
-        delay(AFTER_OPENING_DELAY)
+        ScriptPrinter(
+                FramePrinter(sortName, arrayLength),
+                openingFrameDelay = 400,
+                beforeSceneDelay = 1000,
+                sceneFrameDelay = speedMillis,
+                afterSceneDelay = 100,
+                endingFrameDelay = 50
+        ).print(
+                opening = {
+                    val script = SortScriptImpl(probe, arrayWrapper)
+                    ArrayShuffler(script).shuffle(array)
+                    script
+                },
+                script = {
+                    val script = SortScriptImpl(probe, arrayWrapper)
+                    val sort = SortFactory.instance(sortName, probe, script)
+                    sort.sort(arrayWrapper)
+                    script
+                },
+                ending = {
+                    val script = SortScriptImpl(probe, arrayWrapper)
+                    script.line(Nothing)
+                    for (i in 0..<arrayWrapper.size()) {
+                        script.line(Focus(i))
+                    }
+                    val indexes = mutableSetOf<Int>()
+                    for (i in 0..<arrayWrapper.size()) {
+                        indexes.add(i)
+                        script.line(Focus(*indexes.toIntArray()))
+                    }
+                    script
+                }
+        )
+    }
+}
 
-        val script = SortScriptImpl(probe, arrayWrapper)
-        val sort = SortFactory.instance(sortName, probe, script)
-        sort.sort(arrayWrapper)
+// not thread safe
+class ScriptPrinter(
+        private val framePrinter: FramePrinter,
+        private val openingFrameDelay: Long,
+        private val beforeSceneDelay: Long,
+        private val sceneFrameDelay: Long,
+        private val afterSceneDelay: Long,
+        private val endingFrameDelay: Long
+) {
+    private var maxExtraSize: Int = 0
 
-        var maxExtraSize = 0
-        val scene = script.scene()
-        while (scene.isNotEmpty()) {
-            delay(speedMillis)
-            val frame = scene.poll()
-            if (frame.extra.array.size > maxExtraSize) {
-                maxExtraSize = frame.extra.array.size
-            }
-            printFrame(sortName, frame, refresh = true)
+    suspend fun print(
+            opening: () -> SortScript,
+            script: () -> SortScript,
+            ending: () -> SortScript
+    ) {
+        val openingScene = opening().scene()
+        printFrame(openingScene.poll(), refresh = false)
+        while (openingScene.isNotEmpty()) {
+            delay(openingFrameDelay)
+            printFrame(openingScene.poll(), refresh = true)
         }
 
-        val ending = SortScriptImpl(probe, arrayWrapper)
-        printEnding(sortName, ending, array, maxExtraSize)
+        delay(beforeSceneDelay)
+
+        val scriptScene = script().scene()
+        while (scriptScene.isNotEmpty()) {
+            delay(sceneFrameDelay)
+            val frame = scriptScene.poll()
+            printFrame(frame, refresh = true)
+        }
+
+        delay(afterSceneDelay)
+
+        val endingScene = ending().scene()
+        while (endingScene.isNotEmpty()) {
+            delay(endingFrameDelay)
+            printFrame(endingScene.poll(), refresh = true)
+        }
     }
 
-    private suspend fun printOpening(sortName: SortName, opening: SortScript, array: IntArray) {
-        ArrayShuffler(opening).shuffle(array)
-        val scene = opening.scene()
-        printFrame(sortName, scene.poll())
-        while (scene.isNotEmpty()) {
-            delay(OPENING_DELAY)
-            printFrame(sortName, scene.poll(), refresh = true)
+    private fun printFrame(frame: Frame, refresh: Boolean) {
+        val extraSize = frame.extraData.array.size
+        if (extraSize >= maxExtraSize) {
+            maxExtraSize = extraSize
+            framePrinter.print(frame, refresh)
+        } else {
+            framePrinter.print(adjustFrame(frame, maxExtraSize), refresh)
+            maxExtraSize = extraSize
         }
     }
 
-    private suspend fun printEnding(sortName: SortName, ending: SortScript, array: IntArray, maxExtraSize: Int) {
-        ending.line(Extra(array = IntArray(maxExtraSize)))
+    private fun adjustFrame(frame: Frame, extraSize: Int): Frame {
+        val extraArray = IntArray(extraSize)
+        frame.extraData.array.copyInto(extraArray)
 
-        for (i in array.indices) {
-            ending.line(Focus(i))
-        }
-        val indexes = mutableSetOf<Int>()
-        for (i in array.indices) {
-            indexes.add(i)
-            ending.line(Focus(*indexes.toIntArray()))
-        }
-        val scene = ending.scene()
-        while (scene.isNotEmpty()) {
-            delay(ENDING_DELAY)
-            printFrame(sortName, scene.poll(), refresh = true)
-        }
+        return Frame(
+                mainData = frame.mainData,
+                extraData = Data(
+                        array = extraArray,
+                        focused = frame.extraData.focused,
+                        selected = frame.extraData.selected
+                ),
+                probeSnapshot = frame.probeSnapshot
+        )
     }
+}
 
-    private fun printFrame(sortName: SortName, frame: Frame, refresh: Boolean = false) {
-        val probeView = ProbeView(sortName, frame.probe)
+// not thread safe
+class FramePrinter(
+        private val sortName: SortName,
+        private val screenHeight: Int
+) {
+    fun print(frame: Frame, refresh: Boolean = false) {
+        val probeView = ProbeView(sortName, frame.probeSnapshot)
         val arrayView = ArrayView(
-                array = frame.main.array,
-                focused = frame.main.focused,
-                selected = frame.main.selected,
-                extra = frame.extra.array,
-                extraFocused = frame.extra.focused,
-                extraSelected = frame.extra.selected,
-                height = arrayLength
+                array = frame.mainData.array,
+                focused = frame.mainData.focused,
+                selected = frame.mainData.selected,
+                extra = frame.extraData.array,
+                extraFocused = frame.extraData.focused,
+                extraSelected = frame.extraData.selected,
+                height = screenHeight
         )
 
         val lines = mutableListOf<String>()
@@ -98,11 +157,5 @@ class SortVisualizer(
         lines.add("")
         lines.addAll(probeView.lines())
         Console.printLines(lines, refresh)
-    }
-
-    private companion object {
-        const val OPENING_DELAY: Long = 400
-        const val AFTER_OPENING_DELAY: Long = 1000
-        const val ENDING_DELAY: Long = 50
     }
 }

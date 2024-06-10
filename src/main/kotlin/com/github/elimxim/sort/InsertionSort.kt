@@ -53,6 +53,5 @@ class InsertionSort(
                 script.line(Select(j + 1), Extra(value))
             }
         }
-        script.line(Extra(0))
     }
 }

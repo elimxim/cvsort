@@ -68,26 +68,74 @@ class BucketSort(
             }
         }
 
-        val original = array.original()
-        script.ifEnabled {
-            for (i in 0..<array.size()) {
-                it.line(Focus(i), Extra(original.take(i + 1)))
-                array[i] = 0
-            }
-        }
-
-        for (i in original.indices) {
+        for (i in 0..<array.size()) {
             probe.increment(ITERATIONS)
-            val x = floor(bucketsSize * (original[i] / (max + 1.0))).toInt()
-            buckets[x].add(original[i])
+            val x = floor(bucketsSize * (array[i] / (max + 1.0))).toInt()
+            buckets[x].add(array[i])
             script.ifEnabled {
-                fillArray(array, buckets, false)
-                val remaining = original.drop(i + 1).toIntArray() + IntArray(1)
-                script.line(Extra(*remaining))
+                val extraSize = buckets.sumOf { b -> b.size } + buckets.size - 1
+                val extra = IntArray(extraSize)
+                var ei = 0
+                for (bi in buckets.indices) {
+                    for (bj in buckets[bi].indices) {
+                        extra[ei++] = buckets[bi][bj]
+                    }
+                    ei++
+                }
+
+                var efIndex = 0
+                for (bi in 0..x) {
+                    efIndex += buckets[bi].size + 1
+                }
+                efIndex -= 2
+
+                it.line(Focus(i), Extra(extra, select = Select(efIndex)))
             }
         }
 
-        fillArray(array, buckets, true)
+        var index = 0
+        for (i in buckets.indices) {
+            probe.increment(ITERATIONS)
+            val bucket = buckets[i]
+            script.ifEnabled {
+                val extraSize = buckets.sumOf { b -> b.size } + buckets.size - 1
+                val extra = IntArray(extraSize)
+                var ei = 0
+                for (bi in buckets.indices) {
+                    for (bj in buckets[bi].indices) {
+                        extra[ei++] = buckets[bi][bj]
+                    }
+                    ei++
+                }
+
+                var efStartIndex = 0
+                for (bi in 0..<i) {
+                    efStartIndex += buckets[bi].size + 1
+                }
+
+                val efFocusIndexes = (efStartIndex..<efStartIndex + bucket.size)
+                it.line(Extra(extra, Focus(efFocusIndexes.toSet())))
+            }
+            for (j in bucket.indices) {
+                probe.increment(ITERATIONS)
+                array[index++] = bucket[j]
+            }
+            script.ifEnabled {
+                bucket.clear()
+                val extraSize = buckets.sumOf { b -> b.size } + buckets.size - 1
+                val extra = IntArray(extraSize)
+                var ei = 0
+                for (bi in buckets.indices) {
+                    for (bj in buckets[bi].indices) {
+                        extra[ei++] = buckets[bi][bj]
+                    }
+                    ei++
+                }
+                val selectIndexes = (index - bucket.size..<index).toSet()
+                it.line(Select(selectIndexes), Extra(extra))
+            }
+        }
+
         insertionSort(array)
     }
 
@@ -113,27 +161,6 @@ class BucketSort(
             if (i != j + 1) {
                 array[j + 1] = value
                 script.line(Select(j + 1), Extra(value))
-            }
-        }
-        script.line(Extra(0))
-    }
-
-    private fun fillArray(
-            array: IntArrayWrapper,
-            buckets: Array<MutableList<Int>>,
-            probeEnabled: Boolean
-    ) {
-        var index = 0
-        for (i in buckets.indices) {
-            if (probeEnabled) {
-                probe.increment(ITERATIONS)
-            }
-            val bucket = buckets[i]
-            for (j in bucket.indices) {
-                if (probeEnabled) {
-                    probe.increment(ITERATIONS)
-                }
-                array[index++] = bucket[j]
             }
         }
     }

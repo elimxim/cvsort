@@ -26,7 +26,7 @@ import com.github.elimxim.Probe.Counter.*
             end
         end
             
-        class Tree()
+        class Tree
             class Node(v, left, right)
             
             root: Node
@@ -59,7 +59,7 @@ class TreeSort(
             probe.increment(ITERATIONS)
             tree.add(array[i])
             script.ifEnabled {
-                ScriptAction(it, i).doAction(tree)
+                ScriptAction(it).doAction(tree, i)
             }
         }
 
@@ -116,17 +116,13 @@ class TreeSort(
         }
     }
 
-    private class ScriptAction(
-            private val script: SortScript,
-            private val index: Int
-    ) {
-        val array: IntArray = IntArray(index + 1)
+    private class ScriptAction(private val script: SortScript) {
         val focused: MutableSet<Int> = HashSet()
         val selected: MutableSet<Int> = HashSet()
 
-        fun doAction(tree: Tree) {
+        fun doAction(tree: Tree, index: Int) {
+            val array = IntArray(index + 1)
             val rootValue = tree.root!!.value
-
             traverseTree(tree.root, array, rootValue, 0)
             script.line(Focus(index), Extra(
                     array = array,
