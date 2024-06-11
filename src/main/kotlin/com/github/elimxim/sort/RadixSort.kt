@@ -23,24 +23,24 @@ import com.github.elimxim.Probe.Counter.*
         exp = 1
         while max/exp > 0 do
             out = [n]
-            occ = [10]
+            seq = [10]
             
             for i in [0..n) do
                 x = (array[i] / exp) % 10
-                occ[x]++
+                seq[x]++
             end
             
             for i in [1..10) do
-                occ[i] += occ[i-1]
+                seq[i] += seq[i-1]
             end
             
             for i in (n..0] do
                 x = (array[i] / exp) % 10
-                out[occ[x]-1] = array[i]
-                occ[x]--
+                seq[x]--
+                out[seq[x]] = array[i]
             end
             
-            for i in [0..n) do
+            for i in (n..0] do
                 array[i] = out[i]
             end
             
@@ -53,32 +53,33 @@ class RadixSort(
         private val script: SortScript
 ) : Sort {
     override fun sort(array: IntArrayWrapper) {
-        var exp = 1
         val max = array.max()
+        var exp = 1
         while ((max / exp) > 0) {
             probe.increment(ITERATIONS)
             val output = IntArray(array.size())
-            val buckets = IntArray(10)
+            val sequence = IntArray(10)
             val x = fun(i: Int): Int {
                 return (array[i] / exp) % 10
             }
 
             for (i in 0..<array.size()) {
                 probe.increment(ITERATIONS)
-                buckets[x(i)]++
+                sequence[x(i)]++
             }
 
-            for (i in 1..<buckets.size) {
+            for (i in 1..<sequence.size) {
                 probe.increment(ITERATIONS)
-                buckets[i] += buckets[i - 1]
+                sequence[i] += sequence[i - 1]
             }
 
             for (i in array.size() - 1 downTo 0) {
                 probe.increment(ITERATIONS)
-                val index = buckets[x(i)] - 1
+                sequence[x(i)]--
+                val index = sequence[x(i)]
                 output[index] = array[i]
                 script.action(Focus(i), Extra(output, Select(index)))
-                buckets[x(i)]--
+
             }
 
             for (i in array.size() - 1 downTo 0) {

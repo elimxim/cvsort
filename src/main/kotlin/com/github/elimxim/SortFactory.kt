@@ -37,6 +37,7 @@ object SortFactory {
             SHELL -> ShellSort::class
             TREE -> TreeSort::class
             BUCKET -> BucketSort::class
+            COUNTING -> CountingSort::class
             else -> throw RuntimeException("unexpected SortName: $sortName")
         }
     }
