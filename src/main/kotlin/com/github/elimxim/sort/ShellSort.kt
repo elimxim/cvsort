@@ -54,9 +54,11 @@ class ShellSort(
                     j -= gap
                 }
 
-                if (bulkMove.isNotEmpty()) {
-                    array[j] = 0
-                    script.action(bulkMove, Extra(value))
+                script.scene {
+                    if (bulkMove.isNotEmpty()) {
+                        array[j] = 0
+                        script.action(bulkMove, Extra(value))
+                    }
                 }
 
                 if (j != i) {

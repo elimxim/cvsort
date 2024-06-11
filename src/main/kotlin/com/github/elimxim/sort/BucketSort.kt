@@ -59,15 +59,7 @@ class BucketSort(
     override fun sort(array: IntArrayWrapper) {
         val bucketsSize = floor(sqrt(array.size().toDouble())).toInt()
         val buckets = Array<MutableList<Int>>(bucketsSize) { ArrayList() }
-
-        var max = array[0]
-        for (i in 1..<array.size()) {
-            probe.increment(ITERATIONS, COMPARISONS)
-            if (array[i] > max) {
-                max = array[i]
-            }
-        }
-
+        val max = array.max()
         for (i in 0..<array.size()) {
             probe.increment(ITERATIONS)
             val x = floor(bucketsSize * (array[i] / (max + 1.0))).toInt()
@@ -144,8 +136,8 @@ class BucketSort(
             probe.increment(ITERATIONS)
             val value = array[i]
             var j = i - 1
-            script.action(Focus(i), Extra(value))
             val bulkMove = BulkMove(array)
+            script.action(Focus(i), Extra(value))
             while (j >= 0 && array[j] > value) {
                 probe.increment(ITERATIONS, COMPARISONS)
                 array[j + 1] = array[j]
@@ -153,9 +145,11 @@ class BucketSort(
                 j--
             }
 
-            if (bulkMove.isNotEmpty()) {
-                array[j + 1] = 0
-                script.action(bulkMove, Extra(value))
+            script.scene {
+                if (bulkMove.isNotEmpty()) {
+                    array[j + 1] = 0
+                    script.action(bulkMove, Extra(value))
+                }
             }
 
             if (i != j + 1) {

@@ -51,15 +51,8 @@ class RadixSort(
         private val script: SortScript
 ) : Sort {
     override fun sort(array: IntArrayWrapper) {
-        var max = array[0]
-        for (i in 1..<array.size()) {
-            probe.increment(ITERATIONS, COMPARISONS)
-            if (array[i] > max) {
-                max = array[i]
-            }
-        }
-
         var exp = 1
+        val max = array.max()
         while ((max / exp) > 0) {
             probe.increment(ITERATIONS)
             val output = IntArray(array.size())

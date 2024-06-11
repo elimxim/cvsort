@@ -34,7 +34,6 @@ class GnomeSort(
             if (index == 0 || array[index - 1] < array[index]) {
                 index++
             } else {
-                probe.increment(ARRAY_SWAPS)
                 array.swap(index - 1, index)
                 script.action(Swap(index - 1, index))
                 index--

@@ -37,11 +37,10 @@ class OddEvenSort(
     override fun sort(array: IntArrayWrapper) {
         do {
             var swapped = false
-            probe.increment(ITERATIONS)
 
             for (i in 1..<array.size() - 1 step 2) {
-                probe.increment(ITERATIONS, COMPARISONS)
                 script.action(Focus(i))
+                probe.increment(ITERATIONS, COMPARISONS)
                 if (array[i] > array[i + 1]) {
                     array.swap(i, i + 1)
                     script.action(Swap(i, i + 1))
@@ -50,14 +49,16 @@ class OddEvenSort(
             }
 
             for (i in 0..<array.size() - 1 step 2) {
-                probe.increment(ITERATIONS, COMPARISONS)
                 script.action(Focus(i))
+                probe.increment(ITERATIONS, COMPARISONS)
                 if (array[i] > array[i + 1]) {
                     array.swap(i, i + 1)
                     script.action(Swap(i, i + 1))
                     swapped = true
                 }
             }
+
+            probe.increment(ITERATIONS)
         } while (swapped)
     }
 }

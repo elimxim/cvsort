@@ -32,10 +32,10 @@ class Move(val from: Int, val to: Int, val split: Boolean = true) : SingleAction
 
 class BulkMove(array: IntArrayWrapper) : SingleAction {
     private val moves: MutableList<Move> = ArrayList()
-    val arraySnap: IntArray
+    val arraySnapshot: IntArray
 
     init {
-        arraySnap = array.snapshot()
+        arraySnapshot = array.snapshot()
     }
 
     fun add(from: Int, to: Int) {
@@ -152,10 +152,10 @@ class SortScriptImpl(
         val arraySnap = arrayWrapper.snapshot()
         val screens = mutableListOf<Screen>()
         when (action) {
-            is Swap -> {
+            is Swap ->
                 screens.add(Screen(arraySnap, selected = setOf(action.index1, action.index2)))
-            }
-            is Move -> {
+
+            is Move ->
                 if (action.split) {
                     screens.add(Screen(arraySnap,
                             focused = setOf(action.from)))
@@ -166,17 +166,20 @@ class SortScriptImpl(
                             focused = setOf(action.from),
                             selected = setOf(action.to)))
                 }
-            }
-            is BulkMove -> {
-                val moves = action.moves()
-                screens.add(Screen(action.arraySnap,
-                        focused = moves.map { it.from }.toSet()))
-                screens.add(Screen(arraySnap,
-                        selected = moves.map { it.to }.toSet()))
-            }
-            is Nothing -> {
+
+            is BulkMove ->
+                if (action.isNotEmpty()) {
+                    val moves = action.moves()
+
+                    screens.add(Screen(action.arraySnapshot,
+                            focused = moves.map { it.from }.toSet()))
+                    screens.add(Screen(arraySnap,
+                            selected = moves.map { it.to }.toSet()))
+                }
+
+            is Nothing ->
                 screens.add(Screen(arraySnap))
-            }
+
         }
         return screens
     }

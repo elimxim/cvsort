@@ -64,11 +64,10 @@ class PancakeSort(
         var lastIdx = array.size()
         while (lastIdx > 1) {
             probe.increment(ITERATIONS)
-
             var maxIdx = 0
             for (i in 1..<lastIdx) {
-                probe.increment(ITERATIONS, COMPARISONS)
                 script.action(Focus(i))
+                probe.increment(ITERATIONS, COMPARISONS)
                 if (array[i] > array[maxIdx]) {
                     maxIdx = i
                 }

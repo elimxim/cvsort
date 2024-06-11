@@ -2,6 +2,7 @@ package com.github.elimxim.sort
 
 import com.github.elimxim.*
 import com.github.elimxim.Probe.Counter.*
+import kotlin.math.round
 
 @SortAlgorithm(
         timeComplexity = TimeComplexity(
@@ -59,26 +60,20 @@ class TreeSort(
             probe.increment(ITERATIONS)
             tree.add(array[i])
             script.scene {
-                ScriptAction(it).doAction(tree, i)
+                with(TraversalContext(tree.root, count = false, i + 1)) {
+                    traverseTree(tree.root, this)
+                    script.action(Focus(i), Extra(traversalArray, Focus(focused), Select(selected)))
+                }
             }
         }
 
-        traverseTree(tree.root, array, 0)
-    }
-
-    private fun traverseTree(node: Tree.Node?, array: IntArrayWrapper, index: Int): Int {
-        probe.increment(ITERATIONS)
-        var newIndex = index
-        if (node != null) {
-            newIndex = traverseTree(node.left, array, newIndex)
-
-            array[newIndex] = node.value
-            script.action(Focus(newIndex))
-            newIndex++
-
-            newIndex = traverseTree(node.right, array, newIndex)
+        with(TraversalContext(tree.root, count = true, array.size())) {
+            traverseTree(tree.root, this)
+            for (i in traversalArray.indices) {
+                array[i] = traversalArray[i]
+                script.action(Focus(i), Extra(traversalArray, Focus(focused), Select(selected)))
+            }
         }
-        return newIndex
     }
 
     private class Tree(private val probe: Probe) {
@@ -116,33 +111,33 @@ class TreeSort(
         }
     }
 
-    private class ScriptAction(private val script: SortScript) {
-        val focused: MutableSet<Int> = HashSet()
-        val selected: MutableSet<Int> = HashSet()
-
-        fun doAction(tree: Tree, index: Int) {
-            val array = IntArray(index + 1)
-            val rootValue = tree.root!!.value
-            traverseTree(tree.root, array, rootValue, 0)
-            script.action(Focus(index), Extra(array, Focus(focused), Select(selected)))
+    private fun traverseTree(node: Tree.Node?, ctx: TraversalContext) {
+        if (ctx.count) {
+            probe.increment(ITERATIONS)
         }
 
-        private fun traverseTree(node: Tree.Node?, array: IntArray, rootValue: Int, index: Int): Int {
-            var newIndex = index
-            if (node != null) {
-                newIndex = traverseTree(node.left, array, rootValue, newIndex)
+        if (node != null) {
+            traverseTree(node.left, ctx)
 
-                array[newIndex] = node.value
-                if (node.value == rootValue) {
-                    selected.add(newIndex)
+            ctx.traversalArray[ctx.index] = node.value
+            script.scene {
+                if (node.value == ctx.root?.value) {
+                    ctx.selected.add(ctx.index)
                 } else if (node.isLeaf().not()) {
-                    focused.add(newIndex)
+                    ctx.focused.add(ctx.index)
                 }
-                newIndex++
-
-                newIndex = traverseTree(node.right, array, rootValue, newIndex)
             }
-            return newIndex
+            ctx.index++
+
+            traverseTree(node.right, ctx)
         }
+    }
+
+    private class TraversalContext(
+            val root: Tree.Node?, val count: Boolean, arraySize: Int) {
+        val selected: MutableSet<Int> = HashSet()
+        val focused: MutableSet<Int> = HashSet()
+        val traversalArray: IntArray = IntArray(arraySize)
+        var index: Int = 0
     }
 }
