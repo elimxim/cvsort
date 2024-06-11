@@ -10,6 +10,8 @@ import com.github.elimxim.Probe.Counter.*
                 best = Complexity.LINEARITHMIC
         ),
         spaceComplexity = Complexity.CONST,
+        methods = [Method.INSERTION],
+        stable = false,
         pseudoCode = """
         gap = n / 2
         while gap > 0 do

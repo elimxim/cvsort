@@ -10,6 +10,8 @@ import com.github.elimxim.Probe.Counter.*
                 best = Complexity.TWO_THIRDS_CUBIC
         ),
         spaceComplexity = Complexity.LINEAR,
+        methods = [],
+        stable = false,
         pseudoCode = """
         invoke stooge(array, 0, n-1)
         

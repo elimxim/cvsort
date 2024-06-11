@@ -4,6 +4,8 @@ package com.github.elimxim
 annotation class SortAlgorithm(
         val timeComplexity: TimeComplexity,
         val spaceComplexity: Complexity,
+        val methods: Array<Method>,
+        val stable: Boolean,
         val pseudoCode: String
 )
 
@@ -15,13 +17,13 @@ annotation class TimeComplexity(
 
 enum class Complexity(val notation: String) {
     CONST("1"),
-    LOGARITHMIC("log(n)"),
+    LOGARITHMIC("logn"),
     LINEAR("n"),
-    LINEARITHMIC("n*log(n)"),
+    LINEARITHMIC("nlogn"),
     THIRD_QUADRATIC("n^4/3"),
     HALF_QUADRATIC("n^3/2"),
     QUADRATIC("n^2"),
-    TWO_THIRDS_CUBIC("n^log1.5(3)"),
+    TWO_THIRDS_CUBIC("n^log3/log1.5"),
     CUBIC("n^3"),
     FACTORIAL("n!")
 }
@@ -30,4 +32,12 @@ enum class ComplexityClass(val notation: String) {
     BIG_O("O"),
     BIG_THETA("Θ"),
     BIG_OMEGA("Ω"),
+}
+
+enum class Method {
+    EXCHANGING, SELECTION, INSERTION, MERGING, PARTITIONING;
+
+    fun camelCase(): String {
+        return name.lowercase().snakeCaseToCamelCase()
+    }
 }

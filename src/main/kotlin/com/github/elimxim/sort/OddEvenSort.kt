@@ -10,6 +10,8 @@ import com.github.elimxim.Probe.Counter.*
                 best = Complexity.LINEAR
         ),
         spaceComplexity = Complexity.CONST,
+        methods = [Method.EXCHANGING],
+        stable = true,
         pseudoCode = """
         do 
             swapped = false

@@ -10,6 +10,8 @@ import com.github.elimxim.Probe.Counter.*
                 best = Complexity.LINEAR
         ),
         spaceComplexity = Complexity.LINEAR,
+        methods = [],
+        stable = true,
         pseudoCode = """
         max = array[0]
         for i in (0..n) do

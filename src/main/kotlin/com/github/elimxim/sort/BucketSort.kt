@@ -12,6 +12,8 @@ import kotlin.math.sqrt
                 best = Complexity.LINEAR
         ),
         spaceComplexity = Complexity.LINEAR,
+        methods = [],
+        stable = true,
         pseudoCode = """
         k = floor sqrt n
         buckets = [k] of List

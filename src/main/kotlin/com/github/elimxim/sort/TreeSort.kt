@@ -11,6 +11,8 @@ import kotlin.math.round
                 best = Complexity.LINEARITHMIC
         ),
         spaceComplexity = Complexity.LINEAR,
+        methods = [Method.INSERTION],
+        stable = true,
         pseudoCode = """
         tree = invoke Tree()
         for i in [0..n] do

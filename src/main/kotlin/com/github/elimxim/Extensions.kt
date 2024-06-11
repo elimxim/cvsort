@@ -73,3 +73,7 @@ fun IntRange.toIntArray(): IntArray {
 fun Boolean.xnor(other: Boolean): Boolean {
     return this.xor(other).not()
 }
+
+fun Boolean.toWord(): String {
+    return if (this) "Yes" else "No"
+}

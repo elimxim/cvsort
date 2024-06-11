@@ -10,6 +10,8 @@ import com.github.elimxim.Probe.Counter.*
                 best = Complexity.LINEAR
         ),
         spaceComplexity = Complexity.CONST,
+        methods = [Method.INSERTION],
+        stable = true,
         pseudoCode = """
         for i in (0..n) do
             v = array[i]

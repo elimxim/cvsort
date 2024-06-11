@@ -10,6 +10,8 @@ import com.github.elimxim.Probe.Counter.*
                 best = Complexity.QUADRATIC
         ),
         spaceComplexity = Complexity.CONST,
+        methods = [Method.SELECTION],
+        stable = false,
         pseudoCode = """
         for i in [0..n-1) do
             min = i

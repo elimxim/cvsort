@@ -11,6 +11,8 @@ import kotlin.math.floor
                 best = Complexity.LINEARITHMIC
         ),
         spaceComplexity = Complexity.CONST,
+        methods = [Method.EXCHANGING],
+        stable = false,
         pseudoCode = """        
         gap = n
         swapped = true
