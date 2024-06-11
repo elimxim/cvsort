@@ -6,7 +6,8 @@ enum class SpeedGear(val frameDelayMillis: Long) {
     G3(1000),
     G4(500),
     G5(100),
-    G6(50);
+    G6(50),
+    R(-500);
 
     companion object {
         fun contains(name: String): Boolean {

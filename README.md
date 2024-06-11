@@ -54,9 +54,9 @@ Usage: cvsort [options] [command] [command options]
         Options:
           --arrayFile, -f
             a file to save the array before sorting
-            Default: array_2024-06-10-22-49-10-006.txt
+            Default: array_2024-06-12-01-21-07-330.txt
           --arrayLength, -l
-            array length: [2, 2^31)
+            array length: [2, 2^30)
             Default: 40
           --disableInfo, --noInfo, -ni
             switches off the display of sorting algorithm comparison
@@ -76,10 +76,13 @@ Usage: cvsort [options] [command] [command options]
             switches off the display of information about the sorting
             algorithm
             Default: false
-          --skipShuffle, --noShuffle, -ns
+          --frameDelayMillis, --millis, -m
+            sets the speed in milliseconds for the sorting visualisation:
+            [50..4000]
+          --skipShuffle, -ss
             switches off visualisation of array shuffling
             Default: false
-          --speedGear, --speed, --gear, -s
+          --speedGear, --speed, -s
             sets the speed for the sorting visualisation
             Default: G4
 ```

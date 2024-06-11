@@ -12,7 +12,7 @@ import java.nio.file.InvalidPathException
 class InputVerifier(private val args: Array<String>) {
     fun verify(cmd: CompareCommand): Boolean {
         return checkSortNames(cmd.sortNames, min = 2, max = 10, allAvailable = false, repetitionAvailable = true)
-                && checkArrayLength(cmd.arrayLength, min = 2, max = Int.MAX_VALUE, maxDisplay = "2^32-1")
+                && checkArrayLength(cmd.arrayLength, min = 2, max = Int.MAX_VALUE/2, maxDisplay = "2^30-1")
                 && checkArrayFile(cmd.arrayFile)
     }
 

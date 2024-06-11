@@ -76,10 +76,11 @@ private fun processVisualizeCommand() {
     val speedGear = SpeedGear.valueOf(VisualizeCommand.speedGear.uppercase())
 
     val visualizer = SortVisualizer(
-            VisualizeCommand.frameDelayMillis?.toLong() ?: speedGear.frameDelayMillis,
+            frameDelayMillis = VisualizeCommand.frameDelayMillis?.toLong() ?: speedGear.frameDelayMillis,
             VisualizeCommand.arrayLength.toInt(),
             VisualizeCommand.shuffleSkipped.not(),
-            VisualizeCommand.infoDisabled.not()
+            VisualizeCommand.infoDisabled.not(),
+            reverse = speedGear == SpeedGear.R
     )
 
     visualizer.visualize(sortName)

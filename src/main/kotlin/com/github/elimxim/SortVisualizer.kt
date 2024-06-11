@@ -5,12 +5,15 @@ import com.github.elimxim.view.ArrayView
 import com.github.elimxim.console.Console
 import com.github.elimxim.view.ProbeView
 import kotlinx.coroutines.*
+import kotlin.math.abs
+import kotlin.math.absoluteValue
 
 class SortVisualizer(
         private val frameDelayMillis: Long,
         private val arrayLength: Int,
         private val showShuffle: Boolean,
-        private val showInfo: Boolean
+        private val showInfo: Boolean,
+        private val reverse: Boolean
 ) {
     fun visualize(sortName: SortName) {
         if (showInfo) {
@@ -35,11 +38,11 @@ class SortVisualizer(
         ScriptPrinter(
                 FramePrinter(sortName, arrayLength),
                 openingBeat = 400,
-                beforeSceneDelay = 1000,
-                sceneBeast = frameDelayMillis,
-                afterSceneDelay = 100,
+                scriptBeat = abs(frameDelayMillis),
+                actDelay = 500,
                 endingBeat = 50,
-                showShuffle
+                showOpening = showShuffle,
+                backwards = reverse,
         ).print(
                 opening = {
                     val script = SortScriptImpl(probe, arrayWrapper)
@@ -49,6 +52,7 @@ class SortVisualizer(
                 script = {
                     val script = SortScriptImpl(probe, arrayWrapper)
                     val sort = SortFactory.instance(sortName, probe, script)
+                    script.action(Nothing)
                     sort.sort(arrayWrapper)
                     script
                 },
@@ -72,11 +76,11 @@ class SortVisualizer(
 class ScriptPrinter(
         private val framePrinter: FramePrinter,
         private val openingBeat: Long,
-        private val beforeSceneDelay: Long,
-        private val sceneBeast: Long,
-        private val afterSceneDelay: Long,
+        private val scriptBeat: Long,
+        private val actDelay: Long,
         private val endingBeat: Long,
-        private val showOpening: Boolean
+        private val showOpening: Boolean,
+        private val backwards: Boolean
 ) {
     private var maxExtraSize: Int = 0
 
@@ -85,31 +89,35 @@ class ScriptPrinter(
             script: () -> SortScript,
             ending: () -> SortScript
     ) {
-        val switch = Switch(false)
         val openingRecord = opening().record()
-        if (showOpening) {
-            printFrame(openingRecord.poll(), switch.value())
-            while (openingRecord.isNotEmpty()) {
-                delay(openingBeat)
-                printFrame(openingRecord.poll(), switch.value())
-            }
-
-            delay(beforeSceneDelay)
-        }
-
-        val record = script().record()
-        while (record.isNotEmpty()) {
-            delay(sceneBeast)
-            val frame = record.poll()
-            printFrame(frame, switch.value())
-        }
-
-        delay(afterSceneDelay)
-
+        val scriptRecord = script().record()
         val endingRecord = ending().record()
-        while (endingRecord.isNotEmpty()) {
-            delay(endingBeat)
-            printFrame(endingRecord.poll(), switch.value())
+
+        val switch = Switch(false)
+        if (backwards.not()) {
+            if (showOpening) {
+                playRecord(openingRecord, openingBeat, switch)
+                delay(actDelay)
+            }
+            playRecord(scriptRecord, scriptBeat, switch)
+            delay(actDelay)
+            playRecord(endingRecord, endingBeat, switch)
+        } else {
+            playRecord(endingRecord, endingBeat, switch)
+            delay(actDelay)
+            playRecord(scriptRecord, scriptBeat, switch)
+        }
+    }
+
+    private suspend fun playRecord(record: Record, beat: Long, switch: Switch) {
+        while (record.isNotEmpty()) {
+            delay(beat)
+            val shot = if (backwards.not()) {
+                record.pollFirst()
+            } else {
+                record.pollLast()
+            }
+            printFrame(shot, switch.value())
         }
     }
 

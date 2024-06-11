@@ -8,10 +8,11 @@ class ProbeView(
         private val snap: Probe.Snapshot
 ) : View {
     override fun lines(): List<String> {
+        val extraSpaces = "".repeat(10)
         return """<${sortName.canonical()}>
-            | iterations   ${snap.iterations}  comparisons  ${snap.comparisons}
-            | array reads/writes  ${snap.arrayReads}/${snap.arrayWrites}  ratio  ${"%.2f".format(snap.arrayRatio())}
-            | array swaps  ${snap.arraySwaps}
+            | iterations   ${snap.iterations}  comparisons  ${snap.comparisons} $extraSpaces
+            | array reads/writes  ${snap.arrayReads}/${snap.arrayWrites}  ratio  ${"%.2f".format(snap.arrayRatio())} $extraSpaces
+            | array swaps  ${snap.arraySwaps} $extraSpaces
         """.trimMargin().lines()
     }
 }

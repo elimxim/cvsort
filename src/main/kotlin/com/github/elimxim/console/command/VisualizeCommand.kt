@@ -15,15 +15,14 @@ object VisualizeCommand {
     lateinit var sortName: String
 
     @Parameter(
-            names = ["--speedGear", "--speed", "--gear", "-s"],
+            names = ["--speedGear", "--speed", "-s"],
             description = "sets the speed for the sorting visualisation"
     )
     var speedGear: String = SpeedGear.G4.name
 
     @Parameter(
             names = ["--frameDelayMillis", "--millis", "-m"],
-            description = "sets the speed in milliseconds for the sorting visualisation: [50..4000]",
-            hidden = true
+            description = "sets the speed in milliseconds for the sorting visualisation: [50..4000]"
     )
     var frameDelayMillis: String? = null
 
@@ -34,7 +33,7 @@ object VisualizeCommand {
     var arrayLength: String = "20"
 
     @Parameter(
-            names = ["--skipShuffle", "--noShuffle", "-ns"],
+            names = ["--skipShuffle", "-ss"],
             description = "switches off visualisation of array shuffling"
     )
     var shuffleSkipped: Boolean = false

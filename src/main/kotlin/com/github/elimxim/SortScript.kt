@@ -2,8 +2,8 @@ package com.github.elimxim
 
 import java.lang.RuntimeException
 import java.lang.UnsupportedOperationException
-import java.util.LinkedList
-import java.util.Queue
+import java.util.*
+import kotlin.collections.ArrayList
 
 interface SortScript {
     fun action(vararg actions: Action)
@@ -73,7 +73,7 @@ class Extra(array: IntArray, vararg actions: CoAction) : ExtraAction {
 
 object Nothing : SingleAction
 
-interface Record : Queue<Shot>
+interface Record : Deque<Shot>
 
 class RecordImpl(lines: List<Shot>) : Record, LinkedList<Shot>(lines)
 

@@ -19,7 +19,7 @@ object CompareCommand {
 
     @Parameter(
             names = ["--arrayLength", "-l"],
-            description = "array length: [2, 2^31)"
+            description = "array length: [2, 2^30)"
     )
     var arrayLength: String = "40"
 
