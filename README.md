@@ -219,29 +219,29 @@ elapsed time: 23 ms
 
 ## Supported sorting algorithms
 
-<table style="white-space:nowrap;width:100%;">
+<table>
     <tr>
-        <td style="background-color:rgba(255, 0, 0, 0.1);"><a href="https://en.wikipedia.org/wiki/Bubble_sort">BubbleSort</a></td>
-        <td style="background-color:rgba(255, 0, 0, 0.1);"><a href="https://en.wikipedia.org/wiki/Selection_sort">SelectionSort</a></td>
-        <td style="background-color:rgba(255, 0, 0, 0.1);"><a href="https://en.wikipedia.org/wiki/Insertion_sort">InsertionSort</a></td>
-        <td style="background-color:rgba(255, 0, 0, 0.1);"><a href="https://en.wikipedia.org/wiki/Gnome_sort">GnomeSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Bubble_sort">BubbleSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Bucket_sort">BucketSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Cocktail_shaker_sort">ShakerSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Comb_sort">CombSort</a></td>
     </tr>
     <tr>
-        <td style="background-color:rgba(255, 0, 0, 0.1);"><a href="https://en.wikipedia.org/wiki/Cocktail_shaker_sort">ShakerSort</a></td>
-        <td style="background-color:rgba(255, 0, 0, 0.1);"><a href="https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort">OddEvenSort</a></td>
-        <td style="background-color:rgba(255, 0, 0, 0.1);"><a href="https://en.wikipedia.org/wiki/Pancake_sorting">PancakeSort</a></td>
-        <td style="background-color:rgba(255, 0, 0, 0.1);"><a href="https://en.wikipedia.org/wiki/Cycle_sort">CycleSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Counting_sort">CountingSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Cycle_sort">CycleSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Insertion_sort">InsertionSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Gnome_sort">GnomeSort</a></td>
     </tr>
     <tr>
-        <td style="background-color:rgba(255, 0, 0, 0.1);"><a href="https://en.wikipedia.org/wiki/Stooge_sort">StoogeSort</a></td>
-        <td style="background-color:rgba(255, 0, 0, 0.1);"><a href="https://en.wikipedia.org/wiki/Comb_sort">CombSort</a></td>
-        <td style="background-color:rgba(103, 0, 255, 0.1);"><a href="https://en.wikipedia.org/wiki/Radix_sort">RadixSort</a></td>
-        <td style="background-color:rgba(255, 199, 0, 0.1);"><a href="https://en.wikipedia.org/wiki/Shellsort">ShellSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort">OddEvenSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Pancake_sorting">PancakeSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Quicksort">QuickSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Radix_sort">RadixSort</a></td>
     </tr>
     <tr>
-        <td style="background-color:rgba(255, 0, 0, 0.1);"><a href="https://en.wikipedia.org/wiki/Tree_sort">TreeSort</a></td>
-        <td style="background-color:rgba(255, 0, 0, 0.1);"><a href="https://en.wikipedia.org/wiki/Bucket_sort">BucketSort</a></td>
-        <td style="background-color:rgba(103, 0, 255, 0.1);"><a href="https://en.wikipedia.org/wiki/Counting_sort">CountingSort</a></td>
-        <td></td>
+        <td><a href="https://en.wikipedia.org/wiki/Selection_sort">SelectionSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Shellsort">ShellSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Stooge_sort">StoogeSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Tree_sort">TreeSort</a></td>
     </tr>
 </table>

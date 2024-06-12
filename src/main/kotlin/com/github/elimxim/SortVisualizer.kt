@@ -46,14 +46,16 @@ class SortVisualizer(
         ).print(
                 opening = {
                     val script = SortScriptImpl(probe, arrayWrapper)
+                    script.action(Nothing)
                     ArrayShuffler(script).shuffle(array)
+                    script.action(Nothing)
                     script
                 },
                 script = {
                     val script = SortScriptImpl(probe, arrayWrapper)
                     val sort = SortFactory.instance(sortName, probe, script)
-                    script.action(Nothing)
                     sort.sort(arrayWrapper)
+                    script.action(Nothing)
                     script
                 },
                 ending = {

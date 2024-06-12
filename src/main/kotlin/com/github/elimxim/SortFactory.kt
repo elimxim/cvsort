@@ -38,6 +38,8 @@ object SortFactory {
             TREE -> TreeSort::class
             BUCKET -> BucketSort::class
             COUNTING -> CountingSort::class
+            LOMUTO_QUICK -> LomutoQuickSort::class
+            HOARE_QUICK -> HoareQuickSort::class
             else -> throw RuntimeException("unexpected SortName: $sortName")
         }
     }
