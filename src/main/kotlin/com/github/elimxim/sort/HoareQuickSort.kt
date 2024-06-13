@@ -40,7 +40,12 @@ import com.github.elimxim.Probe.Counter.*
                 swap array[i] and array[j]
             end
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 1959,
+                authors = ["Tony Hoare"],
+                wikiUrl = "https://en.wikipedia.org/wiki/Quicksort"
+        )
 )
 class HoareQuickSort(
         private val probe: Probe,

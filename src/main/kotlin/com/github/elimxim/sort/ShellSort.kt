@@ -34,7 +34,12 @@ import com.github.elimxim.Probe.Counter.*
             end
             gap /= 2
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 1959,
+                authors = ["Donald L. Shell"],
+                wikiUrl = "https://en.wikipedia.org/wiki/Shellsort"
+        )
 )
 class ShellSort(
         private val probe: Probe,

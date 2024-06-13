@@ -40,7 +40,12 @@ import com.github.elimxim.Probe.Counter.*
         for i in (n..0] do
             array[i] = out[i]
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 1954,
+                authors = ["Harold H. Seward"],
+                wikiUrl = "https://en.wikipedia.org/wiki/Counting_sort"
+        )
 )
 class CountingSort(
         private val probe: Probe,

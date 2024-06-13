@@ -26,7 +26,12 @@ import com.github.elimxim.Probe.Counter.*
                 swap array[i] and array[min]
             end
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 0,
+                authors = [],
+                wikiUrl = "https://en.wikipedia.org/wiki/Selection_sort"
+        )
 )
 class SelectionSort(
         private val probe: Probe,

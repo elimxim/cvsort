@@ -7,13 +7,20 @@ annotation class SortClassification(
         val methods: Array<Method>,
         val recursive: Boolean,
         val stable: Boolean,
-        val pseudoCode: String
+        val pseudoCode: String,
+        val extraInfo: ExtraInfo
 )
 
 annotation class TimeComplexity(
         val best: Complexity,
         val average: Complexity,
         val worst: Complexity
+)
+
+annotation class ExtraInfo(
+        val inventionYear: Int,
+        val authors: Array<String>,
+        val wikiUrl: String
 )
 
 enum class Complexity(val notation: String) {

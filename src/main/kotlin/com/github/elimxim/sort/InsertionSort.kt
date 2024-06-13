@@ -26,7 +26,12 @@ import com.github.elimxim.Probe.Counter.*
                 array[j+1] = v
             end
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 1945,
+                authors = ["Konrad Zuse"],
+                wikiUrl = "https://en.wikipedia.org/wiki/Insertion_sort"
+        )
 )
 class InsertionSort(
         private val probe: Probe,

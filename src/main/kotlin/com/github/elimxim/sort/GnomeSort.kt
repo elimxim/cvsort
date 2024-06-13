@@ -23,7 +23,12 @@ import com.github.elimxim.Probe.Counter.*
                 idx--
             end
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 2000,
+                authors = ["Hamid Sarbazi-Azad"],
+                wikiUrl = "https://en.wikipedia.org/wiki/Gnome_sort"
+        )
 )
 class GnomeSort(
         private val probe: Probe,

@@ -47,7 +47,12 @@ import com.github.elimxim.Probe.Counter.*
             
             exp *= 10
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 1954,
+                authors = ["Harold H. Seward"],
+                wikiUrl = "https://en.wikipedia.org/wiki/Radix_sort"
+        )
 )
 class RadixSort(
         private val probe: Probe,

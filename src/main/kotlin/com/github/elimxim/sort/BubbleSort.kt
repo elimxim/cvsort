@@ -27,7 +27,12 @@ import com.github.elimxim.Probe.Counter.*
                 break
             end
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 1956,
+                authors = ["Edward Harry Friend"],
+                wikiUrl = "https://en.wikipedia.org/wiki/Bubble_sort"
+        )
 )
 class BubbleSort(
         private val probe: Probe,

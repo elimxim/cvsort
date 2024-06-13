@@ -32,7 +32,12 @@ import kotlin.math.floor
                 end
             end
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 1991,
+                authors = ["Stephen Lacey", "Richard Box"],
+                wikiUrl = "https://en.wikipedia.org/wiki/Comb_sort"
+        )
 )
 class CombSort (
         private val probe: Probe,

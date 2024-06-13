@@ -49,7 +49,12 @@ import com.github.elimxim.Probe.Counter.*
                 swap array[idx] and v
             end
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 1963,
+                authors = ["W. D. Jones"],
+                wikiUrl = "https://en.wikipedia.org/wiki/Cycle_sort"
+        )
 )
 class CycleSort(
         private val probe: Probe,

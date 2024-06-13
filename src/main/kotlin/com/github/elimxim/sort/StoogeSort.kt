@@ -28,7 +28,12 @@ import com.github.elimxim.Probe.Counter.*
                 invoke stooge(array, i, j-t)
             end
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 0,
+                authors = [],
+                wikiUrl = "https://en.wikipedia.org/wiki/Stooge_sort"
+        )
 )
 class StoogeSort (
         private val probe: Probe,

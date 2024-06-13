@@ -37,7 +37,12 @@ import com.github.elimxim.Probe.Counter.*
             
             i = ij
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 0,
+                authors = [],
+                wikiUrl = "https://en.wikipedia.org/wiki/Cocktail_shaker_sort"
+        )
 )
 class ShakerSort(
         private val probe: Probe,

@@ -228,8 +228,8 @@ elapsed time: 23 ms
     </tr>
     <tr>
         <td><a href="https://en.wikipedia.org/wiki/Cycle_sort">CycleSort</a></td>
-        <td><a href="https://en.wikipedia.org/wiki/Insertion_sort">InsertionSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Gnome_sort">GnomeSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Insertion_sort">InsertionSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort">OddEvenSort</a></td>
     </tr>
     <tr>

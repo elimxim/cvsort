@@ -31,7 +31,12 @@ import com.github.elimxim.Probe.Counter.*
                 end
             end
         while swapped
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 1972,
+                authors = ["Nico Habermann"],
+                wikiUrl = "https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort"
+        )
 )
 class OddEvenSort(
         private val probe: Probe,

@@ -50,7 +50,12 @@ import com.github.elimxim.Probe.Counter.*
                 end
             end            
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 0,
+                authors = [],
+                wikiUrl = "https://en.wikipedia.org/wiki/Tree_sort"
+        )
 )
 class TreeSort(
         private val probe: Probe,

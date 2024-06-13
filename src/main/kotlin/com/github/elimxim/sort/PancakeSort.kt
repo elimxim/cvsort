@@ -41,7 +41,12 @@ import com.github.elimxim.Probe.Counter.*
                 k--
             end
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 1979,
+                authors = ["William H. Gates", "Christos H. Papadimitriou"],
+                wikiUrl = "https://en.wikipedia.org/wiki/Pancake_sorting"
+        )
 )
 class PancakeSort(
         private val probe: Probe,

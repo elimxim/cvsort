@@ -39,7 +39,12 @@ import com.github.elimxim.Probe.Counter.*
             swap array[i] and array[h]
             return i
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 1986,
+                authors = ["Jon Bentley"],
+                wikiUrl = "https://en.wikipedia.org/wiki/Quicksort"
+        )
 )
 class LomutoQuickSort(
         private val probe: Probe,

@@ -53,7 +53,12 @@ import kotlin.math.sqrt
                 array[j+1] = v
             end
         end
-        """
+        """,
+        extraInfo = ExtraInfo(
+                inventionYear = 1954,
+                authors = ["Harold H. Seward"],
+                wikiUrl = "https://en.wikipedia.org/wiki/Bucket_sort"
+        )
 )
 class BucketSort(
         private val probe: Probe,
