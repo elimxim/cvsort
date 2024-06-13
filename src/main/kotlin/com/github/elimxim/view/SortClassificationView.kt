@@ -1,8 +1,9 @@
 package com.github.elimxim.view
 
 import com.github.elimxim.*
-import com.github.elimxim.console.Console
+import de.vandermeer.asciitable.AT_Context
 import de.vandermeer.asciitable.AsciiTable
+import de.vandermeer.asciitable.CWC_LongestLine
 import kotlin.reflect.full.findAnnotation
 
 class SortView : View {
@@ -10,17 +11,18 @@ class SortView : View {
 
     fun add(sortName: SortName) {
         val impl = SortFactory.kClass(sortName)
-        val anno = impl.findAnnotation<SortAlgorithm>()
+        val anno = impl.findAnnotation<SortClassification>()
 
         if (anno != null) {
             content.add(listOf(
-                    sortName.camelCase(),
+                    sortName.name.snakeCaseToCamelCase(separator = " "),
                     complexity(anno.timeComplexity.worst, ComplexityClass.BIG_O),
                     complexity(anno.timeComplexity.average, ComplexityClass.BIG_THETA),
                     complexity(anno.timeComplexity.best, ComplexityClass.BIG_OMEGA),
                     complexity(anno.spaceComplexity, ComplexityClass.BIG_O),
                     methods(anno.methods),
-                    anno.stable.toWord()
+                    anno.recursive.yesNo(),
+                    anno.stable.yesNo()
             ))
         }
     }
@@ -30,26 +32,31 @@ class SortView : View {
     }
 
     private fun methods(methods: Array<Method>): String {
-        return methods.joinToString(separator = " & ") { it.camelCase() }
+        return methods.joinToString(separator = "<br>& ") { it.camelCase() }
     }
 
     override fun lines(): List<String> {
         return if (content.size >= 1) {
-            val table = AsciiTable()
+            val ctx = AT_Context()
+            val table = AsciiTable(ctx)
 
             table.addRule()
             table.addRow(listOf(
-                    ALGORITHM,
+                    SORT,
                     WORST_TIME,
                     AVERAGE_TIME,
                     BEST_TIME,
                     MEMORY_USAGE,
                     METHODS,
+                    RECURSIVE,
                     STABLE
             ))
             table.addRule()
             content.forEach { table.addRow(it) }
             table.addRule()
+
+            table.setPaddingLeftRight(1, 1)
+            table.renderer.setCWC(CWC_LongestLine())
 
             table.renderAsCollection().toList()
         } else {
@@ -58,12 +65,13 @@ class SortView : View {
     }
 
     private companion object Header {
-        const val ALGORITHM = "Sort"
+        const val SORT = "Sort"
         const val WORST_TIME = "Worst time"
         const val AVERAGE_TIME = "Average time"
         const val BEST_TIME = "Best time"
         const val MEMORY_USAGE = "Memory"
         const val METHODS = "Methods"
+        const val RECURSIVE = "Recursive"
         const val STABLE = "Stable"
     }
 }

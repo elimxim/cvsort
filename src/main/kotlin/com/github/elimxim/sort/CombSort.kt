@@ -4,7 +4,7 @@ import com.github.elimxim.*
 import com.github.elimxim.Probe.Counter.*
 import kotlin.math.floor
 
-@SortAlgorithm(
+@SortClassification(
         timeComplexity = TimeComplexity(
                 worst = Complexity.QUADRATIC,
                 average = Complexity.QUADRATIC,
@@ -12,6 +12,7 @@ import kotlin.math.floor
         ),
         spaceComplexity = Complexity.CONST,
         methods = [Method.EXCHANGING],
+        recursive = false,
         stable = false,
         pseudoCode = """        
         gap = n

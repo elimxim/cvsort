@@ -9,16 +9,16 @@ fun String.withTimestamp(literal: String = "_"): String {
     return this + literal + formatter.format(LocalDateTime.now())
 }
 
-fun String.snakeCaseToCamelCase(): String {
+fun String.snakeCaseToCamelCase(separator: String = ""): String {
     val chops = this.split("_")
     return if (chops.size > 1) {
-        chops.joinToString(separator = "") { w ->
+        chops.joinToString(separator = separator) { w ->
             w.lowercase().replaceFirstChar {
                 it.titlecase()
             }
         }
     } else {
-        this.replaceFirstChar {
+        this.lowercase().replaceFirstChar {
             it.titlecase()
         }
     }
@@ -74,6 +74,6 @@ fun Boolean.xnor(other: Boolean): Boolean {
     return this.xor(other).not()
 }
 
-fun Boolean.toWord(): String {
+fun Boolean.yesNo(): String {
     return if (this) "Yes" else "No"
 }

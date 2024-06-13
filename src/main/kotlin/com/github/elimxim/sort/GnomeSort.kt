@@ -3,7 +3,7 @@ package com.github.elimxim.sort
 import com.github.elimxim.*
 import com.github.elimxim.Probe.Counter.*
 
-@SortAlgorithm(
+@SortClassification(
         timeComplexity = TimeComplexity(
                 worst = Complexity.QUADRATIC,
                 average = Complexity.QUADRATIC,
@@ -11,6 +11,7 @@ import com.github.elimxim.Probe.Counter.*
         ),
         spaceComplexity = Complexity.CONST,
         methods = [Method.EXCHANGING],
+        recursive = false,
         stable = true,
         pseudoCode = """
         idx = 0

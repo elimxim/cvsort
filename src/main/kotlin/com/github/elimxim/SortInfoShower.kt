@@ -18,7 +18,7 @@ class SortInfoShower {
 
     private fun printPseudoCode(sortName: SortName) {
         val impl = SortFactory.kClass(sortName)
-        val anno = impl.findAnnotation<SortAlgorithm>()
+        val anno = impl.findAnnotation<SortClassification>()
 
         if (anno != null) {
             val text = anno.pseudoCode.trimIndent()

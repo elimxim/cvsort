@@ -2,9 +2,8 @@ package com.github.elimxim.sort
 
 import com.github.elimxim.*
 import com.github.elimxim.Probe.Counter.*
-import kotlin.math.round
 
-@SortAlgorithm(
+@SortClassification(
         timeComplexity = TimeComplexity(
                 worst = Complexity.QUADRATIC,
                 average = Complexity.LINEARITHMIC,
@@ -12,6 +11,7 @@ import kotlin.math.round
         ),
         spaceComplexity = Complexity.LINEAR,
         methods = [Method.INSERTION],
+        recursive = true,
         stable = true,
         pseudoCode = """
         tree = invoke Tree()

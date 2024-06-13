@@ -2,6 +2,7 @@ package com.github.elimxim.view
 
 import com.github.elimxim.SpeedGear
 import de.vandermeer.asciitable.AsciiTable
+import de.vandermeer.asciitable.CWC_LongestLine
 
 class SpeedGearView : View {
     override fun lines(): List<String> {
@@ -18,6 +19,10 @@ class SpeedGearView : View {
         }
 
         table.addRule()
+
+        table.setPaddingLeftRight(1, 1)
+        table.renderer.setCWC(CWC_LongestLine())
+
         return table.renderAsCollection().toList()
     }
 

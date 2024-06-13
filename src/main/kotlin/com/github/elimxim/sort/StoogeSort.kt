@@ -3,7 +3,7 @@ package com.github.elimxim.sort
 import com.github.elimxim.*
 import com.github.elimxim.Probe.Counter.*
 
-@SortAlgorithm(
+@SortClassification(
         timeComplexity = TimeComplexity(
                 worst = Complexity.TWO_THIRDS_CUBIC,
                 average = Complexity.TWO_THIRDS_CUBIC,
@@ -11,6 +11,7 @@ import com.github.elimxim.Probe.Counter.*
         ),
         spaceComplexity = Complexity.LINEAR,
         methods = [],
+        recursive = true,
         stable = false,
         pseudoCode = """
         invoke stooge(array, 0, n-1)

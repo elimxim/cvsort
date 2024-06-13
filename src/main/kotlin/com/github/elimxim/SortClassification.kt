@@ -1,10 +1,11 @@
 package com.github.elimxim
 
 @Target(AnnotationTarget.CLASS)
-annotation class SortAlgorithm(
+annotation class SortClassification(
         val timeComplexity: TimeComplexity,
         val spaceComplexity: Complexity,
         val methods: Array<Method>,
+        val recursive: Boolean,
         val stable: Boolean,
         val pseudoCode: String
 )

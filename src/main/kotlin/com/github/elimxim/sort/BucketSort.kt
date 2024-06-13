@@ -5,7 +5,7 @@ import com.github.elimxim.Probe.Counter.*
 import kotlin.math.floor
 import kotlin.math.sqrt
 
-@SortAlgorithm(
+@SortClassification(
         timeComplexity = TimeComplexity(
                 worst = Complexity.QUADRATIC,
                 average = Complexity.LINEAR,
@@ -13,6 +13,7 @@ import kotlin.math.sqrt
         ),
         spaceComplexity = Complexity.LINEAR,
         methods = [],
+        recursive = false,
         stable = true,
         pseudoCode = """
         k = floor sqrt n

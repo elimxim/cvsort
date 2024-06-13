@@ -2,9 +2,8 @@ package com.github.elimxim.sort
 
 import com.github.elimxim.*
 import com.github.elimxim.Probe.Counter.*
-import kotlinx.coroutines.processNextEventInCurrentThread
 
-@SortAlgorithm(
+@SortClassification(
         timeComplexity = TimeComplexity(
                 worst = Complexity.LINEAR,
                 average = Complexity.LINEAR,
@@ -12,6 +11,7 @@ import kotlinx.coroutines.processNextEventInCurrentThread
         ),
         spaceComplexity = Complexity.LINEAR,
         methods = [],
+        recursive = false,
         stable = true,
         pseudoCode = """
         max = array[0]

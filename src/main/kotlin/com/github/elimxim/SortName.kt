@@ -25,7 +25,7 @@ enum class SortName {
     }
 
     fun camelCase(): String {
-        return name.lowercase().snakeCaseToCamelCase()
+        return name.snakeCaseToCamelCase()
     }
 
     companion object {
