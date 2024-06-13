@@ -3,22 +3,22 @@ package com.github.elimxim
 enum class SortName {
     ALL,
     BUBBLE,
-    SELECTION,
-    INSERTION,
-    GNOME,
+    BUCKET,
     SHAKER,
+    COMB,
+    COUNTING,
+    CYCLE,
+    GNOME,
+    HOARE_QUICK,
+    INSERTION,
+    LOMUTO_QUICK,
     ODD_EVEN,
     PANCAKE,
-    CYCLE,
-    STOOGE,
-    COMB,
     RADIX,
+    SELECTION,
     SHELL,
-    TREE,
-    BUCKET,
-    COUNTING,
-    LOMUTO_QUICK,
-    HOARE_QUICK;
+    STOOGE,
+    TREE;
 
     fun canonical(): String {
         return camelCase().plus("Sort")
