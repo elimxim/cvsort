@@ -1,35 +1,52 @@
 package com.github.elimxim
 
 import com.github.elimxim.console.Console
-import com.github.elimxim.view.SortView
-import kotlin.reflect.full.findAnnotation
+import com.github.elimxim.view.SortClassificationView
 
 class SortInfoShower {
     fun showInfo(sortNames: List<SortName>) {
-        val view = SortView()
-        sortNames.distinct().forEach(view::add)
+        val sortMap = sortNames.distinct().mapNotNull {
+            val anno = SortFactory.classification(it)
+            if (anno != null) Pair(it, anno) else null
+        }.toMap()
+
+        val view = SortClassificationView()
+        sortMap.forEach { (k, v) -> view.add(k, v) }
         Console.printLines(view.lines())
         Console.printEmptyLine()
 
-        if (sortNames.size == 1) {
-            printPseudoCode(sortNames.first())
+        if (sortMap.size == 1) {
+            printExtraInfo(sortMap.values.first().extraInfo)
+            Console.printEmptyLine()
+            printPseudoCode(sortMap.values.first())
         }
     }
 
-    private fun printPseudoCode(sortName: SortName) {
-        val impl = SortFactory.kClass(sortName)
-        val anno = impl.findAnnotation<SortClassification>()
+    private fun printExtraInfo(anno: ExtraInfo) {
+        if (anno.inventionYear != 0) {
+            Console.printLine("${YEAR}: ${anno.inventionYear}")
+        }
+        if (anno.authors.isNotEmpty()) {
+            Console.printLine("${AUTHORS}: ${anno.authors.joinToString()}")
+        }
+        if (anno.wikiUrl.isNotEmpty()) {
+            Console.printLine("${WIKI_URL}: ${anno.wikiUrl}")
+        }
+    }
 
-        if (anno != null) {
-            val text = anno.pseudoCode.trimIndent()
-            if (text.isNotEmpty()) {
-                Console.printLine(text)
-                Console.printEmptyLine()
-            } else {
-                Console.printError("pseudo code is not implemented")
-            }
+    private fun printPseudoCode(anno: SortClassification) {
+        val text = anno.pseudoCode.trimIndent()
+        if (text.isNotEmpty()) {
+            Console.printLine(text)
+            Console.printEmptyLine()
         } else {
             Console.printError("pseudo code is not implemented")
         }
+    }
+
+    private companion object Header {
+        const val YEAR = "Year of invention"
+        const val AUTHORS = "Author(s)"
+        const val WIKI_URL = "Wiki"
     }
 }

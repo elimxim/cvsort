@@ -4,6 +4,7 @@ import com.github.elimxim.SortName.*
 import com.github.elimxim.sort.*
 import kotlin.RuntimeException
 import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
 
 object SortFactory {
@@ -17,8 +18,9 @@ object SortFactory {
         return kClass.primaryConstructor!!.call(probe, scriptWriter)
     }
 
-    fun kClass(sortName: SortName): KClass<out Sort> {
-        return getClass(sortName)
+    fun classification(sortName: SortName): SortClassification? {
+        val kClass = getClass(sortName)
+        return kClass.findAnnotation<SortClassification>()
     }
 
     private fun getClass(sortName: SortName): KClass<out Sort> {

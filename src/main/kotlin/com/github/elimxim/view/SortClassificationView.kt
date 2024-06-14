@@ -1,38 +1,16 @@
 package com.github.elimxim.view
 
 import com.github.elimxim.*
+import com.github.elimxim.ComplexityClass.*
 import de.vandermeer.asciitable.AT_Context
 import de.vandermeer.asciitable.AsciiTable
 import de.vandermeer.asciitable.CWC_LongestLine
-import kotlin.reflect.full.findAnnotation
 
-class SortView : View {
-    private val content: MutableList<List<String>> = ArrayList()
+class SortClassificationView : View {
+    private val content: MutableList<Pair<SortName, SortClassification>> = ArrayList()
 
-    fun add(sortName: SortName) {
-        val impl = SortFactory.kClass(sortName)
-        val anno = impl.findAnnotation<SortClassification>()
-
-        if (anno != null) {
-            content.add(listOf(
-                    sortName.name.snakeCaseToCamelCase(separator = " "),
-                    complexity(anno.timeComplexity.worst, ComplexityClass.BIG_O),
-                    complexity(anno.timeComplexity.average, ComplexityClass.BIG_THETA),
-                    complexity(anno.timeComplexity.best, ComplexityClass.BIG_OMEGA),
-                    complexity(anno.spaceComplexity, ComplexityClass.BIG_O),
-                    methods(anno.methods),
-                    anno.recursive.yesNo(),
-                    anno.stable.yesNo()
-            ))
-        }
-    }
-
-    private fun complexity(complexity: Complexity, complexityClass: ComplexityClass): String {
-        return "${complexityClass.notation}(${complexity.notation})"
-    }
-
-    private fun methods(methods: Array<Method>): String {
-        return methods.joinToString(separator = "<br>& ") { it.camelCase() }
+    fun add(sortName: SortName, anno: SortClassification) {
+        content.add(Pair(sortName, anno))
     }
 
     override fun lines(): List<String> {
@@ -52,7 +30,18 @@ class SortView : View {
                     STABLE
             ))
             table.addRule()
-            content.forEach { table.addRow(it) }
+            content.forEach {
+                table.addRow(listOf(
+                        it.first.name.snakeCaseToCamelCase(separator = " "),
+                        complexity(it.second.timeComplexity.worst, BIG_O),
+                        complexity(it.second.timeComplexity.average, BIG_THETA),
+                        complexity(it.second.timeComplexity.best, BIG_OMEGA),
+                        complexity(it.second.spaceComplexity, BIG_O),
+                        methods(it.second.methods),
+                        it.second.recursive.yesNo(),
+                        it.second.stable.yesNo()
+                ))
+            }
             table.addRule()
 
             table.setPaddingLeftRight(1, 1)
@@ -62,6 +51,14 @@ class SortView : View {
         } else {
             emptyList()
         }
+    }
+
+    private fun complexity(complexity: Complexity, complexityClass: ComplexityClass): String {
+        return "${complexityClass.notation}(${complexity.notation})"
+    }
+
+    private fun methods(methods: Array<Method>): String {
+        return methods.joinToString(separator = "<br>& ") { it.camelCase() }
     }
 
     private companion object Header {

@@ -1,6 +1,6 @@
 package com.github.elimxim
 
-import com.github.elimxim.view.SortView
+import com.github.elimxim.view.SortClassificationView
 import com.github.elimxim.console.Console
 import com.github.elimxim.view.ProbeView
 import kotlinx.coroutines.*
@@ -16,8 +16,13 @@ class SortComparator(
 ) {
     fun compare(sortNames: List<SortName>) {
         if (showInfo) {
-            val sortView = SortView()
-            sortNames.distinct().forEach(sortView::add)
+            val sortView = SortClassificationView()
+            sortNames.distinct().forEach {
+                val anno = SortFactory.classification(it)
+                if (anno != null) {
+                    sortView.add(it, anno)
+                }
+            }
             Console.printLines(sortView.lines())
             Console.printEmptyLine()
         }

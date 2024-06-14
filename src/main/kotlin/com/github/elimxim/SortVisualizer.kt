@@ -1,12 +1,11 @@
 package com.github.elimxim
 
-import com.github.elimxim.view.SortView
+import com.github.elimxim.view.SortClassificationView
 import com.github.elimxim.view.ArrayView
 import com.github.elimxim.console.Console
 import com.github.elimxim.view.ProbeView
 import kotlinx.coroutines.*
 import kotlin.math.abs
-import kotlin.math.absoluteValue
 
 class SortVisualizer(
         private val frameDelayMillis: Long,
@@ -17,8 +16,11 @@ class SortVisualizer(
 ) {
     fun visualize(sortName: SortName) {
         if (showInfo) {
-            val sortView = SortView()
-            sortView.add(sortName)
+            val sortView = SortClassificationView()
+            val anno = SortFactory.classification(sortName)
+            if (anno != null) {
+                sortView.add(sortName, anno)
+            }
             Console.printLines(sortView.lines())
             Console.printEmptyLine()
         }
