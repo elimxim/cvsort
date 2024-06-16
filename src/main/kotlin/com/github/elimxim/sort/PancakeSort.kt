@@ -53,22 +53,6 @@ class PancakeSort(
         private val script: SortScript
 ) : Sort {
     override fun sort(array: IntArrayWrapper) {
-        val flip = fun(idx: Int) {
-            var start = 0
-            var end = idx
-            val bulkMove = BulkMove(array)
-            while (start <= end) {
-                probe.increment(ITERATIONS)
-                array.swap(start, end)
-                bulkMove.add(start, end)
-                bulkMove.add(end, start)
-                start++
-                end--
-            }
-
-            script.action(bulkMove)
-        }
-
         var lastIdx = array.size()
         while (lastIdx > 1) {
             probe.increment(ITERATIONS)
@@ -86,10 +70,26 @@ class PancakeSort(
             if (maxIdx != lastIdx) {
                 if (maxIdx != 0) {
                     script.action(Select(maxIdx))
-                    flip(maxIdx)
+                    flip(array, maxIdx)
                 }
-                flip(lastIdx)
+                flip(array, lastIdx)
             }
         }
+    }
+
+    private fun flip(array: IntArrayWrapper, idx: Int) {
+        var start = 0
+        var end = idx
+        val bulkMove = BulkMove(array)
+        while (start <= end) {
+            probe.increment(ITERATIONS)
+            array.swap(start, end)
+            bulkMove.add(start, end)
+            bulkMove.add(end, start)
+            start++
+            end--
+        }
+
+        script.action(bulkMove)
     }
 }

@@ -42,6 +42,7 @@ object SortFactory {
             COUNTING -> CountingSort::class
             LOMUTO_QUICK -> LomutoQuickSort::class
             HOARE_QUICK -> HoareQuickSort::class
+            HEAP -> HeapSort::class
             else -> throw RuntimeException("unexpected SortName: $sortName")
         }
     }

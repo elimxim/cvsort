@@ -229,19 +229,25 @@ elapsed time: 23 ms
     <tr>
         <td><a href="https://en.wikipedia.org/wiki/Cycle_sort">CycleSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Gnome_sort">GnomeSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Heapsort">HeapSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Insertion_sort">InsertionSort</a></td>
-        <td><a href="https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort">OddEvenSort</a></td>
     </tr>
     <tr>
+        <td><a href="https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort">OddEvenSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Pancake_sorting">PancakeSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Quicksort">QuickSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Radix_sort">RadixSort</a></td>
-        <td><a href="https://en.wikipedia.org/wiki/Selection_sort">SelectionSort</a></td>
     </tr>
     <tr>
+        <td><a href="https://en.wikipedia.org/wiki/Selection_sort">SelectionSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Cocktail_shaker_sort">ShakerSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Shellsort">ShellSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Stooge_sort">StoogeSort</a></td>
+    </tr>
+    <tr>
         <td><a href="https://en.wikipedia.org/wiki/Tree_sort">TreeSort</a></td>
+        <td></td>
+        <td></td>
+        <td></td>
     </tr>
 </table>

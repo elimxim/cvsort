@@ -17,7 +17,7 @@ import com.github.elimxim.Probe.Counter.*
         invoke quick(array, 0, n-1)
             
         fun quick(array, l, h)
-            if and l >=0 and h >= 0 and l < h then
+            if and l >= 0 and h >= 0 and l < h then
                 p = invoke partition(array, l, h)
                 invoke quick(array, l, p)
                 invoke quick(array, p+1, h)
@@ -26,8 +26,8 @@ import com.github.elimxim.Probe.Counter.*
         
         fun partition(array, l, h)
             pivot = array[l]
-            i = l-1
-            j = h+1
+            i = l - 1
+            j = h + 1
             
             while true do
                 do i++ while array[i] < pivot

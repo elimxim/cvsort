@@ -18,8 +18,8 @@ annotation class TimeComplexity(
 )
 
 annotation class ExtraInfo(
-        val inventionYear: Int,
-        val authors: Array<String>,
+        val inventionYear: Int = 0,
+        val authors: Array<String> = [],
         val wikiUrl: String
 )
 

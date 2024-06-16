@@ -39,8 +39,6 @@ import com.github.elimxim.Probe.Counter.*
         end
         """,
         extraInfo = ExtraInfo(
-                inventionYear = 0,
-                authors = [],
                 wikiUrl = "https://en.wikipedia.org/wiki/Cocktail_shaker_sort"
         )
 )

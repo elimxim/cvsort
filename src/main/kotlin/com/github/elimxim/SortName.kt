@@ -7,6 +7,7 @@ enum class SortName {
     SHAKER,
     COMB,
     COUNTING,
+    HEAP,
     CYCLE,
     GNOME,
     HOARE_QUICK,
