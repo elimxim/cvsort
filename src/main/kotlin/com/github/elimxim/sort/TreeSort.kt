@@ -76,7 +76,7 @@ class TreeSort(
             traverseTree(tree.root, this)
             for (i in traversalArray.indices) {
                 array[i] = traversalArray[i]
-                script.action(Focus(i), Extra(traversalArray, Focus(focused), Select(selected)))
+                script.action(Select(i), Extra(traversalArray, Focus(focused), Select(selected)))
             }
         }
     }

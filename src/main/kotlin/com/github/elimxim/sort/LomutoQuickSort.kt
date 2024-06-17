@@ -67,7 +67,6 @@ class LomutoQuickSort(
         script.action(Focus((low..high).toSet()))
         val pivot = array[high]
         var i = low
-        script.action(Select(high), Extra(pivot))
         for (j in low..<high) {
             script.action(Focus(j), Extra(pivot))
             probe.increment(ITERATIONS, COMPARISONS)

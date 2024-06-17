@@ -33,6 +33,12 @@ object VisualizeCommand {
     var arrayLength: String = "20"
 
     @Parameter(
+            names = ["--casualMode", "--causal", "-c"],
+            description = "enables simplified viewing mode (only writing to the array)"
+    )
+    var casualModeEnabled: Boolean = false
+
+    @Parameter(
             names = ["--skipShuffle", "-ss"],
             description = "switches off visualisation of array shuffling"
     )

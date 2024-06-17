@@ -83,13 +83,13 @@ class BucketSort(
                     ei++
                 }
 
-                var efIndex = 0
+                var es = 0
                 for (bi in 0..x) {
-                    efIndex += buckets[bi].size + 1
+                    es += buckets[bi].size + 1
                 }
-                efIndex -= 2
+                es -= 2
 
-                it.action(Focus(i), Extra(extra, Select(efIndex)))
+                it.action(Focus(i), Extra(extra, Select(es)))
             }
         }
 
@@ -108,19 +108,20 @@ class BucketSort(
                     ei++
                 }
 
-                var efStartIndex = 0
+                var startIdx = 0
                 for (bi in 0..<i) {
-                    efStartIndex += buckets[bi].size + 1
+                    startIdx += buckets[bi].size + 1
                 }
 
-                val efFocusIndexes = (efStartIndex..<efStartIndex + bucket.size)
-                it.action(Extra(extra, Focus(efFocusIndexes.toSet())))
+                val extraFocused = (startIdx..<startIdx + bucket.size)
+                it.action(Extra(extra, Focus(extraFocused.toSet())))
             }
             for (j in bucket.indices) {
                 probe.increment(ITERATIONS)
                 array[index++] = bucket[j]
             }
             script.scene {
+                val selected = (index - bucket.size..<index).toSet()
                 bucket.clear()
                 val extraSize = buckets.sumOf { b -> b.size } + buckets.size - 1
                 val extra = IntArray(extraSize)
@@ -131,8 +132,7 @@ class BucketSort(
                     }
                     ei++
                 }
-                val selectIndexes = (index - bucket.size..<index).toSet()
-                it.action(Select(selectIndexes), Extra(extra))
+                it.action(Select(selected), Extra(extra))
             }
         }
 
@@ -156,7 +156,7 @@ class BucketSort(
             script.scene {
                 if (bulkMove.isNotEmpty()) {
                     array[j + 1] = 0
-                    script.action(bulkMove, Extra(value))
+                    it.action(bulkMove, Extra(value))
                 }
             }
 

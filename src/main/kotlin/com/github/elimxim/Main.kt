@@ -80,7 +80,8 @@ private fun processVisualizeCommand() {
             VisualizeCommand.arrayLength.toInt(),
             VisualizeCommand.shuffleSkipped.not(),
             VisualizeCommand.infoDisabled.not(),
-            reverse = speedGear == SpeedGear.R
+            reverse = speedGear == SpeedGear.R,
+            VisualizeCommand.casualModeEnabled
     )
 
     visualizer.visualize(sortName)

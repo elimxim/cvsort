@@ -58,7 +58,6 @@ class PancakeSort(
             probe.increment(ITERATIONS)
             var maxIdx = 0
             for (i in 1..<lastIdx) {
-                script.action(Focus(i))
                 probe.increment(ITERATIONS, COMPARISONS)
                 if (array[i] > array[maxIdx]) {
                     maxIdx = i
@@ -69,7 +68,7 @@ class PancakeSort(
 
             if (maxIdx != lastIdx) {
                 if (maxIdx != 0) {
-                    script.action(Select(maxIdx))
+                    script.action(Focus(maxIdx))
                     flip(array, maxIdx)
                 }
                 flip(array, lastIdx)

@@ -54,7 +54,7 @@ class InsertionSort(
             script.scene {
                 if (bulkMove.isNotEmpty()) {
                     array[j + 1] = 0
-                    script.action(bulkMove, Extra(value))
+                    it.action(bulkMove, Extra(value))
                 }
             }
 

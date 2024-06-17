@@ -12,7 +12,8 @@ class SortVisualizer(
         private val arrayLength: Int,
         private val showShuffle: Boolean,
         private val showInfo: Boolean,
-        private val reverse: Boolean
+        private val reverse: Boolean,
+        private val casualMode: Boolean
 ) {
     fun visualize(sortName: SortName) {
         if (showInfo) {
@@ -45,6 +46,7 @@ class SortVisualizer(
                 endingBeat = 50,
                 showOpening = showShuffle,
                 backwards = reverse,
+                casualMode = casualMode
         ).print(
                 opening = {
                     val script = SortScriptImpl(probe, arrayWrapper)
@@ -84,7 +86,8 @@ class ScriptPrinter(
         private val actDelay: Long,
         private val endingBeat: Long,
         private val showOpening: Boolean,
-        private val backwards: Boolean
+        private val backwards: Boolean,
+        private val casualMode: Boolean
 ) {
     private var maxExtraSize: Int = 0
 
@@ -103,25 +106,34 @@ class ScriptPrinter(
                 playRecord(openingRecord, openingBeat, switch)
                 delay(actDelay)
             }
-            playRecord(scriptRecord, scriptBeat, switch)
+            playRecord(scriptRecord, scriptBeat, switch, cutShot = casualMode)
             delay(actDelay)
             playRecord(endingRecord, endingBeat, switch)
         } else {
             playRecord(endingRecord, endingBeat, switch)
             delay(actDelay)
-            playRecord(scriptRecord, scriptBeat, switch)
+            playRecord(scriptRecord, scriptBeat, switch, cutShot = casualMode)
         }
     }
 
-    private suspend fun playRecord(record: Record, beat: Long, switch: Switch) {
+    private suspend fun playRecord(record: Record, beat: Long, switch: Switch, cutShot: Boolean = false) {
         while (record.isNotEmpty()) {
-            delay(beat)
             val shot = if (backwards.not()) {
                 record.pollFirst()
             } else {
                 record.pollLast()
             }
-            printFrame(shot, switch.value())
+
+            if (cutShot) {
+                val main = shot.mainScreen
+                if (main.selected.isNotEmpty() || main.focused.isEmpty()) {
+                    delay(beat)
+                    printFrame(cutShot(shot), switch.value())
+                }
+            } else {
+                delay(beat)
+                printFrame(shot, switch.value())
+            }
         }
     }
 
@@ -131,12 +143,12 @@ class ScriptPrinter(
             maxExtraSize = extraSize
             framePrinter.print(shot, refresh)
         } else {
-            framePrinter.print(adjustFrame(shot, maxExtraSize), refresh)
+            framePrinter.print(adjustShot(shot, maxExtraSize), refresh)
             maxExtraSize = extraSize
         }
     }
 
-    private fun adjustFrame(shot: Shot, extraSize: Int): Shot {
+    private fun adjustShot(shot: Shot, extraSize: Int): Shot {
         val extraArray = IntArray(extraSize)
         shot.extraScreen.array.copyInto(extraArray)
 
@@ -147,6 +159,17 @@ class ScriptPrinter(
                         focused = shot.extraScreen.focused,
                         selected = shot.extraScreen.selected
                 ),
+                probeSnapshot = shot.probeSnapshot
+        )
+    }
+
+    private fun cutShot(shot: Shot): Shot {
+        return Shot(
+                mainScreen = Screen(
+                        array = shot.mainScreen.array,
+                        selected = shot.mainScreen.selected
+                ),
+                extraScreen = Screen(emptyArray<Int>().toIntArray()),
                 probeSnapshot = shot.probeSnapshot
         )
     }
