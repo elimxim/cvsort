@@ -11,7 +11,7 @@ import java.nio.file.InvalidPathException
 
 class InputVerifier(private val args: Array<String>) {
     fun verify(cmd: CompareCommand): Boolean {
-        return checkSortNames(cmd.sortNames, min = 2, max = 10, allAvailable = false, repetitionAvailable = true)
+        return checkSortNames(cmd.sortNames, min = 2, max = 10, allAvailable = false, duplicationAvailable = true)
                 && checkArrayLength(cmd.arrayLength, min = 2, max = Int.MAX_VALUE/2, maxDisplay = "2^30-1")
                 && checkArrayFile(cmd.arrayFile)
     }
@@ -20,11 +20,11 @@ class InputVerifier(private val args: Array<String>) {
         return checkSortName(cmd.sortName)
                 && checkSpeedGear(cmd.speedGear)
                 && checkFrameDelayMillis(cmd.frameDelayMillis, min = 50, max = 4000)
-                && checkArrayLength(cmd.arrayLength, min = 2, max = 30)
+                && checkArrayLength(cmd.arrayLength, min = 2, max = 40)
     }
 
     fun verify(cmd: InfoCommand): Boolean {
-        return checkSortNames(cmd.sortNames, min = 1, max = 20, allAvailable = true, repetitionAvailable = false)
+        return checkSortNames(cmd.sortNames, min = 1, max = 20, allAvailable = true, duplicationAvailable = false)
     }
 
     private fun checkSortName(name: String): Boolean {
@@ -43,7 +43,7 @@ class InputVerifier(private val args: Array<String>) {
 
     private fun checkSortNames(
             names: List<String>, min: Int, max: Int,
-            allAvailable: Boolean, repetitionAvailable: Boolean
+            allAvailable: Boolean, duplicationAvailable: Boolean
     ): Boolean {
         names.forEach {
             if (!checkSortName(it)) {
@@ -72,7 +72,7 @@ class InputVerifier(private val args: Array<String>) {
             }
         }
 
-        if (repetitionAvailable.not()) {
+        if (duplicationAvailable.not()) {
             val duplicates = names.groupingBy { it.lowercase() }
                     .eachCount()
                     .filter { it.value > 1 }

@@ -28,7 +28,7 @@ object VisualizeCommand {
 
     @Parameter(
             names = ["--arrayLength", "-l"],
-            description = "array length: [10, 30]"
+            description = "array length: [2, 40]"
     )
     var arrayLength: String = "20"
 
