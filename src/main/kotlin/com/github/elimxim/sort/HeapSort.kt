@@ -24,22 +24,22 @@ import com.github.elimxim.Probe.Counter.*
             invoke heapify(array, 0, i) 
         end
         
-        fun heapify(array, i, size)
+        fun heapify(array, i, n)
             root = i
             l = i * 2 + 1
             r = i * 2 + 2
             
-            if l < s and array[l] > array[root] then
+            if l < n and array[l] > array[root] then
                 root = l
             end
             
-            if r < s and array[r] > array[root] then
+            if r < n and array[r] > array[root] then
                 root = r 
             end
             
             if root != i then
                 swap array[i] and array[root]
-                invoke heapify(array, root, size)
+                invoke heapify(array, root, n)
             end
         end
         """,

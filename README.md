@@ -7,7 +7,7 @@ Console program for fun with sorting algorithms.
 Commands:
 - **info**: shows information about one or more sorting algorithms such as complexity or pseudocode
 - **compare:** compares two or more sorting algorithms on a real array of size up to 2^30-1
-- **visualize:** visualizes the selected sorting algorithms
+- **visualize:** visualizes the selected sorting algorithm
 
 What the visualisation looks like on the _BubbleSort_ example (MINGW64):
 
@@ -233,21 +233,20 @@ elapsed time: 23 ms
         <td><a href="https://en.wikipedia.org/wiki/Insertion_sort">InsertionSort</a></td>
     </tr>
     <tr>
+        <td><a href="https://en.wikipedia.org/wiki/Merge_sort">MergeSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort">OddEvenSort</a></td>
-        <td><a href="https://en.wikipedia.org/wiki/Pancake_sorting">PancakeSort</a></td>
-        <td><a href="https://en.wikipedia.org/wiki/Quicksort">QuickSort</a></td>
-        <td><a href="https://en.wikipedia.org/wiki/Radix_sort">RadixSort</a></td>
+        <td colspan="2"><a href="https://en.wikipedia.org/wiki/Quicksort">QuickSort Hoare & Lomuto</a></td>
     </tr>
     <tr>
+        <td><a href="https://en.wikipedia.org/wiki/Pancake_sorting">PancakeSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Radix_sort">RadixSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Selection_sort">SelectionSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Cocktail_shaker_sort">ShakerSort</a></td>
-        <td><a href="https://en.wikipedia.org/wiki/Shellsort">ShellSort</a></td>
-        <td><a href="https://en.wikipedia.org/wiki/Stooge_sort">StoogeSort</a></td>
     </tr>
     <tr>
+        <td><a href="https://en.wikipedia.org/wiki/Shellsort">ShellSort</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Stooge_sort">StoogeSort</a></td>
         <td><a href="https://en.wikipedia.org/wiki/Tree_sort">TreeSort</a></td>
-        <td></td>
-        <td></td>
         <td></td>
     </tr>
 </table>

@@ -13,6 +13,7 @@ enum class SortName {
     HOARE_QUICK,
     INSERTION,
     LOMUTO_QUICK,
+    MERGE,
     ODD_EVEN,
     PANCAKE,
     RADIX,
