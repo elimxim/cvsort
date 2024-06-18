@@ -5,15 +5,34 @@ Console program for fun with sorting algorithms.
 ![logo](.img/logo.png)
 
 Commands:
-- **info**: shows information about one or more sorting algorithms such as complexity or pseudocode
 - **compare:** compares two or more sorting algorithms on a real array of size up to 2^30-1
+- **info**: shows information about one or more sorting algorithms such as complexity or pseudocode
+- **search:**
 - **visualize:** visualizes the selected sorting algorithm
 
 What the visualisation looks like on the _BubbleSort_ example (MINGW64):
 
 ![BubbleSort visualisation](.img/bubble_sort.gif)
 
-## CLI 
+## Installation
+
+> Necessary environment
+> - Installed Java 20+
+
+1. Clone the repository:
+   ```shell
+   $ git clone https://github.com/elimxim/cvsort
+   ```
+2. Run the build script:
+   ```shell
+   $ ./gradlew build
+   ```
+3. To unzip the distribution, you can find it in the directory:
+   ```shell
+   $ cd build/distributions/cvsort-1.XX
+   ```
+
+## CLI
 
 To see what the program can do, type:
 
