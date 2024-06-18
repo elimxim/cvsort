@@ -5,14 +5,18 @@ Console program for fun with sorting algorithms.
 ![logo](.img/logo.png)
 
 Commands:
-- **compare:** compares two or more sorting algorithms on a real array of size up to 2^30-1
+- **compare:** compares two or more sorting algorithms on an array of size up to 2^30-1
+- **discover:** provides search attributes for discovering sorting algorithms
 - **info**: shows information about one or more sorting algorithms such as complexity or pseudocode
-- **search:**
-- **visualize:** visualizes the selected sorting algorithm
+- **visualize:** visualizes the selected sorting algorithm (even in the reverse direction)
 
-What the visualisation looks like on the _BubbleSort_ example (MINGW64):
+What the _InsertionSort_ visualisation looks like (MINGW64):
 
-![BubbleSort visualisation](.img/bubble_sort.gif)
+![BubbleSort](.img/insertion_sort.gif)
+
+And here is what the _InsertionSort_ visualization looks like in the reverse direction (MINGW64):
+
+![BubbleSort](.img/insertion_sort_reverse.gif)
 
 ## Installation
 
