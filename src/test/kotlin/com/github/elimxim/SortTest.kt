@@ -5,7 +5,7 @@ import org.junit.jupiter.api.TestFactory
 
 class SortTest {
     @TestFactory
-    fun sortTests() = SortName.realValues().map { sortTest(it) }.toList()
+    fun sortTests() = sortedEnumValues<SortName>(exclude = arrayOf(SortName.ALL)).map { sortTest(it) }.toList()
 
     private fun sortTest(sortName: SortName) = DynamicTest.dynamicTest("${sortName.canonical()} test") {
         val probe = Probe()

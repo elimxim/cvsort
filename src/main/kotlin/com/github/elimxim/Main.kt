@@ -2,19 +2,16 @@ package com.github.elimxim
 
 import com.beust.jcommander.JCommander
 import com.github.elimxim.console.Console
-import com.github.elimxim.console.InputVerifier
-import com.github.elimxim.console.command.CompareCommand
-import com.github.elimxim.console.command.InfoCommand
-import com.github.elimxim.console.command.MainCommand
-import com.github.elimxim.console.command.VisualizeCommand
-import com.github.elimxim.view.SpeedGearView
+import com.github.elimxim.console.command.*
 
 fun main(args: Array<String>) {
     val jc = JCommander.newBuilder()
             .programName("cvsort")
             .addObject(MainCommand)
-            .addCommand(InfoCommand.NAME, InfoCommand)
             .addCommand(CompareCommand.NAME, CompareCommand)
+            .addCommand(DiscoverCommand.NAME, DiscoverCommand)
+            .addCommand(InfoCommand.NAME, InfoCommand)
+            .addCommand(ListCommand.NAME, ListCommand)
             .addCommand(VisualizeCommand.NAME, VisualizeCommand)
             .build()
 
@@ -28,73 +25,115 @@ fun main(args: Array<String>) {
     if (MainCommand.usage) {
         jc.usage()
         return
-    }
-
-    if (MainCommand.listSortNames) {
-        SortName.names().forEach { Console.printLine("- $it") }
+    } else if (CompareCommand.usage) {
+        jc.usage(CompareCommand.NAME)
         return
-    }
-
-    if (MainCommand.listSpeedGears) {
-        Console.printLines(SpeedGearView().lines())
+    } else if (DiscoverCommand.usage) {
+        jc.usage(DiscoverCommand.NAME)
+        return
+    } else if (InfoCommand.usage) {
+        jc.usage(InfoCommand.NAME)
+        return
+    } else if (ListCommand.usage) {
+        jc.usage(ListCommand.NAME)
+        return
+    } else if (VisualizeCommand.usage) {
+        jc.usage(VisualizeCommand.NAME)
         return
     }
 
     val verifier = InputVerifier(args)
-    if (jc.parsedCommand == CompareCommand.NAME) {
-        if (verifier.verify(CompareCommand)) {
-            processCompareCommand()
-        }
-    } else if (jc.parsedCommand == VisualizeCommand.NAME) {
-        if (verifier.verify(VisualizeCommand)) {
-            processVisualizeCommand()
-        }
-    } else if (jc.parsedCommand == InfoCommand.NAME) {
-        if (verifier.verify(InfoCommand)) {
-            processInfoCommand()
-        }
+    when (jc.parsedCommand) {
+        CompareCommand.NAME ->
+            if (verifier.verify(CompareCommand)) {
+                processCompareCommand(CompareCommand)
+            }
+
+        DiscoverCommand.NAME ->
+            if (verifier.verify(DiscoverCommand)) {
+                processDiscoverCommand(DiscoverCommand)
+            }
+
+        InfoCommand.NAME ->
+            if (verifier.verify(InfoCommand)) {
+                processInfoCommand(InfoCommand)
+            }
+
+        ListCommand.NAME ->
+            processListCommand(ListCommand)
+
+        VisualizeCommand.NAME ->
+            if (verifier.verify(VisualizeCommand)) {
+                processVisualizeCommand(VisualizeCommand)
+            }
     }
 }
 
-private fun processCompareCommand() {
-    val sortNames = CompareCommand.sortNames.map {
-        SortName.determine(it)
+private fun processCompareCommand(cmd: CompareCommand) {
+    val sortNames = cmd.sortNames.map {
+        getEnumValue<SortName>(it)
     }
 
     val comparator = SortComparator(
-            CompareCommand.arrayLength.toInt(),
-            CompareCommand.arrayFile.toPath(),
-            CompareCommand.printArray,
-            CompareCommand.infoDisabled.not()
+            arrayLength = cmd.arrayLength.toInt(),
+            arrayFile = cmd.arrayFile.toPath(),
+            printArray = cmd.printArray,
+            showInfo = cmd.infoDisabled.not()
     )
 
     comparator.compare(sortNames)
 }
 
-private fun processVisualizeCommand() {
-    val sortName = SortName.determine(VisualizeCommand.sortName)
-    val speedGear = SpeedGear.valueOf(VisualizeCommand.speedGear.uppercase())
+private fun processDiscoverCommand(cmd: DiscoverCommand) {
+    val attrs = SearchAttributes(
+            nameTexts = cmd.nameTexts,
+            worstTimeComplexity = cmd.worstTimeComplexity.map { getEnumValue<Complexity>(it) },
+            worstSpaceComplexity = cmd.worstSpaceComplexity.map { getEnumValue<Complexity>(it) },
+            methods = cmd.methods.map { getEnumValue<SortMethod>(it) },
+            recursive = cmd.recursive,
+            stable = cmd.stable,
+            inventionYears = cmd.inventionYears.map { it.toInt() },
+            authorTexts = cmd.authorTexts
+    )
+
+    val sortNames = SortSearcher.search(attrs)
+    SortInfoPrinter(
+            ignoreMissedAnno = false,
+            withExtraInfo = true
+    ).print(sortNames)
+}
+
+private fun processInfoCommand(cmd: InfoCommand) {
+    val sortNames = cmd.sortNames.map {
+        getEnumValue<SortName>(it)
+    }
+
+    SortInfoShower(cmd.extraForced).showInfo(sortNames)
+}
+
+private fun processListCommand(cmd: ListCommand) {
+    val printer = EnumPrinter(
+            printSortNames = cmd.sortNamesEnabled,
+            printSortMethods = cmd.sortMethodsEnabled,
+            printSpeedGears = cmd.speedGearsEnabled,
+            printComplexity = cmd.complexityEnabled
+    )
+
+    printer.print()
+}
+
+private fun processVisualizeCommand(cmd: VisualizeCommand) {
+    val sortName = getEnumValue<SortName>(cmd.sortName)
+    val speedGear = SpeedGear.valueOf(cmd.speedGear.uppercase())
 
     val visualizer = SortVisualizer(
-            frameDelayMillis = VisualizeCommand.frameDelayMillis?.toLong() ?: speedGear.frameDelayMillis,
-            VisualizeCommand.arrayLength.toInt(),
-            VisualizeCommand.shuffleSkipped.not(),
-            VisualizeCommand.infoDisabled.not(),
+            frameDelayMillis = cmd.frameDelayMillis?.toLong() ?: speedGear.frameDelayMillis,
+            arrayLength = cmd.arrayLength.toInt(),
+            showShuffle = cmd.shuffleSkipped.not(),
+            showInfo = cmd.infoDisabled.not(),
             reverse = speedGear == SpeedGear.R,
-            VisualizeCommand.casualModeEnabled
+            casualMode = cmd.casualModeEnabled
     )
 
     visualizer.visualize(sortName)
-}
-
-private fun processInfoCommand() {
-    var sortNames = InfoCommand.sortNames.map {
-        SortName.determine(it)
-    }
-
-    if (sortNames.contains(SortName.ALL)) {
-        sortNames = SortName.realValues().toList()
-    }
-
-    SortInfoShower().showInfo(sortNames)
 }

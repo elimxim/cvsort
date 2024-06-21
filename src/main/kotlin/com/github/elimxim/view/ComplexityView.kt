@@ -1,22 +1,23 @@
 package com.github.elimxim.view
 
-import com.github.elimxim.SpeedGear
+import com.github.elimxim.Complexity
+import com.github.elimxim.snakeCaseToCamelCase
 import de.vandermeer.asciitable.AsciiTable
 import de.vandermeer.asciitable.CWC_LongestLine
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
 
-class SpeedGearView : View {
+class ComplexityView : View {
     override fun lines(): List<String> {
         val table = AsciiTable()
 
         table.addRule()
-        table.addRow(listOf(GEAR, MILLIS))
+        table.addRow(listOf(COMPLEXITY, NOTATION))
         table.addRule()
 
-        SpeedGear.entries.sortedByDescending {
-            it.frameDelayMillis
+        Complexity.entries.sortedByDescending {
+            it.ordinal
         }.forEach {
-            table.addRow(listOf(it.name, it.frameDelayMillis))
+            table.addRow(listOf(it.name.snakeCaseToCamelCase(), it.notation))
         }
 
         table.addRule()
@@ -28,7 +29,7 @@ class SpeedGearView : View {
     }
 
     private companion object Header {
-        const val GEAR = "Gear"
-        const val MILLIS = "Frame delay millis"
+        const val COMPLEXITY = "Complexity"
+        const val NOTATION = "Notation"
     }
 }

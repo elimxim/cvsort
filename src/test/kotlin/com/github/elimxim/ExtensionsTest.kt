@@ -24,6 +24,8 @@ class ExtensionsTest {
         assertEquals("Test", "test".snakeCaseToCamelCase())
         assertEquals("TEST", "T_E_S_T".snakeCaseToCamelCase())
         assertEquals("TEST", "t_e_s_t".snakeCaseToCamelCase())
+        assertEquals("T1", "T1".snakeCaseToCamelCase())
+        assertEquals("T1", "t1".snakeCaseToCamelCase())
     }
 
     @Test
@@ -38,6 +40,7 @@ class ExtensionsTest {
         assertEquals("TEST_TEST", "TEST_TEST".camelCaseToSnakeCase())
         assertEquals("T_E_S_T", "TEST".camelCaseToSnakeCase())
         assertEquals("T", "T".camelCaseToSnakeCase())
+        assertEquals("T1", "t1".camelCaseToSnakeCase())
         assertEquals("test_test", "TestTest".camelCaseToSnakeCase(upperCase = false))
         assertEquals("test_t", "TestT".camelCaseToSnakeCase(upperCase = false))
         assertEquals("t_test", "TTest".camelCaseToSnakeCase(upperCase = false))
@@ -49,6 +52,6 @@ class ExtensionsTest {
         assertEquals("test_test", "test_test".camelCaseToSnakeCase(upperCase = false))
         assertEquals("test", "test".camelCaseToSnakeCase(upperCase = false))
         assertEquals("t", "t".camelCaseToSnakeCase(upperCase = false))
-
+        assertEquals("T1", "t1".camelCaseToSnakeCase(upperCase = true))
     }
 }

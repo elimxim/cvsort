@@ -10,7 +10,7 @@ import com.github.elimxim.Probe.Counter.*
                 best = Complexity.LINEARITHMIC
         ),
         spaceComplexity = Complexity.LINEAR,
-        methods = [Method.INSERTION],
+        methods = [SortMethod.INSERTION],
         recursive = true,
         stable = true,
         pseudoCode = """

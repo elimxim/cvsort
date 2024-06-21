@@ -4,19 +4,21 @@ package com.github.elimxim
 annotation class SortClassification(
         val timeComplexity: TimeComplexity,
         val spaceComplexity: Complexity,
-        val methods: Array<Method>,
+        val methods: Array<SortMethod>,
         val recursive: Boolean,
         val stable: Boolean,
         val pseudoCode: String,
         val extraInfo: ExtraInfo
 )
 
+@Target(AnnotationTarget.PROPERTY)
 annotation class TimeComplexity(
         val best: Complexity,
         val average: Complexity,
         val worst: Complexity
 )
 
+@Target(AnnotationTarget.PROPERTY)
 annotation class ExtraInfo(
         val inventionYear: Int = 0,
         val authors: Array<String> = [],
@@ -42,10 +44,6 @@ enum class ComplexityClass(val notation: String) {
     BIG_OMEGA("Ω"),
 }
 
-enum class Method {
+enum class SortMethod {
     EXCHANGING, SELECTION, INSERTION, MERGING, PARTITIONING;
-
-    fun camelCase(): String {
-        return name.lowercase().snakeCaseToCamelCase()
-    }
 }

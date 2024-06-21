@@ -2,6 +2,8 @@ package com.github.elimxim.console.command
 
 import com.beust.jcommander.Parameter
 import com.beust.jcommander.Parameters
+import com.github.elimxim.SortComparator
+import com.github.elimxim.SortComparator.Companion.ARRAY_FILE_POSTFIX
 import com.github.elimxim.console.parameter.*
 import com.github.elimxim.withTimestamp
 
@@ -28,7 +30,7 @@ object CompareCommand {
             description = "a file to save the array before sorting",
             converter = PathParameterConverter::class
     )
-    var arrayFile: String = "array".withTimestamp() + ".txt"
+    var arrayFile: String = "array".withTimestamp(pattern = ARRAY_FILE_POSTFIX).plus(SortComparator.ARRAY_FILE_EXT)
 
     @Parameter(
             names = ["--printArray", "-p"],
@@ -41,5 +43,13 @@ object CompareCommand {
             description = "switches off the display of sorting algorithm comparison information"
     )
     var infoDisabled: Boolean = false
+
+    @Parameter(
+            names = ["--usage", "--help", "-h"],
+            description = "shows usage",
+            help = true,
+            order = Int.MAX_VALUE
+    )
+    var usage: Boolean = false
 }
 

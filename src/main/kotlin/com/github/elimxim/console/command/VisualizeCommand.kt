@@ -49,4 +49,12 @@ object VisualizeCommand {
             description = "switches off the display of information about the sorting algorithm"
     )
     var infoDisabled: Boolean = false
+
+    @Parameter(
+            names = ["--usage", "--help", "-h"],
+            description = "shows usage",
+            help = true,
+            order = Int.MAX_VALUE
+    )
+    var usage: Boolean = false
 }

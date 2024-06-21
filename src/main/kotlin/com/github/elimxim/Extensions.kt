@@ -4,9 +4,9 @@ import java.nio.file.Path
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-fun String.withTimestamp(literal: String = "_"): String {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS")
-    return this + literal + formatter.format(LocalDateTime.now())
+fun String.withTimestamp(pattern: String, separator: String = "_"): String {
+    val formatter = DateTimeFormatter.ofPattern(pattern)
+    return this + separator + formatter.format(LocalDateTime.now())
 }
 
 fun String.snakeCaseToCamelCase(separator: String = ""): String {
@@ -76,4 +76,16 @@ fun Boolean.xnor(other: Boolean): Boolean {
 
 fun Boolean.yesNo(): String {
     return if (this) "Yes" else "No"
+}
+
+class YesNoParseException(message: String): RuntimeException(message)
+
+fun String.yesNo(ignoreCase: Boolean = false): Boolean {
+    return if (this.equals("Yes", ignoreCase = ignoreCase)) {
+        true
+    } else if (this.equals("No", ignoreCase = ignoreCase)) {
+        false
+    } else {
+        throw YesNoParseException("cannot recognize the string '$this' as 'Yes' or 'No'")
+    }
 }

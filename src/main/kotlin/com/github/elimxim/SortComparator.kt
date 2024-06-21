@@ -1,10 +1,10 @@
 package com.github.elimxim
 
-import com.github.elimxim.view.SortClassificationView
 import com.github.elimxim.console.Console
 import com.github.elimxim.view.ProbeView
 import kotlinx.coroutines.*
 import java.nio.file.Path
+import kotlin.io.path.name
 import kotlin.time.Duration
 import kotlin.time.TimeSource
 
@@ -16,22 +16,19 @@ class SortComparator(
 ) {
     fun compare(sortNames: List<SortName>) {
         if (showInfo) {
-            val sortView = SortClassificationView()
-            sortNames.distinct().forEach {
-                val anno = SortFactory.classification(it)
-                if (anno != null) {
-                    sortView.add(it, anno)
-                }
-            }
-            Console.printLines(sortView.lines())
-            Console.printEmptyLine()
+            SortInfoPrinter().print(sortNames)
         }
 
         val array = (1..arrayLength).toIntArray()
         ArrayShuffler().shuffle(array)
 
         if (printArray) {
-            ArrayPrinter(arrayFile).printArray(array)
+            var outputFile = arrayFile
+            if (!arrayFile.name.endsWith(ARRAY_FILE_EXT)) {
+                val newName = arrayFile.name.withTimestamp(ARRAY_FILE_POSTFIX).plus(ARRAY_FILE_EXT)
+                outputFile = arrayFile.parent.resolve(newName)
+            }
+            ArrayPrinter(outputFile).printArray(array)
         }
 
         doCompare(sortNames, array)
@@ -79,5 +76,10 @@ class SortComparator(
         }
 
         Console.printLines(lines.toList(), refresh)
+    }
+
+    companion object {
+        const val ARRAY_FILE_POSTFIX = "yyyy-MM-dd-HH-mm-ss-SSS"
+        const val ARRAY_FILE_EXT = ".txt"
     }
 }

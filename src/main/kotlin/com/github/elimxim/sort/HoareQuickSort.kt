@@ -10,7 +10,7 @@ import com.github.elimxim.Probe.Counter.*
                 best = Complexity.LINEARITHMIC,
         ),
         spaceComplexity = Complexity.LINEAR,
-        methods = [Method.PARTITIONING],
+        methods = [SortMethod.PARTITIONING],
         recursive = true,
         stable = false,
         pseudoCode = """

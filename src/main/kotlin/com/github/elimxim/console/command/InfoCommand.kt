@@ -15,4 +15,18 @@ object InfoCommand {
             required = true
     )
     var sortNames: List<String> = arrayListOf()
+
+    @Parameter(
+            names = ["--forceExtra", "-e"],
+            description = "always includes extra information into the result, such as the year of invention and the authors"
+    )
+    var extraForced: Boolean = false
+
+    @Parameter(
+            names = ["--usage", "--help", "-h"],
+            description = "shows usage",
+            help = true,
+            order = Int.MAX_VALUE
+    )
+    var usage: Boolean = false
 }

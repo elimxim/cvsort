@@ -11,7 +11,7 @@ import kotlin.math.floor
                 best = Complexity.LINEARITHMIC
         ),
         spaceComplexity = Complexity.CONST,
-        methods = [Method.EXCHANGING],
+        methods = [SortMethod.EXCHANGING],
         recursive = false,
         stable = false,
         pseudoCode = """        

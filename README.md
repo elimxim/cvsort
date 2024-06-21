@@ -8,6 +8,7 @@ Commands:
 - **compare:** compares two or more sorting algorithms on an array of size up to 2^30-1
 - **discover:** provides search attributes for discovering sorting algorithms
 - **info**: shows information about one or more sorting algorithms such as complexity or pseudocode
+- **list**: helps to understand other commands by providing parameter lists
 - **visualize:** visualizes the selected sorting algorithm (even in the reverse direction)
 
 What the _InsertionSort_ visualisation looks like (MINGW64):
@@ -62,22 +63,15 @@ Usage: cvsort [options] [command] [command options]
     --disableBanner, --noBanner, -nb
       disables banner display
       Default: false
-    --listNames, --names, -n
-      prints the available sorting algorithms
-      Default: false
-    --listSpeedGears, --speeds, -s
-      prints the available visualisation speeds of sorting algorithms
-      Default: false
   Commands:
-    info      shows information about one or more sorting algorithms
-      Usage: info <name> [, <name-2>, ..., <name-20>]
-
     compare      compares two or more sorting algorithms
       Usage: compare [options] <name-1>, <name-2> [, ..., <name-10>]
         Options:
+          --usage, --help, -h
+            shows usage
           --arrayFile, -f
             a file to save the array before sorting
-            Default: array_2024-06-12-01-21-07-330.txt
+            Default: array_2024-06-21-09-58-39-561.txt
           --arrayLength, -l
             array length: [2, 2^30)
             Default: 40
@@ -89,12 +83,87 @@ Usage: cvsort [options] [command] [command options]
             prints the array to the specified file before sorting
             Default: false
 
+    discover      provides search attributes for discovering sorting
+            algorithms; if more than one parameter is selected, the search
+            will operate as a logical AND
+      Usage: discover [options]
+        Options:
+          --usage, --help, -h
+            shows usage
+          --authors, --author, -a
+            space-separated one or more author texts for full-text search by
+            author; if more than one value is recorded, the search will
+            operate as a logical OR
+            Default: []
+          --methods, --method, -m
+            space-separated one or more sorting methods; if more than one
+            value is recorded, the search will operate as a logical OR
+            Default: []
+          --names, --name, -n
+            space-separated one or more texts for full-text search by name; if
+            more than one value is recorded, the search will operate as a
+            logical OR
+            Default: []
+          --recursive, -r
+            yes/no option to search for sorting algorithms with recursive
+            implementation
+          --spaceComplexity, --space, -s
+            space-separated one or more worst space complexity; if more than
+            one value is recorded, the search will operate as a logical OR
+            Default: []
+          --stable, -b
+            yes/no option to search for stable sorting algorithms
+          --timeComplexity, --time, -t
+            space-separated one or more worst time complexity; if more than
+            one value is recorded, the search will operate as a logical OR
+            Default: []
+          --years, --year, -y
+            space-separated one or more years of invention; if one year is
+            recorded, the search will interpret it as an inclusive range: [y,
+            current]; if two years are recorded, the search will interpret it
+            as an inclusive range: [y1, y2]; otherwise the search will operate
+            as a logical OR
+            Default: []
+
+    info      shows information about one or more sorting algorithms
+      Usage: info [options] <name> [, <name-2>, ..., <name-20>]
+        Options:
+          --usage, --help, -h
+            shows usage
+          --forceExtra, -e
+            always includes extra information into the result, such as the
+            year of invention and the authors
+            Default: false
+
+    list      helps to understand other commands by providing enum lists
+      Usage: list [options]
+        Options:
+          --usage, --help, -h
+            shows usage
+          --complexity, -c
+            prints the complexity of sorting algorithms
+            Default: false
+          --sortMethods, --methods, -m
+            prints the methods of sorting algorithms
+            Default: false
+          --sortNames, --names, -n
+            prints the available sorting algorithms
+            Default: false
+          --speedGears, --speeds, -s
+            prints the available visualisation speeds of sorting algorithms
+            Default: false
+
     visualize      visualizes the selected sorting algorithms
       Usage: visualize [options] <name>
         Options:
+          --usage, --help, -h
+            shows usage
           --arrayLength, -l
-            array length: [10, 30]
+            array length: [2, 40]
             Default: 20
+          --casualMode, --causal, -c
+            enables simplified viewing mode (only writing to the array)
+            Default: false
           --disableInfo, --noInfo, -ni
             switches off the display of information about the sorting
             algorithm

@@ -6,18 +6,6 @@ import com.beust.jcommander.Parameters
 @Parameters
 object MainCommand {
     @Parameter(
-            names = ["--listNames", "--names", "-n"],
-            description = "prints the available sorting algorithms"
-    )
-    var listSortNames: Boolean = false
-
-    @Parameter(
-            names = ["--listSpeedGears", "--speeds", "-s"],
-            description = "prints the available visualisation speeds of sorting algorithms"
-    )
-    var listSpeedGears: Boolean = false
-
-    @Parameter(
             names = ["--disableBanner", "--noBanner", "-nb"],
             description = "disables banner display"
     )

@@ -8,14 +8,4 @@ enum class SpeedGear(val frameDelayMillis: Long) {
     G5(100),
     G6(50),
     R(-500);
-
-    companion object {
-        fun contains(name: String): Boolean {
-            val v = SpeedGear.entries.find {
-                it.name.equals(name, ignoreCase = true)
-            }
-
-            return v != null
-        }
-    }
 }
