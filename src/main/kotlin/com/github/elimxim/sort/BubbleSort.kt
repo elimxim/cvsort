@@ -18,7 +18,7 @@ import com.github.elimxim.Probe.Counter.*
             swapped = false
             for j in [1..n-i) do
                 if array[j-1] > array[j] then
-                    swap array[j] and array[j+1]
+                    swap array[j-1] and array[j]
                     swapped = true
                 end
             end
