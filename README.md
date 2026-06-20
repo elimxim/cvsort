@@ -1,6 +1,6 @@
 # Sorting Algorithm Comparator & Visualizer
 
-Console program for fun with sorting algorithms.
+A console program for having fun with sorting algorithms.
 
 ![logo](.img/logo.png)
 
@@ -8,16 +8,16 @@ Commands:
 - **compare:** compares two or more sorting algorithms on an array of size up to 2^30-1
 - **discover:** provides search attributes for discovering sorting algorithms
 - **info**: shows information about one or more sorting algorithms such as complexity or pseudocode
-- **list**: helps to understand other commands by providing parameter lists
+- **list**: lists the parameter values accepted by the other commands
 - **visualize:** visualizes the selected sorting algorithm (even in the reverse direction)
 
-What the _InsertionSort_ visualisation looks like (MINGW64):
+Here is what the _InsertionSort_ visualization looks like (MINGW64):
 
-![BubbleSort](.img/insertion_sort.gif)
+![InsertionSort](.img/insertion_sort.gif)
 
 And here is what the _InsertionSort_ visualization looks like in the reverse direction (MINGW64):
 
-![BubbleSort](.img/insertion_sort_reverse.gif)
+![InsertionSort reverse](.img/insertion_sort_reverse.gif)
 
 ## Supported sorting algorithms
 
@@ -55,7 +55,7 @@ And here is what the _InsertionSort_ visualization looks like in the reverse dir
 
 ## Installation
 
-> Necessary environment
+> Requirements
 > - JDK 20+
 
 1. Clone the repository:
@@ -66,7 +66,7 @@ And here is what the _InsertionSort_ visualization looks like in the reverse dir
    ```shell
    $ ./gradlew build
    ```
-3. To unzip the distribution, you can find it in the directory:
+3. Find the built distribution in this directory:
    ```shell
    $ cd build/distributions/cvsort-1.XX
    ```
@@ -255,7 +255,7 @@ end
 
 </details>
 
-Or visualisation of BubbleSort:
+Or a visualization of BubbleSort:
 
 ```shell
 $ cvsort visualize bubble
